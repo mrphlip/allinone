@@ -1,0 +1,136 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+# This is basically a cut-down cpp, tweaked to do things I want it to do to build the all-in-one script
+# in particular - substitute #define macros even in comments, and preserve whitespace more consistently
+
+# I make no warranties that this is useful for anything in any way other than building this project.
+
+# currently supports: #define, #undef, #ifdef, #else, #endif, #include, #include_string
+# notably doesn't support #if, or search directories for #include
+
+from getopt import gnu_getopt as getopt
+import sys
+import re
+
+macros = {}
+deps = []
+re_include = re.compile('^\s*#\s*include\s+["<](.*)[>"]\s*$');
+re_include_string = re.compile('^(\s*)#\s*include_string\s+["<](.*)[>"]\s*$');
+re_define = re.compile('^\s*#\s*define\s+(\w+)(?:\s+(.*))?$');
+re_undef = re.compile('^\s*#\s*undef\s+(\w+)\s*$');
+re_ifdef = re.compile('^\s*#\s*ifdef\s+(\w+)\s*$');
+re_ifndef = re.compile('^\s*#\s*ifndef\s+(\w+)\s*$');
+re_else = re.compile('^\s*#\s*else\s*$');
+re_endif = re.compile('^\s*#\s*endif\s*$');
+
+# so that the whole re.match thing can be inside the if expression
+def re_match_alt(re, target, result_list):
+	result_list[:] = [] # empty the list
+	result_list.append(re.match(target))
+	return result_list[0]
+
+def addmacro(macro, replacement = None):
+	if replacement == None:
+		replacement = ""
+	regex = "\\b%s\\b" % macro;
+	macros[macro] = ((re.compile(regex), replacement))
+
+def processfile(infile, fp, as_string = False, indent = ""):
+	deps.append(infile)
+	active = True
+	active_stack = []
+	for lineno,i in enumerate(file(infile)):
+		while i and i[-1] in "\r\n":
+			i = i[:-1]
+		
+		matches = []
+		if re_match_alt(re_ifdef, i, matches):
+			active_stack.append(active)
+			active = active and matches[0].group(1) in macros
+		elif re_match_alt(re_ifndef, i, matches):
+			active_stack.append(active)
+			active = active and matches[0].group(1) not in macros
+		elif re_match_alt(re_else, i, matches):
+			if active_stack[-1]:
+				active = not active
+		elif re_match_alt(re_endif, i, matches):
+			if active_stack == []:
+				print "Unexpected #endif in %s:%d" % (infile, lineno + 1)
+				sys.exit(1)
+			active = active_stack.pop()
+		elif not active:
+			continue
+		elif re_match_alt(re_include, i, matches):
+			processfile(matches[0].group(1), fp)
+		elif re_match_alt(re_include_string, i, matches):
+			processfile(matches[0].group(2), fp, as_string = True, indent = matches[0].group(1))
+		elif re_match_alt(re_define, i, matches):
+			addmacro(matches[0].group(1), matches[0].group(2))
+		else:
+			for macro,replacement in macros.values():
+				i = macro.sub(replacement, i)
+			if as_string:
+				i = i.replace("\\","\\\\").replace("\"","\\\"")
+				fp.write("%s\"%s\" +\n" % (indent, i))
+			else:
+				fp.write("%s\n" % (i))
+	if as_string:
+		fp.write("%s\"\"\n" % (indent))
+	
+	if active_stack != []:
+		print "Expected #endif before EOF in %s" % (infile)
+		sys.exit(1)
+
+if __name__ == '__main__':
+	opts,args = getopt(sys.argv[1:], "o:d:D:h", ['help'])
+	dictopts = dict(opts)
+	
+	if '-h' in dictopts or '--help' in dictopts:
+		print 'Usage:'
+		print '  %s [-h] [-o <file>] [-d <file>] [-D <define> [-D <define> [...]]] <file> [<file> [...]]' % sys.argv[0]
+		print
+		print '-h     Print this help message'
+		print '-o     Write output to file. If file is "-" or this option is omitted, write to stdout.'
+		print '-d     Print a make dependency list to -d. Similar to "cpp -MD -MT <output file> -MF <dependency file> -MP"'
+		print '-D     Define a macro, eg "-D DEBUG" or "-D VERSION=2"'
+		print '<file> Files to process. The results are concatenated, and macros can be defined in one file and used in a later file.'
+	
+	if '-o' in dictopts and dictopts['-o'] != '-':
+		outfile = file(dictopts['-o'], 'w')
+	else:
+		outfile = sys.stdout
+	
+	for opt,val in opts:
+		if opt == '-D':
+			try:
+				i = val.index('=')
+			except ValueError:
+				addmacro(val)
+			else:
+				addmacro(val[:i], val[i+1:])
+	
+	for i in args:
+		processfile(i, outfile)
+	
+	if '-d' in dictopts:
+		depfile = file(dictopts['-d'], 'w')
+		depfile.write(dictopts['-o'] + ":")
+		for i in deps:
+			depfile.write(" " + i)
+		depfile.write("\n\n")
+		for i in deps:
+			depfile.write(i + ":\n\n")

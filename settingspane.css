@@ -1,0 +1,70 @@
+#settingsbox, #settingslink
+{
+	border-right: 1px solid #666;
+	border-bottom: 1px solid #666;
+	background: #EEE;
+	color: #000;
+	position: fixed;
+	overflow: auto;
+	left: 0;
+	top: 0;
+	font: 12px sans-serif;
+	text-align: left;
+	z-index: 2;
+}
+#settingsbox
+{
+	width: 350px;
+}
+#settingstitlebar
+{
+	font-weight: bolder;
+	background: #CCC;
+	border-bottom: 1px solid #666;
+	padding: 3px;
+}
+#settingstitlebar img
+{
+	vertical-align: text-bottom;
+}
+#settingstitlebar .prefsicon
+{
+	float: left;
+	margin-right: 0.5em;
+}
+#settingstitlebar .buttonimage, #settingslink .buttonimage
+{
+	cursor: pointer;
+	display: block;
+}
+#settingstitlebar .buttonimage
+{
+	float: right;
+}
+#settingsbox form
+{
+	margin: 0;
+	padding: 3px;
+}
+#settingsbox ul, #settingsbox li
+{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+#settingsbox ul ul
+{
+	margin-left: 2em;
+}
+#settingsbox input[type="checkbox"]
+{
+	margin-right: 0.25em;
+}
+#settingsbuttons
+{
+	text-align: center;
+}
+#settingslink
+{
+	padding: 3px;
+}
