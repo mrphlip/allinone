@@ -4,7 +4,6 @@ function SettingsPane()
 		#include_string "settingspane.css"
 	);
 	
-	var thisObj = this; // "this" is a magic word, and isn't closed over in closures
 	var settingsbox = document.createElement('div');
 	this.settingsbox = settingsbox;
 	settingsbox.id = 'settingsbox';
@@ -17,7 +16,7 @@ function SettingsPane()
 	closebutton.src = globals.image_close;
 	closebutton.title = "Click to hide preferences";
 	closebutton.className = 'buttonimage';
-	closebutton.addEventListener('click', function(){thisObj.settingsbox.style.display = "none"; thisObj.settingslink.style.display = "block";}, false);
+	closebutton.addEventListener('click', (function(){this.settingsbox.style.display = "none"; this.settingslink.style.display = "block";}).bind(this), false);
 	titlebar.appendChild(closebutton);
 	var prefslogo = document.createElement('img');
 	prefslogo.src = globals.image_prefs;
@@ -32,12 +31,12 @@ function SettingsPane()
 	if (a < 40) a = 40;
 	settingslist.style.maxHeight = a + 'px';
 	settingslist.style.overflow = 'auto'; // vertical scrollbar if needed
-	window.addEventListener('resize', function()
+	window.addEventListener('resize', (function()
 	{
 		var a = window.innerHeight - 75;
 		if (a < 40) a = 40;
-		thisObj.settingslist.style.maxHeight = a + 'px';
-	}, true);
+		this.settingslist.style.maxHeight = a + 'px';
+	}).bind(this), true);
 	settingsform.appendChild(settingslist);
 
 	var div = document.createElement('div');
@@ -53,7 +52,7 @@ function SettingsPane()
 	nocachebutton.addEventListener("click", function(){GM_setValue("cachedodge", Math.random().toString())}, false);
 	div.appendChild(document.createTextNode(" "));
 	div.appendChild(nocachebutton);
-	settingsform.addEventListener("submit", function(e){return thisObj.saveSettings(e)}, false);
+	settingsform.addEventListener("submit", this.saveSettings.bind(this,e), false);
 	
 	var settingslink = document.createElement('div');
 	this.settingslink = settingslink;
@@ -62,7 +61,7 @@ function SettingsPane()
 	settingslinkimage.src = globals.image_prefs;
 	settingslinkimage.title = "Click to show preferences";
 	settingslinkimage.className = 'prefsicon buttonimage';
-	settingslinkimage.addEventListener('click', function(){thisObj.settingsbox.style.display = "block"; thisObj.settingslink.style.display = "none";}, false);
+	settingslinkimage.addEventListener('click', (function(){this.settingsbox.style.display = "block"; this.settingslink.style.display = "none";}).bind(this), false);
 	settingslink.appendChild(settingslinkimage);
 	document.body.appendChild(settingslink);
 	

@@ -1,12 +1,12 @@
 function Fullscreen()
 {
-	var thisObj = this; // "this" is a magic word, and isn't closed over in closures
 	if (!globals.flashmovie)
 		return;
 	
 	// load settings
 	this.shouldresize = GM_getValue('resize', 0) != 0;
 	this.noscale = GM_getValue('noscale', 0) != 0;
+
 	// prepare settings checkboxes
 	var settingrow = document.createElement('li');
 	globals.modules.settingspane.settingslist.appendChild(settingrow);
@@ -23,6 +23,7 @@ function Fullscreen()
 	settinglabel.appendChild(document.createTextNode("Resize flash to full-screen"));
 	settinglabel.title = settingcheckbox.title;
 	settingrow.appendChild(settinglabel);
+	
 	var subsetting = document.createElement('ul');
 	settingrow.appendChild(subsetting);
 	settingrow = document.createElement('li');
@@ -36,7 +37,7 @@ function Fullscreen()
 	settingrow.appendChild(settingcheckbox);
 	var settinglabel = document.createElement('label');
 	settinglabel.htmlFor = 'setting_noscale';
-	settinglabel.appendChild(document.createTextNode("Show outside-the-frame action"));
+	settinglabel.appendChild(document.createTextNode("Show behind the black"));
 	settinglabel.title = settingcheckbox.title;
 	settingrow.appendChild(settinglabel);
 	
@@ -52,7 +53,7 @@ function Fullscreen()
 		this.isPercentage = false;
 		this.aspect = this.initwidth / this.initheight;
 	}
-	window.addEventListener('resize', function(){thisObj.doResize()}, true);
+	window.addEventListener('resize', this.doResize.bind(this), true);
 	this.doResize();
 	if (this.noscale)
 		this.setScaleMode("noScale");
@@ -132,8 +133,7 @@ Fullscreen.prototype.setScaleMode = function(scaleMode)
 		globals.flashmovie.SetVariable("Stage.scaleMode", scaleMode);
 	else
 	{
-		thisObj = this;
-		setTimeout(function(){thisObj.setScaleMode(scaleMode)}, 10);
+		setTimeout(this.setScaleMode.bind(this, scaleMode), 10);
 	}
 }
 Fullscreen.prototype.noscale_end = function()
@@ -145,8 +145,7 @@ Fullscreen.prototype.noscale_end = function()
 		globals.flashmovie.SetVariable("Stage.scaleMode", "noScale");
 	else
 	{
-		thisObj = this;
-		setTimeout(function(){thisObj.noscale_end()}, 10);
+		setTimeout(this.noscale_end.bind(this), 10);
 	}
 }
 Fullscreen.prototype.updateSettings = function()
