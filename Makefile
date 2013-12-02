@@ -27,4 +27,4 @@ clean:
 	rm -f built.user.js built.user.js.d debug.user.js debug.user.js.d
 build: clean all
 dist:
-	rm *~ svn-commit.*
+	rm -f *~ svn-commit.*
