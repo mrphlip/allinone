@@ -1,81 +1,7 @@
 // Homestar All-In-One
-// version 3.2
-// 2006-09-27
-// Copyright (c) Phillip Bradbury, Loafing, T Rice, Jesse Ruderman
-//
-// A combination of several useful scripts for Homestar Runner cartoons:
-//  Homestar-Fullon, a greasemonkey script for making H*R cartoons fullscreen.
-//  Seek Bar, a bookmarklet that adds a progress bar to flash cartoons
-//   (with modifications).
-//  Previous/Next buttons for Strong Bad Emails, TGS, Marzipan's
-//   Answering Machine, Biz Cas Fri, Puppet Jams and main pages.
-//  An HRWiki link on all pages.
-//  The ability, if you turn on the "fullscreen" option, to keep the actual
-//   stage the same size (so you can see "outside the frame").
-//  Turning everything upside-down, like on April Fools Day, 2006.
-//  A plain-HTML navbar, to replace the Flash one. This is mostly for me
-//   as the navbar doesn't work right on my computer (font problems).
-//   It could also be useful for others, letting you middle-click the navbar
-//   to open things in new tabs.
-//  Loading subtitles from the wiki and displaying them beneath the toon.
-// All of these can easily be turned on or off with the "Preferences" box
-//  in the top left.
-//
-// Released under the GPL.
-//
-// Homestar-Fullon written by T Rice <timgm@bcheck.net> and is
-//  released under the GPL.
-//  http://dana.ucc.nau.edu/~tsr22/apps/greasemonkey/
-//
-// Seek bar written by Jesse Ruderman <jruderman@hmc.edu> and is
-//  distributed with permission ("You may modify and/or distribute
-//  up to three bookmarklets from this site in any way you want.")
-//  http://www.squarefree.com/bookmarklets/
-//  Originally it was just the Pause button and the seek bar,
-//  I modified it to add a frame counter, frame step buttons and zoom buttons.
-//  I also modified it so the Pause button automatically updates when the flash
-//  movie pauses itself (eg at the end of the toon).
-//
-// Previous/Next buttons written by Phillip Bradbury, but inspired by
-//  StrongBad Emails: Prev & Next from http://userscripts.org/scripts/show/1015
-//
-// HRWiki link also written by Phillip Bradbury, but inspired by an attempt
-//  by Tom Preuss to do the same thing - except it did the translation from
-//  URL to Wiki page name in the script, this does it at the HRWiki server
-//  so that when a new toon comes out, the script doesn't need to be changed.
-//  http://www.hrwiki.org/wiki/User:Tom/Greasemonkey_Script
-//
-// Subtitles written in collaboration with "Loafing"
-//  http://www.hrwiki.org/wiki/User:Loafing
-//
-// Direct any comments to
-//  http://www.hrwiki.org/wiki/User_talk:Phlip/Greasemonkey
-//
-// --------------------------------------------------------------------
-//
-// WARNING: This script explicitly avoids use of one of Greasemonkey's security
-//  features. THIS SCRIPT SHOULD NOT BE USED on ANY page where you do not trust
-//  the page writer. Not that it would make sense to anyway, given it's rather
-//  Homestar-specific. Your use of this script is stating that you trust
-//  The Brothers Chaps to not insert malicious code into the Homestar Runner site,
-//  and the HRWiki admins to not put any on the mirror.
-//
-// One of the security features of Greasemonkey, used to plug its holes in
-//  previous versions, is Mozilla's XPCNativeWrapper, which is used to ensure
-//  that you're calling the real functions of objects on the page, and not
-//  weird and potentially hazardous ones written by the page designer. However
-//  this also blocks functions like flashmovie.CurrentFrame() which are needed
-//  by the seek bar. Thus to make the seek bar work, I needed to turn this off.
-//
-// --------------------------------------------------------------------
-//
-// This is a Greasemonkey user script.
-//
-// To install, you need Greasemonkey: http://greasemonkey.mozdev.org/
-// Then restart Firefox and revisit this script.
-//
-// To uninstall, go to Tools/Manage User Scripts,
-// select "Homestar All-In-One", and click Uninstall.
+// version MAJOR.MINOR
+// BUILDDATE
+// Copyright (c) Phillip Bradbury, Loafing
 //
 // --------------------------------------------------------------------
 //
@@ -114,4 +40,5 @@
 #ifdef DEBUG
 // @include       http://localhost/hr/*
 #endif
+// @grant         GM_getValue GM_setValue GM_xmlhttpRequest
 // ==/UserScript==
