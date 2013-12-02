@@ -3,6 +3,8 @@
 
 #include "maincomment.txt"
 
+(function(){
+
 #include "getversion.in.js"
 
 #include "utils.in.js"
@@ -16,3 +18,5 @@
 #include "mainline.in.js"
 
 #include "footer.txt"
+
+})();
