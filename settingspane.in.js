@@ -52,7 +52,7 @@ function SettingsPane()
 	nocachebutton.addEventListener("click", function(){GM_setValue("cachedodge", Math.random().toString())}, false);
 	div.appendChild(document.createTextNode(" "));
 	div.appendChild(nocachebutton);
-	settingsform.addEventListener("submit", this.saveSettings.bind(this,e), false);
+	settingsform.addEventListener("submit", this.saveSettings.bind(this), false);
 	
 	var settingslink = document.createElement('div');
 	this.settingslink = settingslink;
