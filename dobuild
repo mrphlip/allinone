@@ -127,10 +127,8 @@ if __name__ == '__main__':
 		processfile(i, outfile)
 	
 	if '-d' in dictopts:
-		depfile = file(dictopts['-d'], 'w')
-		depfile.write(dictopts['-o'] + ":")
-		for i in deps:
-			depfile.write(" " + i)
-		depfile.write("\n\n")
-		for i in deps:
-			depfile.write(i + ":\n\n")
+		with file(dictopts['-d'], 'w') as depfile:
+			depfile.write(dictopts['-o'] + ":")
+			for i in deps:
+				depfile.write(" " + i)
+			depfile.write("\n")
