@@ -19,13 +19,12 @@ include debug.user.js.d
 built.user.js.d:
 debug.user.js.d:
 
-.PHONY: all clean debug edit dist
+.PHONY: all clean debug build dist
 debug: debug.user.js
 	cp debug.user.js /home/phlip/.mozilla/firefox/ynorfbh1.default/gm_scripts/homestar_all-in-one/homestar_all-in-one.user.js
 all: debug.user.js built.user.js
 clean:
 	rm -f built.user.js built.user.js.d debug.user.js debug.user.js.d
-edit:
-	kate Makefile dobuild original.user.js *.txt *.in.js *.h &
+build: clean all
 dist:
-	rm *~
+	rm *~ svn-commit.*
