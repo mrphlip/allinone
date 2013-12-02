@@ -40,5 +40,7 @@
 #ifdef DEBUG
 // @include       http://localhost/hr/*
 #endif
-// @grant         GM_getValue GM_setValue GM_xmlhttpRequest
+// @grant         GM_getValue
+// @grant         GM_setValue
+// @grant         GM_xmlhttpRequest
 // ==/UserScript==
