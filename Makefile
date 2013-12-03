@@ -27,7 +27,7 @@ debug: debug.user.js
 	cp debug.user.js /home/phlip/.mozilla/firefox/ynorfbh1.default/gm_scripts/homestar_all-in-one/homestar_all-in-one.user.js
 all: debug.user.js built.user.js
 clean:
-	rm -f built.user.js built.user.js.d debug.user.js debug.user.js.d
+	rm -f built.user.js built.user.js.d debug.user.js debug.user.js.d images.built.js
 build: clean all
 dist:
 	rm -f *~ svn-commit.*
