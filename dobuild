@@ -53,7 +53,7 @@ def processfile(infile, fp, as_string = False, indent = ""):
 	deps.append(infile)
 	active = True
 	active_stack = []
-	for lineno,i in enumerate(file(infile)):
+	for lineno,i in enumerate(open(infile)):
 		while i and i[-1] in "\r\n":
 			i = i[:-1]
 		
@@ -69,7 +69,7 @@ def processfile(infile, fp, as_string = False, indent = ""):
 				active = not active
 		elif re_match_alt(re_endif, i, matches):
 			if active_stack == []:
-				print "Unexpected #endif in %s:%d" % (infile, lineno + 1)
+				print("Unexpected #endif in %s:%d" % (infile, lineno + 1))
 				sys.exit(1)
 			active = active_stack.pop()
 		elif not active:
@@ -92,7 +92,7 @@ def processfile(infile, fp, as_string = False, indent = ""):
 		fp.write("%s\"\"\n" % (indent))
 	
 	if active_stack != []:
-		print "Expected #endif before EOF in %s" % (infile)
+		print("Expected #endif before EOF in %s" % (infile))
 		sys.exit(1)
 
 if __name__ == '__main__':
@@ -100,17 +100,17 @@ if __name__ == '__main__':
 	dictopts = dict(opts)
 	
 	if '-h' in dictopts or '--help' in dictopts:
-		print 'Usage:'
-		print '  %s [-h] [-o <file>] [-d <file>] [-D <define> [-D <define> [...]]] <file> [<file> [...]]' % sys.argv[0]
-		print
-		print '-h     Print this help message'
-		print '-o     Write output to file. If file is "-" or this option is omitted, write to stdout.'
-		print '-d     Print a make dependency list to -d. Similar to "cpp -MD -MT <output file> -MF <dependency file> -MP"'
-		print '-D     Define a macro, eg "-D DEBUG" or "-D VERSION=2"'
-		print '<file> Files to process. The results are concatenated, and macros can be defined in one file and used in a later file.'
+		print('Usage:')
+		print('  %s [-h] [-o <file>] [-d <file>] [-D <define> [-D <define> [...]]] <file> [<file> [...]]' % sys.argv[0])
+		print()
+		print('-h     Print this help message')
+		print('-o     Write output to file. If file is "-" or this option is omitted, write to stdout.')
+		print('-d     Print a make dependency list to -d. Similar to "cpp -MD -MT <output file> -MF <dependency file> -MP"')
+		print('-D     Define a macro, eg "-D DEBUG" or "-D VERSION=2"')
+		print('<file> Files to process. The results are concatenated, and macros can be defined in one file and used in a later file.')
 	
 	if '-o' in dictopts and dictopts['-o'] != '-':
-		outfile = file(dictopts['-o'], 'w')
+		outfile = open(dictopts['-o'], 'w')
 	else:
 		outfile = sys.stdout
 	
@@ -127,7 +127,7 @@ if __name__ == '__main__':
 		processfile(i, outfile)
 	
 	if '-d' in dictopts:
-		with file(dictopts['-d'], 'w') as depfile:
+		with open(dictopts['-d'], 'w') as depfile:
 			depfile.write(dictopts['-o'] + ":")
 			for i in deps:
 				depfile.write(" " + i)
