@@ -4,8 +4,8 @@ function Fullscreen()
 		return;
 	
 	// load settings
-	this.shouldresize = GM_getValue('resize', 0) != 0;
-	this.noscale = GM_getValue('noscale', 0) != 0;
+	this.shouldresize = utils.getPref('resize', 0) != 0;
+	this.noscale = utils.getPref('noscale', 0) != 0;
 
 	// prepare settings checkboxes
 	var settingrow = document.createElement('li');
@@ -151,10 +151,10 @@ Fullscreen.prototype.noscale_end = function()
 Fullscreen.prototype.updateSettings = function()
 {
 	this.shouldresize = this.setting_main.checked;
-	GM_setValue("resize", this.shouldresize ? 1 : 0);
+	utils.setPref("resize", this.shouldresize ? 1 : 0);
 	var old_noscale = this.noscale;
 	this.noscale = this.setting_noscale.checked;
-	GM_setValue("noscale", this.noscale ? 1 : 0);
+	utils.setPref("noscale", this.noscale ? 1 : 0);
 	this.doResize();
 	if (this.noscale && !old_noscale)
 		this.setScaleMode("noScale");

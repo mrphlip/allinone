@@ -49,7 +49,7 @@ function SettingsPane()
 	var nocachebutton = document.createElement('input');
 	nocachebutton.type = "submit";
 	nocachebutton.value = "Clear subtitles cache";
-	nocachebutton.addEventListener("click", function(){GM_setValue("cachedodge", Math.random().toString())}, false);
+	nocachebutton.addEventListener("click", function(){utils.setPref("cachedodge", Math.random().toString())}, false);
 	div.appendChild(document.createTextNode(" "));
 	div.appendChild(nocachebutton);
 	settingsform.addEventListener("submit", this.saveSettings.bind(this), false);

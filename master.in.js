@@ -1,6 +1,6 @@
-#include "version.h"
 #include "header.txt"
 
+#include "version.h"
 #include "maincomment.txt"
 
 (function(){
