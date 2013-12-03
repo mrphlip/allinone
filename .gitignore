@@ -1,3 +1,5 @@
-*.d
-*.user.js
+built.user.js
+debug.user.js
+built.user.js.d
+debug.user.js.d
 *~
