@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+# This script is written to build the images.build.js source file from
+# the icons in the "images" directory.
+
+import sys
+import os
+from base64 import encodestring as base64encode
+try:
+	from urllib import quote as percentencode
+except ImportError:
+	from urllib.request import quote as percentencode
+
+if 'xrange' in globals():
+	range = xrange
+
+COL_WIDTH = 72
+
+print("\tthis.images = {")
+for i in sys.argv[1:]:
+	with open(i, 'rb') as fp:
+		basename, ext = os.path.splitext(os.path.basename(i.lower()))
+		if ext == ".png":
+			mimetype = "image/png"
+		elif ext in (".jpg", ".jpeg"):
+			mimetype = "image/jpeg"
+		elif ext == ".gif":
+			mimetype = "image/gif"
+		else:
+			print("Unrecognised file type for " + i)
+			sys.exit(1)
+
+		data = fp.read()
+		encdata_percent = "data:%s,%s" % (mimetype, percentencode(data))
+		encdata_base64 = "data:%s;base64,%s" % (mimetype, base64encode(data).replace("\n",""))
+		if len(encdata_percent) <= len(encdata_base64):
+			encdata = encdata_percent
+		else:
+			encdata = encdata_base64
+
+		print("\t\t%r:" % basename)
+		for i in range(0, len(encdata), COL_WIDTH):
+			if i + COL_WIDTH >= len(encdata):
+				print("\t\t\t%r," % encdata[i:i + COL_WIDTH])
+			else:
+				print("\t\t\t%r +" % encdata[i:i + COL_WIDTH])
+print("\t};")

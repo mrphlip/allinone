@@ -13,13 +13,13 @@ function SettingsPane()
 	titlebar.id = 'settingstitlebar';
 	settingsbox.appendChild(titlebar);
 	var closebutton = document.createElement('img');
-	closebutton.src = globals.image_close;
+	closebutton.src = globals.images.close;
 	closebutton.title = "Click to hide preferences";
 	closebutton.className = 'buttonimage';
 	closebutton.addEventListener('click', (function(){this.settingsbox.style.display = "none"; this.settingslink.style.display = "block";}).bind(this), false);
 	titlebar.appendChild(closebutton);
 	var prefslogo = document.createElement('img');
-	prefslogo.src = globals.image_prefs;
+	prefslogo.src = globals.images.prefs;
 	prefslogo.className = 'prefsicon';
 	titlebar.appendChild(prefslogo);
 	titlebar.appendChild(document.createTextNode("Preferences"));
@@ -58,7 +58,7 @@ function SettingsPane()
 	this.settingslink = settingslink;
 	settingslink.id = 'settingslink';
 	var settingslinkimage = document.createElement('img');
-	settingslinkimage.src = globals.image_prefs;
+	settingslinkimage.src = globals.images.prefs;
 	settingslinkimage.title = "Click to show preferences";
 	settingslinkimage.className = 'prefsicon buttonimage';
 	settingslinkimage.addEventListener('click', (function(){this.settingsbox.style.display = "block"; this.settingslink.style.display = "none";}).bind(this), false);

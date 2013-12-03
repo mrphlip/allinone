@@ -5,7 +5,8 @@ function Globals()
 	if (location.hostname.indexOf("videlectrix") >= 0) this.whichsite = 2;
 	if (location.pathname.indexOf("/mirror/") >= 0) this.whichsite = 3;
 
-#	include "images.in.js"
+	// icons, as Base64-encoded PNG files.
+#	include "images.built.js"
 
 	// find flash objects
 	switch (this.whichsite)

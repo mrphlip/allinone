@@ -9,10 +9,13 @@ REVISION=$(git log --oneline | wc -l)
 DATE=$(shell date +%Y-%m-%d)
 BUILDOPTS=-DREVISION=$(REVISION) -DBUILDDATE=$(DATE)
 
-built.user.js: Makefile dobuild
+built.user.js: Makefile dobuild images.built.js
 	./dobuild $(BUILDOPTS) master.in.js -o built.user.js -d built.user.js.d
-debug.user.js: Makefile dobuild
+debug.user.js: Makefile dobuild images.built.js
 	./dobuild $(BUILDOPTS) -DDEBUG master.in.js -o debug.user.js -d debug.user.js.d
+
+images.built.js: Makefile buildimages images/*.png
+	./buildimages images/*.png > images.built.js
 
 include built.user.js.d
 include debug.user.js.d
