@@ -73,7 +73,8 @@ function Globals()
 	if (this.flashmovie)
 	{
 		//expose Flash plugin-added methods
-		this.flashmovie = this.flashmovie.wrappedJSObject;
+		if (this.flashmovie.wrappedJSObject)
+			this.flashmovie = this.flashmovie.wrappedJSObject;
 		
 		// confirm that this is really a flash file
 		// and not (for example) the embedded background sound on SB's website
