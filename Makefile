@@ -5,7 +5,7 @@
 #	@# you can't seem to have a dollar sign in the script without make trying to expand it
 #	cpp $(CPPOPTS) main.in.js | perl -e "while(<>){last if /\S/};print;print while (<>)" > built.user.js
 
-REVISION=$(shell svn info | grep Revision | awk '{print $$2}')
+REVISION=$(git log --oneline | wc -l)
 DATE=$(shell date +%Y-%m-%d)
 BUILDOPTS=-DREVISION=$(REVISION) -DBUILDDATE=$(DATE)
 
