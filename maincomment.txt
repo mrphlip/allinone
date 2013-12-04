@@ -43,10 +43,8 @@
 // @match         http://hrwiki.org/mirror/*
 // @match         http://www.hrwiki.org/mirror/*
 // @match         https://secure.homestarrunner.com/heythanks.html*
-// @match         http://www.hrwiki.org/w/index.php?title=*&action=raw&source=allinone
 #ifdef DEBUG
 // @match         http://localhost/hr/*
-// @match         http://localhost/w/index.php?title=*&action=raw&source=allinone
 #endif
 // @grant         GM_getValue
 // @grant         GM_setValue

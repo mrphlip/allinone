@@ -42,6 +42,10 @@ manifest = {
 	'author': "Phillip Bradbury",
 	'homepage_url': "http://www.hrwiki.org/wiki/User:Phlip/Greasemonkey",
 	'short_name': 'All-In-One',
+	'permissions': [
+		"http://www.hrwiki.org/w/index.php?title=*&action=raw&source=allinone",
+		"http://www.homestarrunner.com/rando.xml",
+	],
 }
 import json
 json.dump(manifest, sys.stdout, indent=2)
