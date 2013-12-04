@@ -2,7 +2,10 @@ built.user.js
 debug.user.js
 built.user.js.d
 debug.user.js.d
+built.crx
+debug.crx
 *~
 allinone.sublime-project
 allinone.sublime-workspace
 images.built.js
+chromekey.pem
