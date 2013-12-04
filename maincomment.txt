@@ -1,6 +1,9 @@
 // Homestar All-In-One
 // version MAJOR.MINOR
 // BUILDDATE
+#ifdef DEBUG
+// DEBUGGING VERSION
+#endif
 // Copyright (c) Phillip Bradbury, Loafing
 //
 // --------------------------------------------------------------------
@@ -29,16 +32,21 @@
 #endif
 // @namespace     http://www.hrwiki.org/
 // @description   Combination of many Homestar Runner scripts. Version MAJOR.MINOR.
-// @include       http://homestarrunner.com/*
-// @include       http://www.homestarrunner.com/*
-// @include       http://podstar.homestarrunner.com/*
-// @include       http://videlectrix.com/*
-// @include       http://www.videlectrix.com/*
-// @include       http://hrwiki.org/mirror/*
-// @include       http://www.hrwiki.org/mirror/*
-// @include       https://secure.homestarrunner.com/heythanks.html*
+// @version       MAJOR.MINOR.REVISION
+// @downloadURL   http://www.hrwiki.org/w/index.php?title=User:Phlip/Greasemonkey&action=raw&ctype=text/javascript&fakeextension=.user.js
+// @icon          http://www.hrwiki.org/w/images/thumb/1/1b/logo.png/32px-logo.png
+// @match         http://homestarrunner.com/*
+// @match         http://www.homestarrunner.com/*
+// @match         http://podstar.homestarrunner.com/*
+// @match         http://videlectrix.com/*
+// @match         http://www.videlectrix.com/*
+// @match         http://hrwiki.org/mirror/*
+// @match         http://www.hrwiki.org/mirror/*
+// @match         https://secure.homestarrunner.com/heythanks.html*
+// @match         http://www.hrwiki.org/w/index.php?title=*&action=raw&source=allinone
 #ifdef DEBUG
-// @include       http://localhost/hr/*
+// @match         http://localhost/hr/*
+// @match         http://localhost/w/index.php?title=*&action=raw&source=allinone
 #endif
 // @grant         GM_getValue
 // @grant         GM_setValue

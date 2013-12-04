@@ -1,3 +1,14 @@
-// If you want to install this script, then (if you don't have them already) you'll need to install [http://www.mozilla.org/firefox/ Firefox] and [https://addons.mozilla.org/en-US/firefox/addon/748 Greasemonkey], then restart Firefox and return to this page.<br>
-// Then, just click on <span class="plainlinks">[http://www.hrwiki.org/w/index.php?title=User:Phlip/Greasemonkey&action=raw&ctype=text/javascript&fakeextension=.user.js this link]</span> to install the script.<br>
-// To upgrade a new version when it's updated, just click the install link again &ndash; it'll automagically replace the old version. If the option is enabled, the script will automatically check for updates for you. <pre>
+/*
+==Installation instructions==
+===Firefox===
+If you don't have it already, you'll need to install [https://addons.mozilla.org/en-US/firefox/addon/748 Greasemonkey], then restart Firefox and return to this page.
+
+Then, just click on <span class="plainlinks">[{{fullurl:{{PAGENAME}}|action=raw&ctype=text/javascript&fakeextension=.user.js}} this link]</span> to install the script.
+
+To upgrade a new version when it's updated, just click the install link again &ndash; it'll automagically replace the old version. If the option is enabled, the script will automatically check for updates for you.
+
+===Chrome===
+TBD
+
+==Script code==
+<pre>*/

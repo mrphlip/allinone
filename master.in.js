@@ -17,6 +17,6 @@
 
 #include "mainline.in.js"
 
-#include "footer.txt"
-
 })();
+
+#include "footer.txt"

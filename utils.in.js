@@ -13,12 +13,26 @@ Utils.prototype.addGlobalStyle = function(css)
 	head.appendChild(style);
 }
 // Based on http://userscripts.org/topics/41177
+Utils.prototype.useGMStorage = function()
+{
+	// We can't just test if GM_getValue exists, because in Chrome they do exist
+	// but they don't actually do anything, just report failure to console.log
+
+	// We don't want it to actually write anything to console.log, though, so
+	// let's stop that
+	var log = console.log;
+	console.log = function(){};
+	var gmstorage = typeof(GM_getValue) == "function" && GM_getValue("this-value-doesn't-exist-I-promise", true);
+	console.log = log;
+
+	return gmstorage;
+}
 Utils.prototype.getPref = function(key, def)
 {
 	// Have to do it like this instead of like "if(window.GM_getValue)"
 	// because apparently this function isn't actually on "window", and I don't
 	// know where it actually lives...
-	if (typeof(GM_getValue) == "function")
+	if (this.useGMStorage())
 		return GM_getValue(key, def);
 	else if (window.localStorage)
 	{
@@ -42,7 +56,7 @@ Utils.prototype.getPref = function(key, def)
 }
 Utils.prototype.setPref = function(key, value)
 {
-	if (typeof(GM_setValue) == "function")
+	if (this.useGMStorage())
 		GM_setValue(key, value);
 	else if (window.localStorage)
 	{
