@@ -43,7 +43,7 @@ manifest = {
 	'homepage_url': "http://www.hrwiki.org/wiki/User:Phlip/Greasemonkey",
 	'short_name': 'All-In-One',
 	'permissions': [
-		"http://www.hrwiki.org/w/index.php?title=*&action=raw&source=allinone",
+		"http://www.hrwiki.org/*",
 		"http://www.homestarrunner.com/rando.xml",
 	],
 }

@@ -107,4 +107,7 @@ Globals.prototype.initModules = function initModules()
 	this.modules = {};
 	this.modules.settingspane = new SettingsPane();
 	this.modules.fullscreen = new Fullscreen();
+#ifdef DEBUG
+	this.modules.debug = new DebugModule();
+#endif
 };

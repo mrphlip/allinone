@@ -12,6 +12,10 @@
 
 	#include "settingspane.in.js"
 
+	#ifdef DEBUG
+	#include "debug.in.js"
+
+	#endif
 	#include "fullon.in.js"
 
 	#include "mainline.in.js"
