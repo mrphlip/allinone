@@ -28,7 +28,7 @@ import re
 
 macros = {}
 deps = []
-re_include = re.compile('^\s*#\s*include\s+["<](.*)[>"]\s*$');
+re_include = re.compile('^(\s*)#\s*include\s+["<](.*)[>"]\s*$');
 re_include_string = re.compile('^(\s*)#\s*include_string\s+["<](.*)[>"]\s*$');
 re_define = re.compile('^\s*#\s*define\s+(\w+)(?:\s+(.*))?$');
 re_undef = re.compile('^\s*#\s*undef\s+(\w+)\s*$');
@@ -75,19 +75,18 @@ def processfile(infile, fp, as_string = False, indent = ""):
 		elif not active:
 			continue
 		elif re_match_alt(re_include, i, matches):
-			processfile(matches[0].group(1), fp)
+			processfile(matches[0].group(2), fp, indent=indent + matches[0].group(1))
 		elif re_match_alt(re_include_string, i, matches):
-			processfile(matches[0].group(2), fp, as_string = True, indent = matches[0].group(1))
+			processfile(matches[0].group(2), fp, as_string=True, indent=indent + matches[0].group(1))
 		elif re_match_alt(re_define, i, matches):
 			addmacro(matches[0].group(1), matches[0].group(2))
 		else:
 			for macro,replacement in macros.values():
 				i = macro.sub(replacement, i)
 			if as_string:
-				i = i.replace("\\","\\\\").replace("\"","\\\"")
-				fp.write("%s\"%s\" +\n" % (indent, i))
+				fp.write("%s%r +\n" % (indent, i + "\n"))
 			else:
-				fp.write("%s\n" % (i))
+				fp.write("%s%s\n" % (indent, i))
 	if as_string:
 		fp.write("%s\"\"\n" % (indent))
 	

@@ -2,7 +2,7 @@ function Utils()
 {
 }
 // Taken from http://diveintogreasemonkey.org/patterns/add-css.html
-Utils.prototype.addGlobalStyle = function(css)
+Utils.prototype.addGlobalStyle = function addGlobalStyle(css)
 {
 	var head, style;
 	head = document.getElementsByTagName('head')[0];
@@ -11,9 +11,9 @@ Utils.prototype.addGlobalStyle = function(css)
 	style.type = 'text/css';
 	style.appendChild(document.createTextNode(css));
 	head.appendChild(style);
-}
+};
 // Based on http://userscripts.org/topics/41177
-Utils.prototype.useGMStorage = function()
+Utils.prototype.useGMStorage = function useGMStorage()
 {
 	// We can't just test if GM_getValue exists, because in Chrome they do exist
 	// but they don't actually do anything, just report failure to console.log
@@ -21,13 +21,13 @@ Utils.prototype.useGMStorage = function()
 	// We don't want it to actually write anything to console.log, though, so
 	// let's stop that
 	var log = console.log;
-	console.log = function(){};
+	console.log = function log(){};
 	var gmstorage = typeof(GM_getValue) == "function" && GM_getValue("this-value-doesn't-exist-I-promise", true);
 	console.log = log;
 
 	return gmstorage;
-}
-Utils.prototype.getPref = function(key, def)
+};
+Utils.prototype.getPref = function getPref(key, def)
 {
 	// Have to do it like this instead of like "if(window.GM_getValue)"
 	// because apparently this function isn't actually on "window", and I don't
@@ -37,14 +37,14 @@ Utils.prototype.getPref = function(key, def)
 	else if (window.localStorage)
 	{
 		var value = localStorage.getItem("hr-allinone-" + key);
-		if (value == null)
+		if (value === null)
 			return def;
 		var type = value[0];
 		value = value.substring(1);
 		if (type == 'b')
 			return Number(value) != 0;
 		else if (type == 'n')
-			return Number(value)
+			return Number(value);
 		else
 			return value;
 	}
@@ -53,8 +53,8 @@ Utils.prototype.getPref = function(key, def)
 		alert("Homestar Runner All-in-one is not supported on this platform");
 		throw "Couldn't find a local storage provider";
 	}
-}
-Utils.prototype.setPref = function(key, value)
+};
+Utils.prototype.setPref = function setPref(key, value)
 {
 	if (this.useGMStorage())
 		GM_setValue(key, value);
@@ -74,4 +74,4 @@ Utils.prototype.setPref = function(key, value)
 		alert("Homestar Runner All-in-one is not supported on this platform");
 		throw "Couldn't find a local storage provider";
 	}
-}
+};

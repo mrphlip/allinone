@@ -11,7 +11,7 @@ function Fullscreen()
 	var settingrow = document.createElement('li');
 	globals.modules.settingspane.settingslist.appendChild(settingrow);
 	var settingcheckbox = document.createElement('input');
-	this.setting_main = settingcheckbox
+	this.setting_main = settingcheckbox;
 	settingcheckbox.type = 'checkbox';
 	settingcheckbox.checked = this.shouldresize;
 	settingcheckbox.title = "Resizes the toon so it fills the entire window";
@@ -29,13 +29,13 @@ function Fullscreen()
 	settingrow = document.createElement('li');
 	subsetting.appendChild(settingrow);
 	settingcheckbox = document.createElement('input');
-	this.setting_noscale = settingcheckbox
+	this.setting_noscale = settingcheckbox;
 	settingcheckbox.type = 'checkbox';
 	settingcheckbox.checked = this.noscale;
 	settingcheckbox.title = "Lets you see what's happening beyond the frames";
 	settingcheckbox.id = 'setting_noscale';
 	settingrow.appendChild(settingcheckbox);
-	var settinglabel = document.createElement('label');
+	settinglabel = document.createElement('label');
 	settinglabel.htmlFor = 'setting_noscale';
 	settinglabel.appendChild(document.createTextNode("Show behind the black"));
 	settinglabel.title = settingcheckbox.title;
@@ -57,8 +57,8 @@ function Fullscreen()
 	this.doResize();
 	if (this.noscale)
 		this.setScaleMode("noScale");
-};
-Fullscreen.prototype.doResize = function()
+}
+Fullscreen.prototype.doResize = function doResize()
 {
 	if (!globals.flashmovie)
 		return;
@@ -74,32 +74,32 @@ Fullscreen.prototype.doResize = function()
 	
 	var dw = window.innerWidth;
 	var dh = window.innerHeight - 15; // things get weird sometimes... -15 to make sure we don't get scrollbars.
-	/*
-	if (navbar)
+	if (globals.navbar)
 	{
 		// parseInt will take the number part at the start, turning eg "10px" into 10
-		a = document.defaultView.getComputedStyle(navbar, null);
+		var a = document.defaultView.getComputedStyle(globals.navbar, null);
 		dh -= parseInt(a.height,10);
 		dh -= parseInt(a.marginTop,10);
 		dh -= parseInt(a.marginBottom,10);
 	}
+	/*
 	if (seekbar)
 	{
-		a = document.defaultView.getComputedStyle(seekbar, null)
+		var a = document.defaultView.getComputedStyle(seekbar, null)
 		dh -= parseInt(a.height,10);
 		dh -= parseInt(a.marginTop,10);
 		dh -= parseInt(a.marginBottom,10);
 	}
 	if (subtitleholder)
 	{
-		a = document.defaultView.getComputedStyle(subtitleholder, null)
+		var a = document.defaultView.getComputedStyle(subtitleholder, null)
 		dh -= parseInt(a.height,10);
 		dh -= parseInt(a.marginTop,10);
 		dh -= parseInt(a.marginBottom,10);
 	}
 	if (transcriptErrors)
 	{
-		a = document.defaultView.getComputedStyle(transcriptErrors, null)
+		var a = document.defaultView.getComputedStyle(transcriptErrors, null)
 		dh -= parseInt(a.height,10);
 		dh -= parseInt(a.marginTop,10);
 		dh -= parseInt(a.marginBottom,10);
@@ -112,7 +112,7 @@ Fullscreen.prototype.doResize = function()
 	// otherwise, keep the aspect ratio correct... "touch inside" style.
 	if (!this.isPercentage && !this.noscale)
 	{
-		if(dw/this.aspect <= dh)
+		if(dw <= dh * this.aspect)
 			dh = Math.floor(dw / this.aspect);
 		else
 			dw = Math.floor(dh * this.aspect);
@@ -124,7 +124,7 @@ Fullscreen.prototype.doResize = function()
 	/*if (seekbar)
 		seekbar.style.width = Math.max(dw, 450) + "px";*/
 };
-Fullscreen.prototype.setScaleMode = function(scaleMode)
+Fullscreen.prototype.setScaleMode = function setScaleMode(scaleMode)
 {
 	var a = globals.flashmovie.CurrentFrame;
 	if (typeof(a) == "function" || typeof(a) == "object")
@@ -135,20 +135,8 @@ Fullscreen.prototype.setScaleMode = function(scaleMode)
 	{
 		setTimeout(this.setScaleMode.bind(this, scaleMode), 10);
 	}
-}
-Fullscreen.prototype.noscale_end = function()
-{
-	var a = globals.flashmovie.CurrentFrame;
-	if (typeof(a) == "function" || typeof(a) == "object")
-		a = globals.flashmovie.CurrentFrame();
-	if (typeof(a) == "number" && a >= 0 && globals.flashmovie.SetVariable)
-		globals.flashmovie.SetVariable("Stage.scaleMode", "noScale");
-	else
-	{
-		setTimeout(this.noscale_end.bind(this), 10);
-	}
-}
-Fullscreen.prototype.updateSettings = function()
+};
+Fullscreen.prototype.updateSettings = function updateSettings()
 {
 	this.shouldresize = this.setting_main.checked;
 	utils.setPref("resize", this.shouldresize);
@@ -160,4 +148,4 @@ Fullscreen.prototype.updateSettings = function()
 		this.setScaleMode("noScale");
 	else if (!this.noscale && old_noscale)
 		this.setScaleMode("showAll");
-}
+};

@@ -44,3 +44,6 @@ clean:
 build: clean all
 dist:
 	rm -f *~ svn-commit.*
+lint: built.user.js
+	@# http://javascriptlint.com/download.htm
+	jsl --conf=lint.conf built.user.js

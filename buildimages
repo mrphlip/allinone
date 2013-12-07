@@ -29,10 +29,13 @@ if 'xrange' in globals():
 
 COL_WIDTH = 72
 
-print("\tthis.images = {")
-for i in sys.argv[1:]:
-	with open(i, 'rb') as fp:
-		basename, ext = os.path.splitext(os.path.basename(i.lower()))
+print("this.images = {")
+for i,fn in enumerate(sys.argv):
+	if i == 0:
+		continue
+	islast = (i == len(sys.argv) - 1)
+	with open(fn, 'rb') as fp:
+		basename, ext = os.path.splitext(os.path.basename(fn.lower()))
 		if ext == ".png":
 			mimetype = "image/png"
 		elif ext in (".jpg", ".jpeg"):
@@ -40,7 +43,7 @@ for i in sys.argv[1:]:
 		elif ext == ".gif":
 			mimetype = "image/gif"
 		else:
-			print("Unrecognised file type for " + i)
+			sys.stderr.write("Unrecognised file type for %s\n" % fn)
 			sys.exit(1)
 
 		data = fp.read()
@@ -51,10 +54,10 @@ for i in sys.argv[1:]:
 		else:
 			encdata = encdata_base64
 
-		print("\t\t%r:" % basename)
-		for i in range(0, len(encdata), COL_WIDTH):
-			if i + COL_WIDTH >= len(encdata):
-				print("\t\t\t%r," % encdata[i:i + COL_WIDTH])
+		print("\t%s:" % basename)
+		for j in range(0, len(encdata), COL_WIDTH):
+			if j + COL_WIDTH >= len(encdata):
+				print("\t\t%r%s" % (encdata[j:j + COL_WIDTH], "" if islast else ","))
 			else:
-				print("\t\t\t%r +" % encdata[i:i + COL_WIDTH])
-print("\t};")
+				print("\t\t%r +" % encdata[j:j + COL_WIDTH])
+print("};")
