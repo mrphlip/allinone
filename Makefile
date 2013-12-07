@@ -35,15 +35,18 @@ include debug.user.js.d
 built.user.js.d:
 debug.user.js.d:
 
-.PHONY: all clean debug build dist default
+.PHONY: all clean debug build dist default lint debuglint
 debug: debug.user.js debug.crx
 	cp debug.user.js /home/phlip/.mozilla/firefox/ynorfbh1.default/gm_scripts/homestar_all-in-one/homestar_all-in-one.user.js
 all: built.user.js built.crx debug.user.js debug.crx
 clean:
 	rm -f built.user.js built.user.js.d debug.user.js debug.user.js.d images.built.js chrome/AllInOne/manifest.json chrome/AllInOne/*.user.js built.crx debug.crx
 build: clean all
-dist:
+dist: clean all lint debuglint
 	rm -f *~ svn-commit.*
+
+# http://javascriptlint.com/download.htm
 lint: built.user.js
-	@# http://javascriptlint.com/download.htm
 	jsl --conf=lint.conf built.user.js
+debuglint: debug.user.js
+	jsl --conf=lint.conf debug.user.js
