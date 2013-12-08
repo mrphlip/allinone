@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Scripting with Flash 5</title>
+<style type="text/css">
+body
+{
+	font: 100% sans-serif;
+	background: white;
+	color: black;
+}
+h1
+{
+	font: bold 150% sans-serif;
+	border-bottom: 1px solid grey;
+}
+h2
+{
+	font: bold 120% sans-serif;
+	border-bottom: 1px solid grey;
+}
+h3
+{
+	font: bold 100% sans-serif;
+}
+pre, code
+{
+	font: 100% monospace;
+}
+pre
+{
+	margin: 0.1em 1em;
+	padding: 0.1em;
+	background: #EEF;
+	border: 1px dashed black;
+}
+.var
+{
+	font: italic 90% sans-serif;
+}
+.intro
+{
+	margin-left: 2em;
+	font: italic 100% sans-serif;
+}
+table, tr, th, td
+{
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+th, td
+{
+	padding: 0.25em;
+}
+th
+{
+	background: #EEE;
+}
+</style>
+</head>
+<body>
+<h1>Scripting with Flash 5</h1>
+<p class="intro">Adobe apparently would like to forget that this interface exists, as all documentation for it has been removed from their website. Luckily, the <a href="http://web.archive.org/">Wayback Machine</a> has us saved, having archived the <a href="http://web.archive.org/web/20100710000820/http://www.adobe.com/support/flash/publishexport/scriptingwithflash/scriptingwithflash_03.html">function list</a> and <a href="http://web.archive.org/web/20090210205955/http://www.adobe.com/support/flash/publishexport/scriptingwithflash/scriptingwithflash_04.html">property list</a> for us. But just in case that ever goes away, here is a copy of that information.</p>
+
+<h2 id="Standard">Standard methods</h2>
+
+<h3 id="CurrentFrame">CurrentFrame</h3>
+<pre>CurrentFrame()</pre>
+<p>Returns the number of the current frame in the current movie. The frame number returned is zero-based, meaning the first frame of the Flash movie would be <code>0</code>, the second frame would be <code>1</code>, and so on.</p>
+
+<h3 id="GetVariable">GetVariable</h3>
+<pre>GetVariable(<span class="var">varName</span>)</pre>
+<p>Returns the value of the Flash variable specified by <span class="var">varName</span>. Returns <code>null</code> if the variable does not exist. The argument type is string.</p>
+<p><span class="var">varName</span> can be either a bare variable name like <code>"foo"</code>, or a <a href="#TellTarget">target</a> and a variable name, like <code>"/foo:bar"</code>.</p>
+
+<h3 id="GotoFrame">GotoFrame</h3>
+<pre>GotoFrame(<span class="var">frameNumber</span>)</pre>
+<p>Activates the frame number specified by <span class="var">frameNumber</span> in the current movie. If the data for a requested frame is not yet available, the player goes to the last frame available and stops, causing unexpected results during playback. Use the <code><a href="#PercentLoaded">PercentLoaded</a>()</code> method to determine if enough of the movie is available to execute the <code>GotoFrame()</code> method.</p>
+<p>The argument <span class="var">frameNumber</span> is zero-based; that is, <span class="var">frameNumber</span> is <code>0</code> in the first frame of the movie, <code>1</code> for the second frame, and so on. This differs from the <code>Goto</code> action within Flash, which begins at <code>1</code>. The argument type is integer.</p>
+
+<h3 id="IsPlaying">IsPlaying</h3>
+<pre>IsPlaying()</pre>
+<p>Returns <code>true</code> if the movie is currently playing.</p>
+
+<h3 id="LoadMovie">LoadMovie</h3>
+<pre>LoadMovie(<span class="var">layerNumber</span>, <span class="var">url</span>)</pre>
+<p>Loads the movie identified by <span class="var">url</span> to the layer specified by <span class="var">layerNumber</span>. The argument type is integer for <span class="var">layerNumber</span> and string for <span class="var">url</span>.</p>
+
+<h3 id="Pan">Pan</h3>
+<pre>Pan(<span class="var">x</span>, <span class="var">y</span>, <span class="var">mode</span>)</pre>
+<p>Pans a zoomed-in movie to the coordinates specified by <span class="var">x</span> and <span class="var">y</span>. Use <span class="var">mode</span> to specify whether the values for <span class="var">x</span> and <span class="var">y</span> are pixels or a percent of the window. When <span class="var">mode</span> is <code>0</code>, the coordinates are pixels; when <span class="var">mode</span> is <code>1</code>, the coordinates are percent of the window. <code>Pan</code> does not pan beyond the boundaries of the zoomed-in movie. The argument type for all arguments is integer.</p>
+
+<h3 id="PercentLoaded">PercentLoaded</h3>
+<pre>PercentLoaded()</pre>
+<p>Returns the percent of the Flash Player movie that has streamed into the browser so far; possible values are from <code>0</code> to <code>100</code>.</p>
+
+<h3 id="Play">Play</h3>
+<pre>Play()</pre>
+<p>Starts playing the movie.</p>
+
+<h3 id="Rewind">Rewind</h3>
+<pre>Rewind()</pre>
+<p>Goes to the first frame.</p>
+
+<h3 id="SetVariable">SetVariable</h3>
+<pre>SetVariable(<span class="var">variableName</span>, <span class="var">value</span>)</pre>
+<p>Sets the value of the Flash variable specified by <span class="var">variableName</span> to the value specified by <span class="var">value</span>. The argument type for both arguments is string.</p>
+
+<h3 id="SetZoomRect">SetZoomRect</h3>
+<pre>SetZoomRect(<span class="var">left</span>, <span class="var">top</span>, <span class="var">right</span>, <span class="var">bottom</span>)</pre>
+<p>Zooms in on a rectangular area of the movie. The units of the coordinates are in twips (1440 units per inch). To calculate a rectangle in Flash, set the ruler units to Points and multiply the coordinates by 20 to get twips. (There are 72 points per inch.) The argument type for all arguments is integer.</p>
+
+<h3 id="StopPlay">StopPlay</h3>
+<pre>StopPlay()</pre>
+<p>Stops playing the movie.</p>
+
+<h3 id="TotalFrames">TotalFrames</h3>
+<pre>TotalFrames()</pre>
+<p>Returns the total number of frames in the movie.</p>
+
+<h3 id="Zoom">Zoom</h3>
+<pre>Zoom(<span class="var">percent</span>)</pre>
+<p>Zooms the view by a relative scale factor specified by <span class="var">percent</span>. <code>Zoom(50)</code> doubles the size of the objects in the view. <code>Zoom(200)</code> reduces the size of objects in the view by one half. <code>Zoom(0)</code> resets the view to 100%.</p>
+<p>You cannot specify a reduction in the size of objects in the view when the current view is already 100%. The argument type is integer.</p>
+
+<h2 id="TellTarget">TellTarget Methods</h2>
+<p>For all of these, setting <span class="var">target</span> to <code>"/"</code> refers to the main timeline, while <code>"/foo/bar"</code> means, in the main timeline, find the movie clip called <code>foo</code>, and in there find the movie clip called <code>bar</code></p>
+<h3 id="TCallFrame">TCallFrame</h3>
+<pre>TCallFrame(<span class="var">target</span>, <span class="var">)</pre>
+<p>In the timeline specified by <span class="var">target</span>, executes the action in the frame specified by <span class="var">frameNumber</span>.</p>
+
+<h3 id="TCallLabel">TCallLabel</h3>
+<pre>TCallLabel(<span class="var">target</span>, <span class="var">label</span>)</pre>
+<p>In the Timeline indicated by <span class="var">target</span>, executes the action in the frame specified by the <span class="var">label</span> frame label. The argument type for both arguments is string.</p>
+
+<h3 id="TCurrentFrame">TCurrentFrame</h3>
+<pre>TCurrentFrame(<span class="var">target</span>)</pre>
+<p>Returns the number of the current frame for the timeline specified by <span class="var">target</span>. The frame number returned is zero-based, meaning frame 1 of the Flash movie would be <code>0</code>, frame 2 would be <code>1</code>, and so on. The argument type is string.</p>
+
+<h3 id="TCurrentLabel">TCurrentLabel</h3>
+<pre>TCurrentLabel(<span class="var">target</span>)</pre>
+<p>Returns the label of the current frame of the timeline specified by <span class="var">target</span>. If there is no current frame label, an empty string is returned. The argument type is string.</p>
+
+<h3 id="TGetProperty">TGetProperty</h3>
+<pre>TGetProperty(<span class="var">target</span>, <span class="var">property</span>)</pre>
+<p>For the timeline indicated by <span class="var">target</span>, returns a string indicating the value of the property specified by <span class="var">property</span>. For <span class="var">property</span>, enter the integer corresponding to the desired property. For a list of all properties and their corresponding integers, see <a href="#Properties">Properties</a>.</p>
+
+<h3 id="TGetPropertyAsNumber">TGetPropertyAsNumber</h3>
+<pre>TGetPropertyAsNumber(<span class="var">target</span>, <span class="var">property</span>)</pre>
+<p>For the timeline indicated by <span class="var">target</span>, returns a number indicating the value of the property specified by <span class="var">property</span>. For <span class="var">property</span>, enter the integer corresponding to the desired property. For a list of all properties and their corresponding integers, see <a href="#Properties">Properties</a>.</p>
+
+<h3 id="TGotoFrame">TGotoFrame</h3>
+<pre>TGotoFrame(<span class="var">target</span>, <span class="var">frameNumber</span>)</pre>
+<p>For the timeline indicated by <span class="var">target</span>, goes to the frame number specified by <span class="var">frameNumber</span>. The argument type for <span class="var">target</span> is string. The argument type for <span class="var">frameNumber</span> is integer.</p>
+
+<h3 id="TGotoLabel">TGotoLabel</h3>
+<pre>TGotoLabel(<span class="var">target</span>, <span class="var">label</span>)</pre>
+<p>For the timeline indicated by <span class="var">target</span>, goes to the frame label specified by <span class="var">label</span>. The argument type for both arguments is string.</p>
+
+<h3 id="TPlay">TPlay</h3>
+<pre>TPlay(<span class="var">target</span>)</pre>
+<p>Plays the timeline specified by <span class="var">target</span>. The argument type is string.</p>
+
+<h3 id="TSetProperty">TSetProperty</h3>
+<pre>TSetProperty(<span class="var">target</span>, <span class="var">property</span>, <span class="var">value</span>)</pre>
+<p>For the timeline indicated by <span class="var">target</span>, sets the value of the property specified by <span class="var">property</span> to the value specified by <span class="var">value</span>, which can be a string or a number. For <span class="var">property</span>, enter the integer corresponding to the desired property. For a list of all properties and their corresponding integers, see <a href="#Properties">Properties</a>.</p>
+
+<h3 id="TStopPlay">TStopPlay</h3>
+<pre>TStopPlay(<span class="var">target</span>)</pre>
+<p>Stops the timeline specified by <span class="var">target</span>. The argument type is string.</p>
+
+<h2 id="Events">Events</h2>
+
+<h3 id="OnProgress">OnProgress</h3>
+<pre>OnProgress(<span class="var">percent</span>)</pre>
+<p>Generated as the Flash movie is downloading. The argument type is integer.</p>
+
+<h3 id="OnReadyStateChange">OnReadyStateChange</h3>
+<pre>OnReadyStateChange(<span class="var">state</span>)</pre>
+<p>Generated when the ready state of the control changes. The possible states are: 0=Loading, 1=Uninitialized, 2=Loaded, 3=Interactive, 4=Complete. The argument type is integer.</p>
+
+<h3 id="FSCommand">FSCommand</h3>
+<pre>FSCommand(<span class="var">command</span>, <span class="var">args</span>)</pre>
+<p>Generated when an <code>FSCommand</code> action is performed in the movie with a URL and the URL starts with <code>FSCommand:</code>. Use this to create a response to a frame or button action in the Flash movie. The argument type is string.</p>
+
+<h2 id="Properties">Properties</h2>
+
+<h3 id="ClipProperties">Movie Clip properties</h3>
+<table>
+<thead>
+<tr><th>Number</th><th>Constant</th><th>Settable</th></tr>
+</thead>
+<tbody>
+<tr><td>0</td><td>X_POS</td><td>Yes</td></tr>
+<tr><td>1</td><td>Y_POS</td><td>Yes</td></tr>
+<tr><td>2</td><td>X_SCALE</td><td>Yes</td></tr>
+<tr><td>3</td><td>Y_SCALE</td><td>Yes</td></tr>
+<tr><td>4</td><td>CURRENT_FRAME</td><td>No</td></tr>
+<tr><td>5</td><td>TOTAL_FRAMES</td><td>No</td></tr>
+<tr><td>6</td><td>ALPHA</td><td>Yes</td></tr>
+<tr><td>7</td><td>VISIBLE</td><td>Yes</td></tr>
+<tr><td>8</td><td>WIDTH</td><td>No</td></tr>
+<tr><td>9</td><td>HEIGHT</td><td>No</td></tr>
+<tr><td>10</td><td>ROTATE</td><td>Yes</td></tr>
+<tr><td>11</td><td>TARGET</td><td>No</td></tr>
+<tr><td>12</td><td>FRAMES_LOADED</td><td>No</td></tr>
+<tr><td>13</td><td>NAME</td><td>Yes</td></tr>
+<tr><td>14</td><td>DROP_TARGET</td><td>No</td></tr>
+<tr><td>15</td><td>URL</td><td>No</td></tr>
+</tbody>
+</table>
+
+<h3 id="GlobalProperties">Global Properties</h3>
+<table>
+<thead>
+<tr><th>Number</th><th>Constant</th><th>Settable</th></tr>
+</thead>
+<tbody>
+<tr><td>16</td><td>HIGH_QUALITY</td><td>Yes</td></tr>
+<tr><td>17</td><td>FOCUS_RECT</td><td>Yes</td></tr>
+<tr><td>18</td><td>SOUND_BUF_TIME</td><td>Yes</td></tr>
+</tbody>
+</table>
+
+</body>
+</html>
