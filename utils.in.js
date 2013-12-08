@@ -133,3 +133,41 @@ Utils.prototype.wikiPageDownloaded = function wikiPageDownloaded(loadcb, errorcb
 	}
 	loadcb(text, status, statusText);
 };
+
+// Documentation for the Flash interface is really lacking...
+// Adobe removed the docs from their website.
+// Luckily, the Wayback Machine captures all
+// http://web.archive.org/web/20100710000820/http://www.adobe.com/support/flash/publishexport/scriptingwithflash/scriptingwithflash_03.html
+// http://web.archive.org/web/20090210205955/http://www.adobe.com/support/flash/publishexport/scriptingwithflash/scriptingwithflash_04.html
+
+Utils.prototype.currentFrame = funciton currentFrame(flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return false;
+
+	var a = flashmovie.CurrentFrame;
+	if (typeof(a) == 'function')
+		a = flashmovie.CurrentFrame();
+	if (typeof(a) == 'number' && a >= 0)
+		return a;
+	else
+		return -1;
+}
+Utils.prototype.isLoaded = function isLoaded(flashmovie)
+{
+	return this.currentFrame(flashmovie) >= 0;
+}
+Utils.prototype.whenLoaded = function whenLoaded(callback, flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return;
+
+	if (this.currentFrame(flashmovie) >= 0)
+		callback();
+	else
+		setTimeout(this.whenLoaded.bind(this, callback, flashmovie), 100);
+};

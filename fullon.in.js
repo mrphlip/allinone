@@ -126,15 +126,9 @@ Fullscreen.prototype.doResize = function doResize()
 };
 Fullscreen.prototype.setScaleMode = function setScaleMode(scaleMode)
 {
-	var a = globals.flashmovie.CurrentFrame;
-	if (typeof(a) == "function" || typeof(a) == "object")
-		a = globals.flashmovie.CurrentFrame();
-	if (typeof(a) == "number" && a >= 0 && globals.flashmovie.SetVariable)
+	utils.whenLoaded(function(){
 		globals.flashmovie.SetVariable("Stage.scaleMode", scaleMode);
-	else
-	{
-		setTimeout(this.setScaleMode.bind(this, scaleMode), 10);
-	}
+	});
 };
 Fullscreen.prototype.updateSettings = function updateSettings()
 {
