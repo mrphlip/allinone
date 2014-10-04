@@ -140,7 +140,7 @@ Utils.prototype.wikiPageDownloaded = function wikiPageDownloaded(loadcb, errorcb
 // http://web.archive.org/web/20100710000820/http://www.adobe.com/support/flash/publishexport/scriptingwithflash/scriptingwithflash_03.html
 // http://web.archive.org/web/20090210205955/http://www.adobe.com/support/flash/publishexport/scriptingwithflash/scriptingwithflash_04.html
 
-Utils.prototype.currentFrame = funciton currentFrame(flashmovie)
+Utils.prototype.currentFrame = function currentFrame(flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
@@ -154,11 +154,11 @@ Utils.prototype.currentFrame = funciton currentFrame(flashmovie)
 		return a;
 	else
 		return -1;
-}
+};
 Utils.prototype.isLoaded = function isLoaded(flashmovie)
 {
 	return this.currentFrame(flashmovie) >= 0;
-}
+};
 Utils.prototype.whenLoaded = function whenLoaded(callback, flashmovie)
 {
 	if (!flashmovie)
