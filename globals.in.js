@@ -123,6 +123,6 @@ Globals.prototype.initModules = function initModules()
 #ifdef DEBUG
 	this.modules.debug = new DebugModule();
 #endif
-	for (i in this.modules)
+	for (var i in this.modules)
 		this.modules[i].init();
 };

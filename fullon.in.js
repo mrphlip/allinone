@@ -29,20 +29,20 @@ Fullscreen.prototype.init = function init()
 	
 	var subsetting = document.createElement('ul');
 	settingrow.appendChild(subsetting);
-	settingrow = document.createElement('li');
-	subsetting.appendChild(settingrow);
+	var subsettingrow = document.createElement('li');
+	subsetting.appendChild(subsettingrow);
 	settingcheckbox = document.createElement('input');
 	this.setting_noscale = settingcheckbox;
 	settingcheckbox.type = 'checkbox';
 	settingcheckbox.checked = this.noscale;
 	settingcheckbox.title = "Lets you see what's happening beyond the frames";
 	settingcheckbox.id = 'setting_noscale';
-	settingrow.appendChild(settingcheckbox);
+	subsettingrow.appendChild(settingcheckbox);
 	settinglabel = document.createElement('label');
 	settinglabel.htmlFor = 'setting_noscale';
 	settinglabel.appendChild(document.createTextNode("Show behind the black"));
 	settinglabel.title = settingcheckbox.title;
-	settingrow.appendChild(settinglabel);
+	subsettingrow.appendChild(settinglabel);
 	
 	this.initwidth = globals.flashmovie.width;
 	this.initheight = globals.flashmovie.height;
@@ -94,7 +94,7 @@ Fullscreen.prototype.doResize = function doResize()
 	}
 	if (globals.modules.seekbar.seekbar)
 	{
-		a = document.defaultView.getComputedStyle(globals.modules.seekbar.seekbar, null)
+		a = document.defaultView.getComputedStyle(globals.modules.seekbar.seekbar, null);
 		dh -= parseInt(a.height,10);
 		dh -= parseInt(a.marginTop,10);
 		dh -= parseInt(a.marginBottom,10);
