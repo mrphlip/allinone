@@ -1,5 +1,8 @@
 function SettingsPane()
 {
+}
+SettingsPane.prototype.init = function init()
+{
 	utils.addGlobalStyle(
 		#include_string "settingspane.css"
 	);
@@ -61,7 +64,7 @@ function SettingsPane()
 	document.body.appendChild(settingslink);
 	
 	//enabledisable();
-}
+};
 SettingsPane.prototype.saveSettings = function saveSettings(e)
 {
 	// stop the form from actually being submitted

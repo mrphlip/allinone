@@ -1,5 +1,8 @@
 function Fullscreen()
 {
+}
+Fullscreen.prototype.init = function init()
+{
 	if (!globals.flashmovie)
 		return;
 	
@@ -57,7 +60,7 @@ function Fullscreen()
 	this.doResize();
 	if (this.noscale)
 		this.setScaleMode("noScale");
-}
+};
 Fullscreen.prototype.doResize = function doResize()
 {
 	if (!globals.flashmovie)
@@ -67,8 +70,8 @@ Fullscreen.prototype.doResize = function doResize()
 	{
 		globals.flashmovie.style.width = this.initwidth + "px";
 		globals.flashmovie.style.height = this.initheight + "px";
-		/*if (seekbar)
-			seekbar.style.width = Math.max(this.initwidth, 450) + "px";*/
+		if (globals.modules.seekbar.seekbar)
+			globals.modules.seekbar.seekbar.style.width = Math.max(this.initwidth, 450) + "px";
 		return;
 	}
 	
@@ -84,29 +87,29 @@ Fullscreen.prototype.doResize = function doResize()
 
 	if (globals.navbar)
 	{
-		var a = document.defaultView.getComputedStyle(globals.navbar, null);
+		a = document.defaultView.getComputedStyle(globals.navbar, null);
+		dh -= parseInt(a.height,10);
+		dh -= parseInt(a.marginTop,10);
+		dh -= parseInt(a.marginBottom,10);
+	}
+	if (globals.modules.seekbar.seekbar)
+	{
+		a = document.defaultView.getComputedStyle(globals.modules.seekbar.seekbar, null)
 		dh -= parseInt(a.height,10);
 		dh -= parseInt(a.marginTop,10);
 		dh -= parseInt(a.marginBottom,10);
 	}
 	/*
-	if (seekbar)
-	{
-		var a = document.defaultView.getComputedStyle(seekbar, null)
-		dh -= parseInt(a.height,10);
-		dh -= parseInt(a.marginTop,10);
-		dh -= parseInt(a.marginBottom,10);
-	}
 	if (subtitleholder)
 	{
-		var a = document.defaultView.getComputedStyle(subtitleholder, null)
+		a = document.defaultView.getComputedStyle(subtitleholder, null)
 		dh -= parseInt(a.height,10);
 		dh -= parseInt(a.marginTop,10);
 		dh -= parseInt(a.marginBottom,10);
 	}
 	if (transcriptErrors)
 	{
-		var a = document.defaultView.getComputedStyle(transcriptErrors, null)
+		a = document.defaultView.getComputedStyle(transcriptErrors, null)
 		dh -= parseInt(a.height,10);
 		dh -= parseInt(a.marginTop,10);
 		dh -= parseInt(a.marginBottom,10);
@@ -128,8 +131,8 @@ Fullscreen.prototype.doResize = function doResize()
 	// set embed's size
 	globals.flashmovie.style.width = dw + "px";
 	globals.flashmovie.style.height = dh + "px";
-	/*if (seekbar)
-		seekbar.style.width = Math.max(dw, 450) + "px";*/
+	if (globals.modules.seekbar.seekbar)
+		globals.modules.seekbar.seekbar.style.width = Math.max(dw, 450) + "px";
 };
 Fullscreen.prototype.setScaleMode = function setScaleMode(scaleMode)
 {

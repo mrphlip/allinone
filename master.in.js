@@ -18,6 +18,8 @@
 	#endif
 	#include "fullon.in.js"
 
+	#include "seekbar.in.js"
+
 	#include "mainline.in.js"
 })();
 

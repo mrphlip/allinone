@@ -1,5 +1,8 @@
 function DebugModule()
 {
+}
+DebugModule.prototype.init = function init()
+{
 	if (!globals.flashmovie)
 		return;
 	
@@ -12,7 +15,7 @@ function DebugModule()
 	settingbutton.addEventListener('click', this.doDebug.bind(this), true);
 	settingrow.appendChild(settingbutton);
 	
-}
+};
 DebugModule.prototype.doDebug = function doDebug()
 {
 	utils.downloadWiki("HRWiki", function(t){window.alert(t);}, function(s,t){window.alert("Error: " + s + "\n" + t);});

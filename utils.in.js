@@ -29,12 +29,14 @@ Utils.prototype.useGMStorage = function useGMStorage()
 
 	return gmstorage;
 };
+// Only really need to do this once...
+Utils.prototype.useGMStorage = Utils.prototype.useGMStorage();
 Utils.prototype.getPref = function getPref(key, def)
 {
 	// Have to do it like this instead of like "if(window.GM_getValue)"
 	// because apparently this function isn't actually on "window", and I don't
 	// know where it actually lives...
-	if (this.useGMStorage())
+	if (this.useGMStorage)
 		return GM_getValue(key, def);
 	else if (window.localStorage)
 	{
@@ -58,7 +60,7 @@ Utils.prototype.getPref = function getPref(key, def)
 };
 Utils.prototype.setPref = function setPref(key, value)
 {
-	if (this.useGMStorage())
+	if (this.useGMStorage)
 		GM_setValue(key, value);
 	else if (window.localStorage)
 	{
@@ -170,4 +172,12 @@ Utils.prototype.whenLoaded = function whenLoaded(callback, flashmovie)
 		callback();
 	else
 		setTimeout(this.whenLoaded.bind(this, callback, flashmovie), 100);
+};
+
+Utils.prototype.insertAfter = function insertAfter(newElement, referenceElement)
+{
+	if(referenceElement.nextSibling)
+		referenceElement.parentNode.insertBefore(newElement, referenceElement.nextSibling);
+	else
+		referenceElement.parentNode.appendChild(newElement);
 };
