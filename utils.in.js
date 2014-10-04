@@ -157,6 +157,55 @@ Utils.prototype.currentFrame = function currentFrame(flashmovie)
 	else
 		return -1;
 };
+Utils.prototype.totalFrames = function totalFrames(flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return false;
+
+	var a = flashmovie.TotalFrames;
+	if (typeof(a) == 'function')
+		a = flashmovie.TotalFrames();
+	if (typeof(a) == 'number' && a >= 0)
+		return a;
+	else
+		return -1;
+};
+Utils.prototype.isPlaying = function isPlaying(flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return false;
+
+	var a = flashmovie.IsPlaying;
+	if (typeof(a) == 'function')
+		a = flashmovie.IsPlaying();
+	if (typeof(a) == 'boolean')
+		return a;
+	else if (typeof(a) == 'number')
+		return a != 0;
+	else
+		return false;
+};
+Utils.prototype.framesLoaded = function framesLoaded(flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return false;
+
+	if (!flashmovie.TGetProperty)
+		return -1;
+	var a = flashmovie.TGetProperty('/', 12); // property 12 is _framesloaded
+	if (typeof(a) == 'string')
+		a = parseInt(a, 10);
+	if (typeof(a) == 'number' && a >= 0)
+		return a;
+	else
+		return -1;
+};
 Utils.prototype.isLoaded = function isLoaded(flashmovie)
 {
 	return this.currentFrame(flashmovie) >= 0;
