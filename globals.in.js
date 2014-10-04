@@ -101,6 +101,18 @@ function Globals()
 				this.flashmovie = false;
 		}
 	}
+	// Don't run large flash objects inline (gets rid of some extra padding from
+	// having the movie sitting on the baseline)
+	if (this.flashmovie)
+	{
+		this.flashmovie.style.display = "block";
+		this.flashmovie.style.margin = "0 auto";
+	}
+	if (this.navbar)
+	{
+		this.navbar.style.display = "block";
+		this.navbar.style.margin = "0 auto";
+	}
 }
 Globals.prototype.initModules = function initModules()
 {

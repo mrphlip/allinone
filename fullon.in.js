@@ -4,7 +4,7 @@ function Fullscreen()
 		return;
 	
 	// load settings
-	this.shouldresize = utils.getPref('resize', false);
+	this.shouldresize = utils.getPref('resize', true);
 	this.noscale = utils.getPref('noscale', false);
 
 	// prepare settings checkboxes
@@ -65,18 +65,25 @@ Fullscreen.prototype.doResize = function doResize()
 	
 	if (!this.shouldresize)
 	{
-		globals.flashmovie.width = this.initwidth;
-		globals.flashmovie.height = this.initheight;
+		globals.flashmovie.style.width = this.initwidth + "px";
+		globals.flashmovie.style.height = this.initheight + "px";
 		/*if (seekbar)
 			seekbar.style.width = Math.max(this.initwidth, 450) + "px";*/
 		return;
 	}
 	
 	var dw = window.innerWidth;
-	var dh = window.innerHeight - 15; // things get weird sometimes... -15 to make sure we don't get scrollbars.
+	var dh = window.innerHeight;
+
+	var a = document.defaultView.getComputedStyle(document.body, null);
+	// parseInt will take the number part at the start, turning eg "10px" into 10
+	dw -= parseInt(a.marginLeft,10);
+	dw -= parseInt(a.marginRight,10);
+	dh -= parseInt(a.marginTop,10);
+	dh -= parseInt(a.marginBottom,10);
+
 	if (globals.navbar)
 	{
-		// parseInt will take the number part at the start, turning eg "10px" into 10
 		var a = document.defaultView.getComputedStyle(globals.navbar, null);
 		dh -= parseInt(a.height,10);
 		dh -= parseInt(a.marginTop,10);
@@ -119,8 +126,8 @@ Fullscreen.prototype.doResize = function doResize()
 	}
 
 	// set embed's size
-	globals.flashmovie.width = dw;
-	globals.flashmovie.height = dh;
+	globals.flashmovie.style.width = dw + "px";
+	globals.flashmovie.style.height = dh + "px";
 	/*if (seekbar)
 		seekbar.style.width = Math.max(dw, 450) + "px";*/
 };
