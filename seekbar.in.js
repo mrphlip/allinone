@@ -7,59 +7,13 @@ Seekbar.prototype.init = function init() {
 
 	// load settings
 	this.enabled = utils.getPref('seekbar', true);
-	this.framecounter = utils.getPref('framecounter', false);
+	this.framecounter = utils.getPref('frames', false);
 	this.zoom = utils.getPref('zoom', false);
 
 	// prepare settings checkboxes
-	var settingrow = document.createElement('li');
-	globals.modules.settingspane.settingslist.appendChild(settingrow);
-	var settingcheckbox = document.createElement('input');
-	this.setting_enabled = settingcheckbox;
-	settingcheckbox.type = 'checkbox';
-	settingcheckbox.checked = this.enabled;
-	settingcheckbox.title = "Lets you fast forward and rewind";
-	settingcheckbox.id = 'setting_seekbar';
-	// settingcheckbox.addEventListener('click', enabledisable, false);
-	settingrow.appendChild(settingcheckbox);
-	var settinglabel = document.createElement('label');
-	settinglabel.htmlFor = 'setting_seekbar';
-	settinglabel.appendChild(document.createTextNode("Show seek bar"));
-	settinglabel.title = settingcheckbox.title;
-	settingrow.appendChild(settinglabel);
-	
-	var subsetting = document.createElement('ul');
-	settingrow.appendChild(subsetting);
-	var subsettingrow = document.createElement('li');
-	subsetting.appendChild(subsettingrow);
-	settingcheckbox = document.createElement('input');
-	this.setting_framecounter = settingcheckbox;
-	settingcheckbox.type = 'checkbox';
-	settingcheckbox.checked = this.framecounter;
-	settingcheckbox.title = "Shows you exactly where you are";
-	settingcheckbox.id = 'setting_framecounter';
-	subsettingrow.appendChild(settingcheckbox);
-	settinglabel = document.createElement('label');
-	settinglabel.htmlFor = 'setting_framecounter';
-	settinglabel.appendChild(document.createTextNode("Show frame counter on seek bar"));
-	settinglabel.title = settingcheckbox.title;
-	subsettingrow.appendChild(settinglabel);
-	
-	subsetting = document.createElement('ul');
-	settingrow.appendChild(subsetting);
-	subsettingrow = document.createElement('li');
-	subsetting.appendChild(subsettingrow);
-	settingcheckbox = document.createElement('input');
-	this.setting_zoom = settingcheckbox;
-	settingcheckbox.type = 'checkbox';
-	settingcheckbox.checked = this.zoom;
-	settingcheckbox.title = "Allows zooming in on the toon";
-	settingcheckbox.id = 'setting_zoom';
-	subsettingrow.appendChild(settingcheckbox);
-	settinglabel = document.createElement('label');
-	settinglabel.htmlFor = 'setting_zoom';
-	settinglabel.appendChild(document.createTextNode("Show zooming controls"));
-	settinglabel.title = settingcheckbox.title;
-	subsettingrow.appendChild(settinglabel);
+	this.setting_enabled = globals.modules.settingspane.addCheckbox('seekbar', "Show seek bar", "Lets you fast forward and rewind", this.enabled);
+	this.setting_framecounter = globals.modules.settingspane.addCheckbox('framecounter', "Show frame counter on seek bar", "Shows you exactly where you are", this.framecounter, this.setting_enabled);
+	this.setting_zoom = globals.modules.settingspane.addCheckbox('zoom', "Show zooming controls", "Allows zooming in on the toon", this.zoom, this.setting_enabled);
 	
 	if (this.enabled)
 		this.addSeekbar();
@@ -78,7 +32,7 @@ Seekbar.prototype.updateSettings = function updateSettings()
 	this.enabled = this.setting_enabled.checked;
 	utils.setPref("seekbar", this.enabled);
 	this.framecounter = this.setting_framecounter.checked;
-	utils.setPref("framecounter", this.framecounter);
+	utils.setPref("frames", this.framecounter);
 	this.zoom = this.setting_zoom.checked;
 	utils.setPref("zoom", this.zoom);
 	if (this.enabled)

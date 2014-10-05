@@ -97,3 +97,37 @@ SettingsPane.prototype.cacheDodge = function cacheDodge()
 {
 	utils.setPref("cachedodge", Math.random().toString());	
 };
+
+SettingsPane.prototype.addCheckbox = function addCheckbox(id, label, title, checked, parent)
+{
+	if (!parent)
+		parent = this.settingslist;
+	else
+	{
+		if (parent.tagName.toLowerCase() == "input")
+			parent = parent.parentNode;
+		var ul = parent.getElementsByTagName("ul");
+		if (ul.length)
+			parent = ul[ul.length - 1];
+		else
+		{
+			ul = document.createElement("ul");
+			parent.appendChild(ul);
+			parent = ul;
+		}
+	}
+	var settingrow = document.createElement('li');
+	parent.appendChild(settingrow);
+	var settingcheckbox = document.createElement('input');
+	settingcheckbox.type = 'checkbox';
+	settingcheckbox.checked = checked;
+	settingcheckbox.title = title;
+	settingcheckbox.id = 'setting_' + id;
+	settingrow.appendChild(settingcheckbox);
+	var settinglabel = document.createElement('label');
+	settinglabel.htmlFor = 'setting_' + id;
+	settinglabel.appendChild(document.createTextNode(label));
+	settinglabel.title = settingcheckbox.title;
+	settingrow.appendChild(settinglabel);
+	return settingcheckbox;
+};

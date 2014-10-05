@@ -11,38 +11,8 @@ Fullscreen.prototype.init = function init()
 	this.noscale = utils.getPref('noscale', false);
 
 	// prepare settings checkboxes
-	var settingrow = document.createElement('li');
-	globals.modules.settingspane.settingslist.appendChild(settingrow);
-	var settingcheckbox = document.createElement('input');
-	this.setting_main = settingcheckbox;
-	settingcheckbox.type = 'checkbox';
-	settingcheckbox.checked = this.shouldresize;
-	settingcheckbox.title = "Resizes the toon so it fills the entire window";
-	settingcheckbox.id = 'setting_resize';
-	// settingcheckbox.addEventListener('click', enabledisable, false);
-	settingrow.appendChild(settingcheckbox);
-	var settinglabel = document.createElement('label');
-	settinglabel.htmlFor = 'setting_resize';
-	settinglabel.appendChild(document.createTextNode("Resize flash to full-screen"));
-	settinglabel.title = settingcheckbox.title;
-	settingrow.appendChild(settinglabel);
-	
-	var subsetting = document.createElement('ul');
-	settingrow.appendChild(subsetting);
-	var subsettingrow = document.createElement('li');
-	subsetting.appendChild(subsettingrow);
-	settingcheckbox = document.createElement('input');
-	this.setting_noscale = settingcheckbox;
-	settingcheckbox.type = 'checkbox';
-	settingcheckbox.checked = this.noscale;
-	settingcheckbox.title = "Lets you see what's happening beyond the frames";
-	settingcheckbox.id = 'setting_noscale';
-	subsettingrow.appendChild(settingcheckbox);
-	settinglabel = document.createElement('label');
-	settinglabel.htmlFor = 'setting_noscale';
-	settinglabel.appendChild(document.createTextNode("Show behind the black"));
-	settinglabel.title = settingcheckbox.title;
-	subsettingrow.appendChild(settinglabel);
+	this.setting_main = globals.modules.settingspane.addCheckbox('resize', "Resize flash to full-screen", "Resizes the toon so it fills the entire window", this.shouldresize);
+	this.setting_noscale = globals.modules.settingspane.addCheckbox('noscale', "Show behind the black", "Lets you see what's happening beyond the frames", this.noscale, this.setting_main);
 	
 	this.initwidth = globals.flashmovie.width;
 	this.initheight = globals.flashmovie.height;
