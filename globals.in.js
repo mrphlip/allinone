@@ -129,6 +129,7 @@ Globals.prototype.initModules = function initModules()
 	this.modules.fullscreen = new Fullscreen();
 	this.modules.seekbar = new Seekbar();
 	this.modules.wikilink = new WikiLink();
+	this.modules.nextprev = new NextPrev();
 	this.modules.navbar = new Navbar();
 #ifdef DEBUG
 	this.modules.debug = new DebugModule();

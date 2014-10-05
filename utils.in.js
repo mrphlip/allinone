@@ -80,26 +80,28 @@ Utils.prototype.setPref = function setPref(key, value)
 	}
 };
 
-Utils.prototype.downloadPage = function downloadPage(url, loadcb, errorcb)
+Utils.prototype.downloadPage = function downloadPage(url, loadcb, errorcb, method)
 {
+	if (!method)
+		method = 'GET';
 	if (typeof GM_xmlhttpRequest == 'function')
 	{
 		var opts = {
-			method: 'GET',
+			method: method,
 			url: url,
-			onload: function onload(res) {loadcb(res.responseText, res.status, res.statusText);}
+			onload: function onload(res) {loadcb(res.responseText, res.status, res.statusText, res.responseHeaders);}
 		};
 		if (errorcb)
-			opts.onerror = function onerror(res) {errorcb(res.status, res.statusText);};
+			opts.onerror = function onerror(res) {errorcb(res.status, res.statusText, res.responseHeaders);};
 		GM_xmlhttpRequest(opts);
 	}
 	else
 	{
 		var xhr = new XMLHttpRequest();
-		xhr.onload = function onload() {loadcb(xhr.responseText, xhr.status, xhr.statusText);};
+		xhr.onload = function onload() {loadcb(xhr.responseText, xhr.status, xhr.statusText, xhr.getAllResponseHeaders());};
 		if (errorcb)
-			xhr.onerror = function onerror() {errorcb(xhr.status, xhr.statusText);};
-		xhr.open('GET', url);
+			xhr.onerror = function onerror() {errorcb(xhr.status, xhr.statusText, xhr.getAllResponseHeaders());};
+		xhr.open(method, url);
 		xhr.send();
 	}
 };

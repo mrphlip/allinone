@@ -22,6 +22,8 @@
 
 	#include "wikilink.in.js"
 
+	#include "nextprev.in.js"
+
 	#include "navbar.in.js"
 
 	#include "mainline.in.js"
