@@ -56,14 +56,14 @@ Seekbar.prototype.addSeekbar = function addSeekbar()
 	this.seekbar.appendChild(table);
 	var row=table.insertRow();
 	this.pauseButton=document.createElement("button");
-	var img = document.createElement("img");
-	img.src = globals.images.pause;
-	this.pauseButton.appendChild(img);
+	this.pauseButtonImg = document.createElement("img");
+	this.pauseButtonImg.src = globals.images.pause;
+	this.pauseButton.appendChild(this.pauseButtonImg);
 	var buttonCell=row.insertCell();
 	buttonCell.appendChild(this.pauseButton);
 	var rewindCell=row.insertCell();
 	this.rewindButton=document.createElement("button");
-	img = document.createElement("img");
+	var img = document.createElement("img");
 	img.src = globals.images.rewind;
 	this.rewindButton.appendChild(img);
 	rewindCell.appendChild(this.rewindButton);
@@ -203,7 +203,7 @@ Seekbar.prototype.update = function update()
 			else
 				this.thumb.style.left = "0";
 			this.paused = !utils.isPlaying();
-			this.pauseButton.style.borderStyle = this.paused ? "inset" : "";
+			this.pauseButtonImg.src = this.paused ? globals.images.play : globals.images.pause;
 		}
 		frame = utils.framesLoaded();
 		this.loadmeter.style.width = (frame/tot*fullSliderWidth)+"px";
@@ -217,7 +217,7 @@ Seekbar.prototype.update = function update()
 Seekbar.prototype.pauseUnpause = function pauseUnpause()
 {
 	this.paused = utils.isPlaying();
-	this.pauseButton.style.borderStyle = this.paused ? "inset" : "";
+	this.pauseButtonImg.src = this.paused ? globals.images.play : globals.images.pause;
 	if (this.paused)
 		globals.flashmovie.StopPlay();
 	else
