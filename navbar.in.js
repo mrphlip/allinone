@@ -1,5 +1,9 @@
 function Navbar()
 {
+	this.enabled = utils.getPref('navbar', false);
+	this.rando = {};
+	for (var i in this.SECTIONS)
+		this.rando[i] = utils.getPref('rando' + i, true);
 }
 Navbar.prototype.SECTIONS = {
 	t: "Big Toons",
@@ -17,13 +21,6 @@ Navbar.prototype.init = function init() {
 		#include_string "navbar.css"
 	);
 
-	// load settings
-	this.enabled = utils.getPref('navbar', false);
-	this.rando = {};
-	for (var i in this.SECTIONS)
-		this.rando[i] = utils.getPref('rando' + i, true);
-
-	// prepare settings checkboxes
 	this.setting_enabled = globals.modules.settingspane.addCheckbox('navbar', "Plain HTML navbar", "Replaces the flash navbar with normal links, so you can open in tabs, etc", this.enabled);
 	this.setting_rando = {};
 	for (i in this.SECTIONS)

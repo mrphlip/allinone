@@ -1,9 +1,9 @@
 function WikiLink()
 {
+	this.enabled = utils.getPref('hrwiki', false);
 }
 WikiLink.prototype.init = function init()
 {
-	this.enabled = utils.getPref('hrwiki', false);
 	this.setting_enabled = globals.modules.settingspane.addCheckbox('hrwiki', "Add HRWiki link", "Adds a link to the appropriate page on the Homestar Runner Wiki", this.enabled);
 
 	this.buildWikiLink();

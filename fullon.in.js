@@ -1,16 +1,13 @@
 function Fullscreen()
 {
+	this.shouldresize = utils.getPref('resize', true);
+	this.noscale = utils.getPref('noscale', false);
 }
 Fullscreen.prototype.init = function init()
 {
 	if (!globals.flashmovie)
 		return;
-	
-	// load settings
-	this.shouldresize = utils.getPref('resize', true);
-	this.noscale = utils.getPref('noscale', false);
 
-	// prepare settings checkboxes
 	this.setting_main = globals.modules.settingspane.addCheckbox('resize', "Resize flash to full-screen", "Resizes the toon so it fills the entire window", this.shouldresize);
 	this.setting_noscale = globals.modules.settingspane.addCheckbox('noscale', "Show behind the black", "Lets you see what's happening beyond the frames", this.noscale, this.setting_main);
 	

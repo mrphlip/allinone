@@ -1,16 +1,13 @@
 function Seekbar()
 {
+	this.enabled = utils.getPref('seekbar', true);
+	this.framecounter = utils.getPref('frames', false);
+	this.zoom = utils.getPref('zoom', false);
 }
 Seekbar.prototype.init = function init() {
 	if (!globals.flashmovie)
 		return;
 
-	// load settings
-	this.enabled = utils.getPref('seekbar', true);
-	this.framecounter = utils.getPref('frames', false);
-	this.zoom = utils.getPref('zoom', false);
-
-	// prepare settings checkboxes
 	this.setting_enabled = globals.modules.settingspane.addCheckbox('seekbar', "Show seek bar", "Lets you fast forward and rewind", this.enabled);
 	this.setting_framecounter = globals.modules.settingspane.addCheckbox('framecounter', "Show frame counter on seek bar", "Shows you exactly where you are", this.framecounter, this.setting_enabled);
 	this.setting_zoom = globals.modules.settingspane.addCheckbox('zoom', "Show zooming controls", "Allows zooming in on the toon", this.zoom, this.setting_enabled);
