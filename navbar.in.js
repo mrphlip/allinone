@@ -23,7 +23,7 @@ Navbar.prototype.init = function init() {
 
 	this.setting_enabled = globals.modules.settingspane.addCheckbox('navbar', "Plain HTML navbar", "Replaces the flash navbar with normal links, so you can open in tabs, etc", this.enabled);
 	this.setting_rando = {};
-	for (i in this.SECTIONS)
+	for (var i in this.SECTIONS)
 		this.setting_rando[i] = globals.modules.settingspane.addCheckbox('rando' + i, "Include " + this.SECTIONS[i] + " in rando", 'Limit the "rando" function to what you like to watch', this.rando[i], this.setting_enabled);
 	
 	this.allrandourls = false;
