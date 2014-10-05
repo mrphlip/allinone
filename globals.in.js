@@ -120,6 +120,7 @@ Globals.prototype.initModules = function initModules()
 	this.modules.settingspane = new SettingsPane();
 	this.modules.fullscreen = new Fullscreen();
 	this.modules.seekbar = new Seekbar();
+	this.modules.navbar = new Navbar();
 #ifdef DEBUG
 	this.modules.debug = new DebugModule();
 #endif

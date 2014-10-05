@@ -1,0 +1,37 @@
+#newnavbar
+{
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	text-transform: lowercase;
+	height: 10px;
+	font: 10px/10px sans-serif;
+}
+#newnavbar li
+{
+	margin: 0;
+	padding: 0;
+	display: inline;
+}
+#newnavbar :link, #newnavbar :visited
+{
+	color: #666;
+	font-family: sans-serif;
+	text-decoration: none;
+	padding: 0 1em;
+}
+#newnavbar :link:hover, #newnavbar :visited:hover
+{
+	color: #999;
+}
+
+/* for overriding podstar's settings: */
+#newnavbar :link, #newnavbar :visited
+{
+	font-weight: normal;
+}
+#newnavbar :link:hover, #newnavbar :visited:hover
+{
+	background: transparent;
+	font-weight: normal;
+}
