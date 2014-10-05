@@ -113,6 +113,14 @@ function Globals()
 		this.navbar.style.display = "block";
 		this.navbar.style.margin = "0 auto";
 	}
+
+	this.filename = window.location.pathname.toLowerCase();
+	var i = this.filename.lastIndexOf('/');
+	if (i >= 0)
+		this.filename = this.filename.substr(i + 1);
+	i = this.filename.lastIndexOf('.');
+	if (i >= 0)
+		this.filename = this.filename.substr(0,i);
 }
 Globals.prototype.initModules = function initModules()
 {
@@ -120,6 +128,7 @@ Globals.prototype.initModules = function initModules()
 	this.modules.settingspane = new SettingsPane();
 	this.modules.fullscreen = new Fullscreen();
 	this.modules.seekbar = new Seekbar();
+	this.modules.wikilink = new WikiLink();
 	this.modules.navbar = new Navbar();
 #ifdef DEBUG
 	this.modules.debug = new DebugModule();

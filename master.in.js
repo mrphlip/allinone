@@ -20,6 +20,8 @@
 
 	#include "seekbar.in.js"
 
+	#include "wikilink.in.js"
+
 	#include "navbar.in.js"
 
 	#include "mainline.in.js"
