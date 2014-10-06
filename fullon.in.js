@@ -5,12 +5,12 @@ function Fullscreen()
 }
 Fullscreen.prototype.init = function init()
 {
-	if (!globals.flashmovie)
-		return;
-
 	this.setting_main = globals.modules.settingspane.addCheckbox('resize', "Resize flash to full-screen", "Resizes the toon so it fills the entire window", this.shouldresize);
 	this.setting_noscale = globals.modules.settingspane.addCheckbox('noscale', "Show behind the black", "Lets you see what's happening beyond the frames", this.noscale, this.setting_main);
 	
+	if (!globals.flashmovie)
+		return;
+
 	this.initwidth = globals.flashmovie.width;
 	this.initheight = globals.flashmovie.height;
 	if (this.initwidth.toString().indexOf('%') >= 0 || this.initwidth.toString().indexOf('%') >= 0)
