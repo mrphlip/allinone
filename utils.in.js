@@ -1,6 +1,10 @@
 function Utils()
 {
-	this.guessisplaying = true;
+	this.guessisplaying = {
+		lastframe: -1,
+		lastframeat: new Date(),
+		state: true
+	};
 }
 
 // Taken from http://diveintogreasemonkey.org/patterns/add-css.html
@@ -159,21 +163,36 @@ Utils.prototype.currentFrame = function currentFrame(flashmovie)
 			return -1;
 		a = flashmovie.TCurrentFrame("/videoplayer");
 
-		// If we've made it to the end of the clip, guess that we've stopped
-		var tot = this.totalFrames(flashmovie);
-		if (tot > 1 && a >= tot)
-			this.guessisplaying = false;
+		if (typeof(a) != 'number' && a < 0)
+			return -1;
+
+		// Keep track of whether the current frame is changing, for isPlaying()
+		// If we stay on the same frame for more than, say, a second, guess
+		// that we're paused.
+		if (a != this.guessisplaying.lastframe)
+		{
+			this.guessisplaying.lastframe = a;
+			this.guessisplaying.lastframeat = new Date();
+			this.guessisplaying.state = true;
+		}
+		else if (new Date() - this.guessisplaying.lastframeat > 1000)
+		{
+			this.guessisplaying.state = false;
+		}
+		
+		return a;
 	}
 	else
 	{
 		a = flashmovie.CurrentFrame;
 		if (typeof(a) == 'function')
 			a = flashmovie.CurrentFrame();
+
+		if (typeof(a) == 'number' && a >= 0)
+			return a;
+		else
+			return -1;
 	}
-	if (typeof(a) == 'number' && a >= 0)
-		return a;
-	else
-		return -1;
 };
 Utils.prototype.totalFrames = function totalFrames(flashmovie)
 {
@@ -212,9 +231,8 @@ Utils.prototype.isPlaying = function isPlaying(flashmovie)
 		// There isn't a telltarget version of IsPlaying, there's no flag for it in
 		// TGetProperty, and it doesn't seem to be gettable via GetVariable (though
 		// it's possible I just haven't tried the right thing)...
-		// So, for puppet toons, we need to try to track whether it "should" be
-		// playing and return that instead...
-		return this.guessisplaying;
+		// So, for puppet toons, we need to try to track whether it seems to be playing...
+		return this.guessisplaying.state;
 	}
 
 	var a = flashmovie.IsPlaying;
@@ -274,7 +292,9 @@ Utils.prototype.stop = function stop(flashmovie)
 		if (!flashmovie.TStopPlay)
 			return;
 		flashmovie.TStopPlay("/videoplayer");
-		this.guessisplaying = false;
+
+		this.currentFrame();
+		this.guessisplaying.state = false;
 	}
 	else
 	{
@@ -295,7 +315,10 @@ Utils.prototype.play = function play(flashmovie)
 		if (!flashmovie.TPlay)
 			return;
 		flashmovie.TPlay("/videoplayer");
-		this.guessisplaying = true;
+
+		this.currentFrame();
+		this.guessisplaying.state = true;
+		this.guessisplaying.lastframeat = new Date();
 	}
 	else
 	{
@@ -316,7 +339,9 @@ Utils.prototype.goto = function goto(frame, flashmovie)
 		if (!flashmovie.TGotoFrame)
 			return;
 		flashmovie.TGotoFrame("/videoplayer", frame);
-		this.guessisplaying = false;
+
+		this.currentFrame();
+		this.guessisplaying.state = false;
 	}
 	else
 	{
