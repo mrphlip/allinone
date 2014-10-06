@@ -98,7 +98,7 @@ SettingsPane.prototype.cacheDodge = function cacheDodge()
 	utils.setPref("cachedodge", Math.random().toString());	
 };
 
-SettingsPane.prototype.addCheckbox = function addCheckbox(id, label, title, checked, parent)
+SettingsPane.prototype.addSettingRow = function addSettingRow(parent)
 {
 	if (!parent)
 		parent = this.settingslist;
@@ -118,6 +118,11 @@ SettingsPane.prototype.addCheckbox = function addCheckbox(id, label, title, chec
 	}
 	var settingrow = document.createElement('li');
 	parent.appendChild(settingrow);
+	return settingrow;
+};
+SettingsPane.prototype.addCheckbox = function addCheckbox(id, label, title, checked, parent)
+{
+	var settingrow = this.addSettingRow(parent);
 	var settingcheckbox = document.createElement('input');
 	settingcheckbox.type = 'checkbox';
 	settingcheckbox.checked = checked;
