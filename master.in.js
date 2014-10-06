@@ -4,8 +4,6 @@
 #include "maincomment.txt"
 
 (function(){
-	#include "getversion.in.js"
-
 	#include "utils.in.js"
 
 	#include "globals.in.js"
@@ -25,6 +23,8 @@
 	#include "nextprev.in.js"
 
 	#include "navbar.in.js"
+
+	#include "getversion.in.js"
 
 	#include "mainline.in.js"
 })();
