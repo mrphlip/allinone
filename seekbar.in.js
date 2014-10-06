@@ -216,38 +216,38 @@ Seekbar.prototype.pauseUnpause = function pauseUnpause()
 	this.paused = utils.isPlaying();
 	this.pauseButtonImg.src = this.paused ? globals.images.play : globals.images.pause;
 	if (this.paused)
-		globals.flashmovie.StopPlay();
+		utils.stop();
 	else
-		globals.flashmovie.Play();
+		utils.play();
 };
 Seekbar.prototype.rewind = function rewind()
 {
-	globals.flashmovie.GotoFrame(0);
-	globals.flashmovie.Play();
+	utils.goto(0);
+	utils.play();
 };
 Seekbar.prototype.fastforward = function fastforward()
 {
-	globals.flashmovie.GotoFrame(utils.totalFrames() - 1);
+	utils.goto(utils.totalFrames() - 1);
 };
 Seekbar.prototype.prevFrame = function prevFrame()
 {
-	globals.flashmovie.GotoFrame(globals.flashmovie.CurrentFrame() - 1);
+	utils.goto(utils.currentFrame() - 1);
 };
 Seekbar.prototype.nextFrame = function nextFrame()
 {
-	globals.flashmovie.GotoFrame(globals.flashmovie.CurrentFrame() + 1);
+	utils.goto(utils.currentFrame() + 1);
 };
 Seekbar.prototype.zoomIn = function zoomIn()
 {
-	globals.flashmovie.Zoom(67);
+	utils.zoomIn(1.5);
 };
 Seekbar.prototype.zoomOut = function zoomOut()
 {
-	globals.flashmovie.Zoom(150);
+	utils.zoomOut(1.5);
 };
 Seekbar.prototype.zoomNormal = function zoomNormal()
 {
-	globals.flashmovie.Zoom(0);
+	utils.zoomReset();
 };
 
 Seekbar.prototype.drag = function drag(e)
@@ -273,7 +273,7 @@ Seekbar.prototype.dragMousemove = function dragMousemove(e)
 	if (t > 1)
 	{
 		var frame = Math.round(t * pos);
-		globals.flashmovie.GotoFrame(frame);
+		utils.goto(frame);
 	}
 	this.thumb.style.left = (pos * width) + "px";
 };
@@ -281,6 +281,6 @@ Seekbar.prototype.release = function release()
 {
 	if (!this.dragging) return;
 	if (!this.paused)
-		globals.flashmovie.Play();
+		utils.play();
 	this.dragging = false;
 };

@@ -1,5 +1,6 @@
 function Utils()
 {
+	this.guessisplaying = true;
 }
 
 // Taken from http://diveintogreasemonkey.org/patterns/add-css.html
@@ -151,9 +152,24 @@ Utils.prototype.currentFrame = function currentFrame(flashmovie)
 	if (!flashmovie)
 		return false;
 
-	var a = flashmovie.CurrentFrame;
-	if (typeof(a) == 'function')
-		a = flashmovie.CurrentFrame();
+	var a;
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+	{
+		if (!flashmovie.TCurrentFrame)
+			return -1;
+		a = flashmovie.TCurrentFrame("/videoplayer");
+
+		// If we've made it to the end of the clip, guess that we've stopped
+		var tot = this.totalFrames(flashmovie);
+		if (tot > 1 && a >= tot)
+			this.guessisplaying = false;
+	}
+	else
+	{
+		a = flashmovie.CurrentFrame;
+		if (typeof(a) == 'function')
+			a = flashmovie.CurrentFrame();
+	}
 	if (typeof(a) == 'number' && a >= 0)
 		return a;
 	else
@@ -166,9 +182,19 @@ Utils.prototype.totalFrames = function totalFrames(flashmovie)
 	if (!flashmovie)
 		return false;
 
-	var a = flashmovie.TotalFrames;
-	if (typeof(a) == 'function')
-		a = flashmovie.TotalFrames();
+	var a;
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+	{
+		if (!flashmovie.TGetPropertyAsNumber)
+			return -1;
+		a = flashmovie.TGetPropertyAsNumber("/videoplayer", 5); // TOTAL_FRAMES
+	}
+	else
+	{
+		a = flashmovie.TotalFrames;
+		if (typeof(a) == 'function')
+			a = flashmovie.TotalFrames();
+	}
 	if (typeof(a) == 'number' && a >= 0)
 		return a;
 	else
@@ -180,6 +206,16 @@ Utils.prototype.isPlaying = function isPlaying(flashmovie)
 		flashmovie = globals.flashmovie;
 	if (!flashmovie)
 		return false;
+
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+	{
+		// There isn't a telltarget version of IsPlaying, there's no flag for it in
+		// TGetProperty, and it doesn't seem to be gettable via GetVariable (though
+		// it's possible I just haven't tried the right thing)...
+		// So, for puppet toons, we need to try to track whether it "should" be
+		// playing and return that instead...
+		return this.guessisplaying;
+	}
 
 	var a = flashmovie.IsPlaying;
 	if (typeof(a) == 'function')
@@ -198,11 +234,13 @@ Utils.prototype.framesLoaded = function framesLoaded(flashmovie)
 	if (!flashmovie)
 		return false;
 
-	if (!flashmovie.TGetProperty)
+	if (!flashmovie.TGetPropertyAsNumber)
 		return -1;
-	var a = flashmovie.TGetProperty('/', 12); // property 12 is _framesloaded
-	if (typeof(a) == 'string')
-		a = parseInt(a, 10);
+	var a;
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+		a = flashmovie.TGetPropertyAsNumber('/videoplayer', 12); // property 12 is _framesloaded
+	else
+		a = flashmovie.TGetPropertyAsNumber('/', 12);
 	if (typeof(a) == 'number' && a >= 0)
 		return a;
 	else
@@ -223,6 +261,88 @@ Utils.prototype.whenLoaded = function whenLoaded(callback, flashmovie)
 		callback();
 	else
 		setTimeout(this.whenLoaded.bind(this, callback, flashmovie), 100);
+};
+Utils.prototype.stop = function stop(flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return;
+
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+	{
+		if (!flashmovie.TStopPlay)
+			return;
+		flashmovie.TStopPlay("/videoplayer");
+		this.guessisplaying = false;
+	}
+	else
+	{
+		if (!flashmovie.StopPlay)
+			return;
+		flashmovie.StopPlay();
+	}
+};
+Utils.prototype.play = function play(flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return;
+
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+	{
+		if (!flashmovie.TPlay)
+			return;
+		flashmovie.TPlay("/videoplayer");
+		this.guessisplaying = true;
+	}
+	else
+	{
+		if (!flashmovie.Play)
+			return;
+		flashmovie.Play();
+	}
+};
+Utils.prototype.goto = function goto(frame, flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return;
+
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+	{
+		if (!flashmovie.TGotoFrame)
+			return;
+		flashmovie.TGotoFrame("/videoplayer", frame);
+		this.guessisplaying = false;
+	}
+	else
+	{
+		if (!flashmovie.GotoFrame)
+			return;
+		flashmovie.GotoFrame(frame);
+	}
+};
+Utils.prototype.zoomOut = function zoomOut(factor, flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return;
+
+	if (!flashmovie.Zoom)
+		return;
+	flashmovie.Zoom(100 * factor);
+};
+Utils.prototype.zoomIn = function zoomIn(factor, flashmovie)
+{
+	this.zoomOut(1 / factor, flashmovie);
+};
+Utils.prototype.zoomReset = function zoomReset(flashmovie)
+{
+	this.zoomOut(0, flashmovie);
 };
 
 Utils.prototype.insertAfter = function insertAfter(newElement, referenceElement)

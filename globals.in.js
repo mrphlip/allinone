@@ -100,6 +100,10 @@ function Globals()
 			if (!src || src.substring(src.length - 4).toLowerCase() != ".swf")
 				this.flashmovie = false;
 		}
+
+		// puppet_background.swf is a wrapper around the puppet stuff popup toons
+		// This flag tells things like seekbar to control the wrapped movie clip
+		this.is_puppets = src == "puppet_background.swf" || src.substring(src.length - 22) == "/puppet_background.swf";
 	}
 	// Don't run large flash objects inline (gets rid of some extra padding from
 	// having the movie sitting on the baseline)
