@@ -63,7 +63,7 @@ SettingsPane.prototype.init = function init()
 	settingslink.appendChild(settingslinkimage);
 	document.body.appendChild(settingslink);
 	
-	//enabledisable();
+	this.hidePanels = [];
 };
 SettingsPane.prototype.saveSettings = function saveSettings(e)
 {
@@ -104,8 +104,12 @@ SettingsPane.prototype.addSettingRow = function addSettingRow(parent)
 		parent = this.settingslist;
 	else
 	{
+		var checkbox = undefined;
 		if (parent.tagName.toLowerCase() == "input")
+		{
+			checkbox = parent;
 			parent = parent.parentNode;
+		}
 		var ul = parent.getElementsByTagName("ul");
 		if (ul.length)
 			parent = ul[ul.length - 1];
@@ -114,6 +118,12 @@ SettingsPane.prototype.addSettingRow = function addSettingRow(parent)
 			ul = document.createElement("ul");
 			parent.appendChild(ul);
 			parent = ul;
+
+			if (checkbox)
+			{
+				this.hidePanels.push({checkbox: checkbox, panel: ul});
+				checkbox.addEventListener("click", this.showHidePanel.bind(this, checkbox, ul), false);
+			}
 		}
 	}
 	var settingrow = document.createElement('li');
@@ -135,4 +145,14 @@ SettingsPane.prototype.addCheckbox = function addCheckbox(id, label, title, chec
 	settinglabel.title = settingcheckbox.title;
 	settingrow.appendChild(settinglabel);
 	return settingcheckbox;
+};
+
+SettingsPane.prototype.showHidePanel = function showHidePanel(checkbox, panel)
+{
+	panel.style.display = checkbox.checked ? "" : "none";
+};
+SettingsPane.prototype.initComplete = function initComplete()
+{
+	for (var i = 0; i < this.hidePanels.length; i++)
+		this.showHidePanel(this.hidePanels[i].checkbox, this.hidePanels[i].panel);
 };

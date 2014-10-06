@@ -141,4 +141,5 @@ Globals.prototype.initModules = function initModules()
 #endif
 	for (var i in this.modules)
 		this.modules[i].init();
+	this.modules.settingspane.initComplete();
 };
