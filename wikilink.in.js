@@ -30,7 +30,7 @@ WikiLink.prototype.buildWikiLink = function buildWikiLink()
 			navbar = globals.navbar;
 		if (navbar)
 		{
-			var a = a.getElementsByTagName("a");
+			var a = navbar.getElementsByTagName("a");
 			for (var i = 0; i < a.length; i++)
 			{
 				if (a[i].firstChild.nodeType === 3 && a[i].firstChild.nodeValue === "info")

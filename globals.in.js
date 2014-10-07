@@ -93,6 +93,8 @@ function Globals()
 				var a = this.flashmovie.getElementsByTagName('param').namedItem("movie");
 				if (!a || a.value.substring(a.value.length - 4).toLowerCase() != ".swf")
 					this.flashmovie = false;
+				else
+					src = a.value;
 			}
 		}
 		else if (this.flashmovie.nodeName.toLowerCase() == "embed")
@@ -103,7 +105,8 @@ function Globals()
 
 		// puppet_background.swf is a wrapper around the puppet stuff popup toons
 		// This flag tells things like seekbar to control the wrapped movie clip
-		this.is_puppets = src == "puppet_background.swf" || src.substring(src.length - 22) == "/puppet_background.swf";
+		if (src)
+			this.is_puppets = src == "puppet_background.swf" || src.substring(src.length - 22) == "/puppet_background.swf";
 	}
 	// Don't run large flash objects inline (gets rid of some extra padding from
 	// having the movie sitting on the baseline)
