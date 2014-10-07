@@ -221,7 +221,7 @@ Subtitles.prototype.charactersLoaded = function charactersLoaded(xml)
 		sfx: {
 			color: "#FFF",
 			sfx: true,
-			name: {"en": ""}
+			name: {en: ""}
 		}
 	};
 	for (var i = 0; i < speakers.length; i++)
