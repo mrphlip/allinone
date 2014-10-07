@@ -13,7 +13,9 @@ WikiLink.prototype.updateSettings = function updateSettings()
 {
 	this.enabled = this.setting_enabled.checked;
 	utils.setPref("hrwiki", this.enabled);
-	this.showWikiLink();
+	// This is called before Subtitles.updateSettings, so delay until after that happens
+	// so we can update the subtitles link as appropriate
+	window.setTimeout(this.showWikiLink.bind(this), 0);
 };
 
 WikiLink.prototype.buildWikiLink = function buildWikiLink()
