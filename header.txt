@@ -8,11 +8,7 @@ Then, just click on <span class="plainlinks">[{{fullurl:{{PAGENAME}}|action=raw&
 To upgrade a new version when it's updated, just click the install link again &ndash; it'll automagically replace the old version. If the option is enabled, the script will automatically check for updates for you.
 
 ===Chrome===
-TBC on getting this script into the Chrome Web Store.
-
-In the meantime, right-click on <span class="plainlinks">[{{fullurl:{{PAGENAME}}|action=raw}} this link]</span>, and choose "Save As" to save it to your desktop, name the file '''allinone.user.js'''. Then, in Chrome, type <code>chrome://extensions</code> into your address bar, and drag the file you saved to your desktop onto the Chrome window.
-
-You won't be able to use the automatic updating features, and will have to do this process again to get updates.
+This script can be installed as [https://chrome.google.com/webstore/detail/homestar-all-in-one/ekecfcebbojjfaiendgjgcadampmppdb an extension from the Chrome Web Store]. Chrome will then automatically keep it up-to-date for you via the normal update process.
 
 ==Script code==
 <pre>*/
