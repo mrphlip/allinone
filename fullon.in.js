@@ -66,22 +66,20 @@ Fullscreen.prototype.doResize = function doResize()
 		dh -= parseInt(a.marginTop,10);
 		dh -= parseInt(a.marginBottom,10);
 	}
-	/*
-	if (subtitleholder)
+	if (globals.modules.subtitles.subtitleholder)
 	{
-		a = document.defaultView.getComputedStyle(subtitleholder, null)
+		a = document.defaultView.getComputedStyle(globals.modules.subtitles.subtitleholder, null);
 		dh -= parseInt(a.height,10);
 		dh -= parseInt(a.marginTop,10);
 		dh -= parseInt(a.marginBottom,10);
 	}
-	if (transcriptErrors)
+	if (globals.modules.subtitles.errorsholder)
 	{
-		a = document.defaultView.getComputedStyle(transcriptErrors, null)
+		a = document.defaultView.getComputedStyle(globals.modules.subtitles.errorsholder, null);
 		dh -= parseInt(a.height,10);
 		dh -= parseInt(a.marginTop,10);
 		dh -= parseInt(a.marginBottom,10);
 	}
-	*/
 	// enforce a (rather small) minimum size, regardless of how much crap is squeezed below the frame
 	if (dw < 100) dw = 100;
 	if (dh < 100) dh = 100;

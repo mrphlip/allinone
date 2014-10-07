@@ -135,6 +135,7 @@ Globals.prototype.initModules = function initModules()
 	this.modules.wikilink = new WikiLink();
 	this.modules.nextprev = new NextPrev();
 	this.modules.navbar = new Navbar();
+	this.modules.subtitles = new Subtitles();
 	this.modules.updates = new Updates();
 #ifdef DEBUG
 	this.modules.debug = new DebugModule();

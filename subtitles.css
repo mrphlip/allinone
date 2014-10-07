@@ -1,0 +1,26 @@
+.subtitles
+{
+	background: black;
+	color: white;
+	font: 20px/25px sans-serif;
+	height: 100px;
+	text-align: center;
+}
+
+.subtitle_errors
+{
+	background: black;
+	color: red;
+	font: 12pt sans-serif;
+	text-align: left;
+	margin: 0.5em;
+}
+
+.subtitles .italic
+{
+	font-style: italic;
+}
+.subtitles .italic em, .subtitles .italic cite, .subtitles .italic i
+{
+	font-style: normal;
+}

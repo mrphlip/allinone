@@ -142,6 +142,64 @@ Utils.prototype.wikiPageDownloaded = function wikiPageDownloaded(loadcb, errorcb
 	}
 	loadcb(text, status, statusText);
 };
+Utils.prototype.downloadWikiXML = function downloadWikiXML(page, loadcb, errorcb)
+{
+	this.downloadWiki(page, this.wikiXMLDownloaded.bind(this, loadcb, errorcb), errorcb);
+};
+Utils.prototype.wikiXMLDownloaded = function wikiXMLDownloaded(loadcb, errorcb, text, status, statusText)
+{
+	// strip various things - templates and <pre> tags for wiki formatting, and <noinclude> sections...
+	// <includeonly> tags are stripped (but their contents kept) for consistency.
+	text = text.replace(/{{.*?}}/g, "");
+	text = text.replace(/<\/?pre[^>]*>/g, "");
+	text = text.replace(/<noinclude[^>]*>.*?<\/noinclude[^>]*>/g, "");
+	text = text.replace(/<includeonly[^>]*>(.*?)<\/includeonly[^>]*>/g, "$1");
+	text = text.replace(/^\s+/g, "");
+
+	var parser = new DOMParser();
+	try
+	{
+		var doc = parser.parseFromString(text, "application/xml");
+	}
+	catch (e)
+	{
+		errorcb(500, "Error in XML:\n" + e.toString());
+		return;
+	}
+	// check if returned document is an error message
+	if (doc.getElementsByTagName('parsererror').length > 0)
+	{
+		var error = doc.getElementsByTagName('parsererror')[0];
+		if (error.firstChild.nodeType == doc.TEXT_NODE && error.lastChild.nodeType == doc.ELEMENT_NODE && error.lastChild.nodeName == "sourcetext")
+		{
+			// Firefox's errors look like this:
+			// <parsererror>Error details<sourcetext>Source text</sourcetext></parsererror>
+			errorcb(500,
+				error.firstChild.nodeValue.replace(/Location: .*\n/, "") + "\n" +
+				doc.documentElement.lastChild.textContent
+			);
+		}
+		else if (error.getElementsByTagName('div').length > 0)
+		{
+			// Chrome's errors look like this:
+			// <someRoot><parsererror style="..."><h3>Generic error message</h3><div style="...">Error details</div><h3>Generic footer</h3><attempted parsing of page/></someRoot>
+			errorcb(500,
+				"Error in XML:\n" +
+				error.getElementsByTagName('div')[0].textContent
+			);
+		}
+		else
+		{
+			// Try to at least return something
+			errorcb(500,
+				"Error in XML:\n" +
+				error.textContent
+			);
+		}
+		return;
+	}
+	loadcb(doc, status, statusText);
+};
 
 // Documentation for the Flash interface is really lacking...
 // Adobe removed the docs from their website.

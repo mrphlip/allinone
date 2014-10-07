@@ -24,6 +24,8 @@
 
 	#include "navbar.in.js"
 
+	#include "subtitles.in.js"
+
 	#include "getversion.in.js"
 
 	#include "mainline.in.js"
