@@ -217,7 +217,13 @@ Subtitles.prototype.setupSubtitles = function setupSubtitles()
 Subtitles.prototype.charactersLoaded = function charactersLoaded(xml)
 {
 	var speakers = xml.getElementsByTagName("speaker");
-	this.characters = {};
+	this.characters = {
+		sfx: {
+			color: "#FFF",
+			sfx: true,
+			name: {"en": ""}
+		}
+	};
 	for (var i = 0; i < speakers.length; i++)
 	{
 		var speakername = speakers[i].getAttribute("id");
@@ -322,7 +328,7 @@ Subtitles.prototype.importNodes = function importNodes(node)
 		var char = this.characters[speaker];
 		if (!char)
 		{
-			if (this.testsubs && speaker && speaker != "sfx")
+			if (this.testsubs && speaker)
 			{
 				var line = node;
 				while (line && line.nodeName != "line")
