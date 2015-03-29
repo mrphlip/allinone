@@ -86,8 +86,8 @@ Navbar.prototype.buildNavbar = function buildNavbar(where)
 	this.addnavbarlink(newnavbar, "http://www.homestarrunner.com/toons.html", "Toons");
 	this.addnavbarlink(newnavbar, "http://www.homestarrunner.com/games.html", "Games");
 	this.addnavbarlink(newnavbar, "http://www.homestarrunner.com/characters2.html", "Characters");
-	this.addnavbarlink(newnavbar, "http://www.homestarrunner.com/downloads.html", "Downloads");
-	this.addnavbarlink(newnavbar, "http://homestarrunner.stores.yahoo.net/", "Store", "storelink");
+	this.addnavbarlink(newnavbar, "http://www.homestarrunner.com/homester.html", "Downloads");
+	this.addnavbarlink(newnavbar, "http://www.homestarrunner.com/store.html", "Store", "storelink");
 	this.addnavbarlink(newnavbar, "http://www.homestarrunner.com/sbemail.html", "SB Emails");
 	//this.addnavbarlink(newnavbar, "http://feeds.feedburner.com/HomestarRunner", "Subscribe");
 	this.addnavbarlink(newnavbar, "https://www.youtube.com/user/homestarrunnerdotcom", "YouTube");
