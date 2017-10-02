@@ -201,52 +201,7 @@ Utils.prototype.wikiXMLDownloaded = function wikiXMLDownloaded(loadcb, errorcb, 
 	loadcb(doc, status, statusText);
 };
 
-Utils.prototype.currentFrame = function currentFrame(flashmovie)
-{
-	if (!flashmovie)
-		flashmovie = globals.flashmovie;
-	if (!flashmovie)
-		return false;
-
-	var a;
-	if (flashmovie === globals.flashmovie && globals.is_puppets)
-	{
-		if (!flashmovie.TCurrentFrame)
-			return -1;
-		a = flashmovie.TCurrentFrame("/videoplayer");
-
-		if (typeof(a) != 'number' && a < 0)
-			return -1;
-
-		// Keep track of whether the current frame is changing, for isPlaying()
-		// If we stay on the same frame for more than, say, a second, guess
-		// that we're paused.
-		if (a != this.guessisplaying.lastframe)
-		{
-			this.guessisplaying.lastframe = a;
-			this.guessisplaying.lastframeat = new Date();
-			this.guessisplaying.state = true;
-		}
-		else if (new Date() - this.guessisplaying.lastframeat > 1000)
-		{
-			this.guessisplaying.state = false;
-		}
-		
-		return a;
-	}
-	else
-	{
-		a = flashmovie.CurrentFrame;
-		if (typeof(a) == 'function')
-			a = flashmovie.CurrentFrame();
-
-		if (typeof(a) == 'number' && a >= 0)
-			return a;
-		else
-			return -1;
-	}
-};
-Utils.prototype.currentFrame_cb = function currentFrame_cb(callback, flashmovie)
+Utils.prototype.currentFrame = function currentFrame(callback, flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
@@ -283,32 +238,7 @@ Utils.prototype.currentFrame_cb = function currentFrame_cb(callback, flashmovie)
 		playercomm.currentFrame(flashmovie, callback)
 	}
 };
-Utils.prototype.totalFrames = function totalFrames(flashmovie)
-{
-	if (!flashmovie)
-		flashmovie = globals.flashmovie;
-	if (!flashmovie)
-		return false;
-
-	var a;
-	if (flashmovie === globals.flashmovie && globals.is_puppets)
-	{
-		if (!flashmovie.TGetPropertyAsNumber)
-			return -1;
-		a = flashmovie.TGetPropertyAsNumber("/videoplayer", 5); // TOTAL_FRAMES
-	}
-	else
-	{
-		a = flashmovie.TotalFrames;
-		if (typeof(a) == 'function')
-			a = flashmovie.TotalFrames();
-	}
-	if (typeof(a) == 'number' && a >= 0)
-		return a;
-	else
-		return -1;
-};
-Utils.prototype.totalFrames_cb = function totalFrames_cb(callback, flashmovie)
+Utils.prototype.totalFrames = function totalFrames(callback, flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
@@ -325,33 +255,7 @@ Utils.prototype.totalFrames_cb = function totalFrames_cb(callback, flashmovie)
 	else
 		playercomm.totalFrames(flashmovie, callback)
 };
-Utils.prototype.isPlaying = function isPlaying(flashmovie)
-{
-	if (!flashmovie)
-		flashmovie = globals.flashmovie;
-	if (!flashmovie)
-		return false;
-
-	if (flashmovie === globals.flashmovie && globals.is_puppets)
-	{
-		// There isn't a telltarget version of IsPlaying, there's no flag for it in
-		// TGetProperty, and it doesn't seem to be gettable via GetVariable (though
-		// it's possible I just haven't tried the right thing)...
-		// So, for puppet toons, we need to try to track whether it seems to be playing...
-		return this.guessisplaying.state;
-	}
-
-	var a = flashmovie.IsPlaying;
-	if (typeof(a) == 'function')
-		a = flashmovie.IsPlaying();
-	if (typeof(a) == 'boolean')
-		return a;
-	else if (typeof(a) == 'number')
-		return a != 0;
-	else
-		return false;
-};
-Utils.prototype.isPlaying_cb = function isPlaying_cb(callback, flashmovie)
+Utils.prototype.isPlaying = function isPlaying(callback, flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
@@ -375,26 +279,7 @@ Utils.prototype.isPlaying_cb = function isPlaying_cb(callback, flashmovie)
 		playercomm.isPlaying(flashmovie, callback);
 	}
 };
-Utils.prototype.framesLoaded = function framesLoaded(flashmovie)
-{
-	if (!flashmovie)
-		flashmovie = globals.flashmovie;
-	if (!flashmovie)
-		return false;
-
-	if (!flashmovie.TGetPropertyAsNumber)
-		return -1;
-	var a;
-	if (flashmovie === globals.flashmovie && globals.is_puppets)
-		a = flashmovie.TGetPropertyAsNumber('/videoplayer', 12); // property 12 is _framesloaded
-	else
-		a = flashmovie.TGetPropertyAsNumber('/', 12);
-	if (typeof(a) == 'number' && a >= 0)
-		return a;
-	else
-		return -1;
-};
-Utils.prototype.framesLoaded_cb = function framesLoaded_cb(callback, flashmovie)
+Utils.prototype.framesLoaded = function framesLoaded(callback, flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
@@ -410,13 +295,9 @@ Utils.prototype.framesLoaded_cb = function framesLoaded_cb(callback, flashmovie)
 	else
 		playercomm.targetFramesLoaded(flashmovie, '/', callback)
 };
-Utils.prototype.isLoaded = function isLoaded(flashmovie)
+Utils.prototype.isLoaded = function isLoaded(callback, flashmovie)
 {
-	return this.currentFrame(flashmovie) >= 0;
-};
-Utils.prototype.isLoaded_cb = function isLoaded_cb(callback, flashmovie)
-{
-	this.currentFrame_cb((frame) => {callback(frame >= 0)}, flashmovie);
+	this.currentFrame((frame) => {callback(frame >= 0)}, flashmovie);
 };
 Utils.prototype.whenLoaded = function whenLoaded(callback, flashmovie)
 {
@@ -425,37 +306,14 @@ Utils.prototype.whenLoaded = function whenLoaded(callback, flashmovie)
 	if (!flashmovie)
 		return;
 
-	this.currentFrame_cb((frame) => {
+	this.currentFrame((frame) => {
 		if (frame >= 0)
 			callback();
 		else
 			setTimeout(this.whenLoaded.bind(this, callback, flashmovie), 100);
 	}, flashmovie);
 };
-Utils.prototype.stop = function stop(flashmovie)
-{
-	if (!flashmovie)
-		flashmovie = globals.flashmovie;
-	if (!flashmovie)
-		return;
-
-	if (flashmovie === globals.flashmovie && globals.is_puppets)
-	{
-		if (!flashmovie.TStopPlay)
-			return;
-		flashmovie.TStopPlay("/videoplayer");
-
-		this.currentFrame();
-		this.guessisplaying.state = false;
-	}
-	else
-	{
-		if (!flashmovie.StopPlay)
-			return;
-		flashmovie.StopPlay();
-	}
-};
-Utils.prototype.stop_cb = function stop_cb(callback, flashmovie)
+Utils.prototype.stop = function stop(callback, flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
@@ -471,7 +329,7 @@ Utils.prototype.stop_cb = function stop_cb(callback, flashmovie)
 		playercomm.targetStop(flashmovie, "/videoplayer", () => {
 			// make sure this.guessisplaying.lastframe is updated so that it doesn't
 			// go back to state=true
-			this.currentFrame_cb((frame) => {
+			this.currentFrame((frame) => {
 				this.guessisplaying.state = false;
 			}, flashmovie);
 
@@ -484,31 +342,7 @@ Utils.prototype.stop_cb = function stop_cb(callback, flashmovie)
 		playercomm.stop(flashmovie, callback);
 	}
 };
-Utils.prototype.play = function play(flashmovie)
-{
-	if (!flashmovie)
-		flashmovie = globals.flashmovie;
-	if (!flashmovie)
-		return;
-
-	if (flashmovie === globals.flashmovie && globals.is_puppets)
-	{
-		if (!flashmovie.TPlay)
-			return;
-		flashmovie.TPlay("/videoplayer");
-
-		this.currentFrame();
-		this.guessisplaying.state = true;
-		this.guessisplaying.lastframeat = new Date();
-	}
-	else
-	{
-		if (!flashmovie.Play)
-			return;
-		flashmovie.Play();
-	}
-};
-Utils.prototype.play_cb = function play_cb(callback, flashmovie)
+Utils.prototype.play = function play(callback, flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
@@ -530,30 +364,7 @@ Utils.prototype.play_cb = function play_cb(callback, flashmovie)
 		playercomm.play(flashmovie, callback);
 	}
 };
-Utils.prototype.goto = function goto(frame, flashmovie)
-{
-	if (!flashmovie)
-		flashmovie = globals.flashmovie;
-	if (!flashmovie)
-		return;
-
-	if (flashmovie === globals.flashmovie && globals.is_puppets)
-	{
-		if (!flashmovie.TGotoFrame)
-			return;
-		flashmovie.TGotoFrame("/videoplayer", frame);
-
-		this.currentFrame();
-		this.guessisplaying.state = false;
-	}
-	else
-	{
-		if (!flashmovie.GotoFrame)
-			return;
-		flashmovie.GotoFrame(frame);
-	}
-};
-Utils.prototype.goto_cb = function goto_cb(frame, callback, flashmovie)
+Utils.prototype.goto = function goto(frame, callback, flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
@@ -569,7 +380,7 @@ Utils.prototype.goto_cb = function goto_cb(frame, callback, flashmovie)
 		playercomm.targetGoto(flashmovie, "/videoplayer", frame, () => {
 			// make sure this.guessisplaying.lastframe is updated so that it doesn't
 			// go back to state=true
-			this.currentFrame_cb((frame) => {
+			this.currentFrame((frame) => {
 				this.guessisplaying.state = false;
 			}, flashmovie);
 
@@ -582,18 +393,7 @@ Utils.prototype.goto_cb = function goto_cb(frame, callback, flashmovie)
 		playercomm.goto(flashmovie, frame, callback);
 	}
 };
-Utils.prototype.zoomOut = function zoomOut(factor, flashmovie)
-{
-	if (!flashmovie)
-		flashmovie = globals.flashmovie;
-	if (!flashmovie)
-		return;
-
-	if (!flashmovie.Zoom)
-		return;
-	flashmovie.Zoom(100 * factor);
-};
-Utils.prototype.zoomOut_cb = function zoomOut_cb(factor, callback, flashmovie)
+Utils.prototype.zoomOut = function zoomOut(factor, callback, flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
@@ -606,11 +406,7 @@ Utils.prototype.zoomOut_cb = function zoomOut_cb(factor, callback, flashmovie)
 
 	playercomm.zoom(flashmovie, 100 * factor, callback);
 };
-Utils.prototype.zoomIn = function zoomIn(factor, flashmovie)
-{
-	this.zoomOut(1 / factor, flashmovie);
-};
-Utils.prototype.zoomIn_cb = function zoomIn_cb(factor, callback, flashmovie)
+Utils.prototype.zoomIn = function zoomIn(factor, callback, flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
@@ -623,11 +419,7 @@ Utils.prototype.zoomIn_cb = function zoomIn_cb(factor, callback, flashmovie)
 
 	playercomm.zoom(flashmovie, 100 / factor, callback);
 };
-Utils.prototype.zoomReset = function zoomReset(flashmovie)
-{
-	this.zoomOut(0, flashmovie);
-};
-Utils.prototype.zoomReset_cb = function zoomReset_cb(callback, flashmovie)
+Utils.prototype.zoomReset = function zoomReset(callback, flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;

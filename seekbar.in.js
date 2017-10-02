@@ -16,7 +16,7 @@ Seekbar.prototype.init = function init() {
 		this.addSeekbar();
 
 	this.dragging = false;
-	utils.isPlaying_cb((playing) => {this.paused = !playing;});
+	utils.isPlaying((playing) => {this.paused = !playing;});
 	document.addEventListener("mousemove", this.dragMousemove.bind(this), false);
 	document.addEventListener("mouseup", this.release.bind(this), false);
 
@@ -38,7 +38,7 @@ Seekbar.prototype.updateSettings = function updateSettings()
 Seekbar.prototype.addSeekbar = function addSeekbar()
 {
 	this.dragging = false;
-	utils.isPlaying_cb((playing) => {this.paused = !playing;});
+	utils.isPlaying((playing) => {this.paused = !playing;});
 
 	this.seekbar = document.createElement("div");
 	var where = globals.flashmovie;
@@ -179,10 +179,10 @@ Seekbar.prototype.update = function update()
 
 	var fullSliderWidth = parseInt(document.defaultView.getComputedStyle(this.slider, null).width, 10);
 	var sliderWidth = fullSliderWidth - parseInt(document.defaultView.getComputedStyle(this.thumb, null).width, 10);
-		utils.totalFrames_cb((tot) => {
+		utils.totalFrames((tot) => {
 		if (tot > 0)
 		{
-			utils.currentFrame_cb((frame) => {
+			utils.currentFrame((frame) => {
 				if (frame < 0)
 					frame = 0;
 				if (this.framecountertext)
@@ -199,12 +199,12 @@ Seekbar.prototype.update = function update()
 						this.thumb.style.left = (frame/(tot - 1)*sliderWidth)+"px";
 					else
 						this.thumb.style.left = "0";
-					utils.isPlaying_cb((playing) => {
+					utils.isPlaying((playing) => {
 						this.paused = !playing;
 						this.pauseButtonImg.src = this.paused ? globals.images.play : globals.images.pause;
 					});
 				}
-				utils.framesLoaded_cb((frame) => {
+				utils.framesLoaded((frame) => {
 					this.loadmeter.style.width = (frame/tot*fullSliderWidth)+"px";
 				});
 			});
@@ -218,50 +218,50 @@ Seekbar.prototype.update = function update()
 
 Seekbar.prototype.pauseUnpause = function pauseUnpause()
 {
-	utils.isPlaying_cb((playing) => {
+	utils.isPlaying((playing) => {
 		this.paused = playing;
 		this.pauseButtonImg.src = this.paused ? globals.images.play : globals.images.pause;
 		if (this.paused)
-			utils.stop_cb();
+			utils.stop();
 		else
-			utils.play_cb();
+			utils.play();
 	});
 };
 Seekbar.prototype.rewind = function rewind()
 {
-	utils.goto_cb(0, () => {
-		utils.play_cb();
+	utils.goto(0, () => {
+		utils.play();
 	});
 };
 Seekbar.prototype.fastforward = function fastforward()
 {
-	utils.totalFrames_cb((tot) => {
-		utils.goto_cb(tot - 1);
+	utils.totalFrames((tot) => {
+		utils.goto(tot - 1);
 	})
 };
 Seekbar.prototype.prevFrame = function prevFrame()
 {
-	utils.currentFrame_cb((frame) => {
-		utils.goto_cb(frame - 1);
+	utils.currentFrame((frame) => {
+		utils.goto(frame - 1);
 	})
 };
 Seekbar.prototype.nextFrame = function nextFrame()
 {
-	utils.currentFrame_cb((frame) => {
-		utils.goto_cb(frame + 1);
+	utils.currentFrame((frame) => {
+		utils.goto(frame + 1);
 	})
 };
 Seekbar.prototype.zoomIn = function zoomIn()
 {
-	utils.zoomIn_cb(1.5);
+	utils.zoomIn(1.5);
 };
 Seekbar.prototype.zoomOut = function zoomOut()
 {
-	utils.zoomOut_cb(1.5);
+	utils.zoomOut(1.5);
 };
 Seekbar.prototype.zoomNormal = function zoomNormal()
 {
-	utils.zoomReset_cb();
+	utils.zoomReset();
 };
 
 Seekbar.prototype.drag = function drag(e)
@@ -283,11 +283,11 @@ Seekbar.prototype.dragMousemove = function dragMousemove(e)
 		pos = 0;
 	if (pos > 1)
 		pos = 1;
-	utils.totalFrames_cb((t) => {
+	utils.totalFrames((t) => {
 		if (t > 1)
 		{
 			var frame = Math.round(t * pos);
-			utils.goto_cb(frame);
+			utils.goto(frame);
 		}
 	});
 	this.thumb.style.left = (pos * width) + "px";
@@ -296,6 +296,6 @@ Seekbar.prototype.release = function release()
 {
 	if (!this.dragging) return;
 	if (!this.paused)
-		utils.play_cb();
+		utils.play();
 	this.dragging = false;
 };

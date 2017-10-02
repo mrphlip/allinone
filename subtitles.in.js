@@ -458,7 +458,7 @@ Subtitles.prototype.update = function update()
 	if (!this.enabled || !this.charsready || !this.subsready || !this.subtitleholder)
 		return;
 
-	utils.currentFrame_cb((frame) => {
+	utils.currentFrame((frame) => {
 		if (frame < 0)
 			return;
 		frame++; // Make 1-based
