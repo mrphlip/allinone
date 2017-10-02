@@ -16,7 +16,7 @@ Seekbar.prototype.init = function init() {
 		this.addSeekbar();
 
 	this.dragging = false;
-	this.paused = !utils.isPlaying();
+	utils.isPlaying_cb((playing) => {this.paused = !playing;});
 	document.addEventListener("mousemove", this.dragMousemove.bind(this), false);
 	document.addEventListener("mouseup", this.release.bind(this), false);
 
@@ -38,7 +38,7 @@ Seekbar.prototype.updateSettings = function updateSettings()
 Seekbar.prototype.addSeekbar = function addSeekbar()
 {
 	this.dragging = false;
-	this.paused = !utils.isPlaying();
+	utils.isPlaying_cb((playing) => {this.paused = !playing;});
 
 	this.seekbar = document.createElement("div");
 	var where = globals.flashmovie;
@@ -179,75 +179,89 @@ Seekbar.prototype.update = function update()
 
 	var fullSliderWidth = parseInt(document.defaultView.getComputedStyle(this.slider, null).width, 10);
 	var sliderWidth = fullSliderWidth - parseInt(document.defaultView.getComputedStyle(this.thumb, null).width, 10);
-	var tot = utils.totalFrames();
-	if (tot > 0)
-	{
-		var frame = utils.currentFrame();
-		if (frame < 0)
-			frame = 0;
-		if (this.framecountertext)
+		utils.totalFrames_cb((tot) => {
+		if (tot > 0)
 		{
-			var a = tot.toString();
-			var b = (frame+1).toString();
-			while (b.length < a.length)
-				b = "\u2007" + b; // U+2007 FIGURE SPACE
-			this.framecountertext.nodeValue = b+"/"+a;
+			utils.currentFrame_cb((frame) => {
+				if (frame < 0)
+					frame = 0;
+				if (this.framecountertext)
+				{
+					var a = tot.toString();
+					var b = (frame+1).toString();
+					while (b.length < a.length)
+						b = "\u2007" + b; // U+2007 FIGURE SPACE
+					this.framecountertext.nodeValue = b+"/"+a;
+				}
+				if(!this.dragging)
+				{
+					if (tot > 1)
+						this.thumb.style.left = (frame/(tot - 1)*sliderWidth)+"px";
+					else
+						this.thumb.style.left = "0";
+					utils.isPlaying_cb((playing) => {
+						this.paused = !playing;
+						this.pauseButtonImg.src = this.paused ? globals.images.play : globals.images.pause;
+					});
+				}
+				utils.framesLoaded_cb((frame) => {
+					this.loadmeter.style.width = (frame/tot*fullSliderWidth)+"px";
+				});
+			});
 		}
-		if(!this.dragging)
+		else if (this.framecountertext)
 		{
-			if (tot > 1)
-				this.thumb.style.left = (frame/(tot - 1)*sliderWidth)+"px";
-			else
-				this.thumb.style.left = "0";
-			this.paused = !utils.isPlaying();
-			this.pauseButtonImg.src = this.paused ? globals.images.play : globals.images.pause;
+			this.framecountertext.nodeValue = "Loading...";
 		}
-		frame = utils.framesLoaded();
-		this.loadmeter.style.width = (frame/tot*fullSliderWidth)+"px";
-	}
-	else if (this.framecountertext)
-	{
-		this.framecountertext.nodeValue = "Loading...";
-	}
+	});
 };
 
 Seekbar.prototype.pauseUnpause = function pauseUnpause()
 {
-	this.paused = utils.isPlaying();
-	this.pauseButtonImg.src = this.paused ? globals.images.play : globals.images.pause;
-	if (this.paused)
-		utils.stop();
-	else
-		utils.play();
+	utils.isPlaying_cb((playing) => {
+		this.paused = playing;
+		this.pauseButtonImg.src = this.paused ? globals.images.play : globals.images.pause;
+		if (this.paused)
+			utils.stop_cb();
+		else
+			utils.play_cb();
+	});
 };
 Seekbar.prototype.rewind = function rewind()
 {
-	utils.goto(0);
-	utils.play();
+	utils.goto_cb(0, () => {
+		utils.play_cb();
+	});
 };
 Seekbar.prototype.fastforward = function fastforward()
 {
-	utils.goto(utils.totalFrames() - 1);
+	utils.totalFrames_cb((tot) => {
+		utils.goto_cb(tot - 1);
+	})
 };
 Seekbar.prototype.prevFrame = function prevFrame()
 {
-	utils.goto(utils.currentFrame() - 1);
+	utils.currentFrame_cb((frame) => {
+		utils.goto_cb(frame - 1);
+	})
 };
 Seekbar.prototype.nextFrame = function nextFrame()
 {
-	utils.goto(utils.currentFrame() + 1);
+	utils.currentFrame_cb((frame) => {
+		utils.goto_cb(frame + 1);
+	})
 };
 Seekbar.prototype.zoomIn = function zoomIn()
 {
-	utils.zoomIn(1.5);
+	utils.zoomIn_cb(1.5);
 };
 Seekbar.prototype.zoomOut = function zoomOut()
 {
-	utils.zoomOut(1.5);
+	utils.zoomOut_cb(1.5);
 };
 Seekbar.prototype.zoomNormal = function zoomNormal()
 {
-	utils.zoomReset();
+	utils.zoomReset_cb();
 };
 
 Seekbar.prototype.drag = function drag(e)
@@ -269,18 +283,19 @@ Seekbar.prototype.dragMousemove = function dragMousemove(e)
 		pos = 0;
 	if (pos > 1)
 		pos = 1;
-	var t = utils.totalFrames();
-	if (t > 1)
-	{
-		var frame = Math.round(t * pos);
-		utils.goto(frame);
-	}
+	utils.totalFrames_cb((t) => {
+		if (t > 1)
+		{
+			var frame = Math.round(t * pos);
+			utils.goto_cb(frame);
+		}
+	});
 	this.thumb.style.left = (pos * width) + "px";
 };
 Seekbar.prototype.release = function release()
 {
 	if (!this.dragging) return;
 	if (!this.paused)
-		utils.play();
+		utils.play_cb();
 	this.dragging = false;
 };
