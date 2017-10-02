@@ -236,6 +236,18 @@ PlayerComm.prototype.inPageContext = function inPageContext()
 			callback: data.callback
 		}, origin);
 	}
+
+	handlers.setScaleMode = function setScaleMode(data)
+	{
+		var elem = document.getElementById(data.id);
+		if (typeof(elem.SetVariable) == 'function')
+			elem.SetVariable("Stage.scaleMode", data.scaleMode);
+
+		window.postMessage({
+			message: "aio_resp_basicCallback",
+			callback: data.callback
+		}, origin);
+	}
 }
 
 PlayerComm.prototype.currentFrame = function currentFrame(elem, callback)
@@ -361,6 +373,16 @@ PlayerComm.prototype.zoom = function zoom(elem, zoom, callback)
 		callback: this.storeCallback(callback),
 		id: this.getId(elem),
 		zoom: zoom
+	}, this.origin)
+}
+
+PlayerComm.prototype.setScaleMode = function setScaleMode(elem, scaleMode, callback)
+{
+	window.postMessage({
+		message: "aio_req_setScaleMode",
+		callback: this.storeCallback(callback),
+		id: this.getId(elem),
+		scaleMode: scaleMode
 	}, this.origin)
 }
 

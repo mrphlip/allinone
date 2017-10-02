@@ -101,8 +101,8 @@ Fullscreen.prototype.doResize = function doResize()
 };
 Fullscreen.prototype.setScaleMode = function setScaleMode(scaleMode)
 {
-	utils.whenLoaded(function(){
-		globals.flashmovie.SetVariable("Stage.scaleMode", scaleMode);
+	utils.whenLoaded(() => {
+		playercomm.setScaleMode(globals.flashmovie, scaleMode);
 	});
 };
 Fullscreen.prototype.updateSettings = function updateSettings()
