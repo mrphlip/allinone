@@ -75,7 +75,9 @@ WikiLink.prototype.buildWikiLink = function buildWikiLink()
 		this.addHRWikiLink("Viidelectrix");
 	else if (globals.filename === "" || globals.filename === "index")
 	{
-		     if (globals.whichsite === 0)
+		if (document.location.pathname === "/slash/slash/")
+			this.addHRWikiLink("Screenland_-_24_Apr_2017");
+		else if (globals.whichsite === 0)
 			this.addHRWikiLink("Index_Page");
 		else if (globals.whichsite === 1)
 			this.addHRWikiLink("Podstar_Runner");
