@@ -201,12 +201,6 @@ Utils.prototype.wikiXMLDownloaded = function wikiXMLDownloaded(loadcb, errorcb, 
 	loadcb(doc, status, statusText);
 };
 
-// Documentation for the Flash interface is really lacking...
-// Adobe removed the docs from their website.
-// Luckily, the Wayback Machine captures all
-// http://web.archive.org/web/20100710000820/http://www.adobe.com/support/flash/publishexport/scriptingwithflash/scriptingwithflash_03.html
-// http://web.archive.org/web/20090210205955/http://www.adobe.com/support/flash/publishexport/scriptingwithflash/scriptingwithflash_04.html
-
 Utils.prototype.currentFrame = function currentFrame(flashmovie)
 {
 	if (!flashmovie)
@@ -252,6 +246,43 @@ Utils.prototype.currentFrame = function currentFrame(flashmovie)
 			return -1;
 	}
 };
+Utils.prototype.currentFrame_cb = function currentFrame_cb(callback, flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+	{
+		if (callback)
+			callback(false);
+		return;
+	}
+
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+	{
+		playercomm.targetCurrentFrame(flashmovie, "/videoplayer", (a) => {
+			// Keep track of whether the current frame is changing, for isPlaying()
+			// If we stay on the same frame for more than, say, a second, guess
+			// that we're paused.
+			if (a != this.guessisplaying.lastframe)
+			{
+				this.guessisplaying.lastframe = a;
+				this.guessisplaying.lastframeat = new Date();
+				this.guessisplaying.state = true;
+			}
+			else if (new Date() - this.guessisplaying.lastframeat > 1000)
+			{
+				this.guessisplaying.state = false;
+			}
+
+			if (callback)
+				callback(a);
+		});
+	}
+	else
+	{
+		playercomm.currentFrame(flashmovie, callback)
+	}
+};
 Utils.prototype.totalFrames = function totalFrames(flashmovie)
 {
 	if (!flashmovie)
@@ -276,6 +307,23 @@ Utils.prototype.totalFrames = function totalFrames(flashmovie)
 		return a;
 	else
 		return -1;
+};
+Utils.prototype.totalFrames_cb = function totalFrames_cb(callback, flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+	{
+		if (callback)
+			callback(false);
+		return;
+	}
+
+	var a;
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+		playercomm.targetTotalFrames(flashmovie, "/videoplayer", callback)
+	else
+		playercomm.totalFrames(flashmovie, callback)
 };
 Utils.prototype.isPlaying = function isPlaying(flashmovie)
 {
@@ -303,6 +351,30 @@ Utils.prototype.isPlaying = function isPlaying(flashmovie)
 	else
 		return false;
 };
+Utils.prototype.isPlaying_cb = function isPlaying_cb(callback, flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+	{
+		if (callback)
+			callback(false);
+		return;
+	}
+
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+	{
+		// There isn't a telltarget version of IsPlaying, there's no flag for it in
+		// TGetProperty, and it doesn't seem to be gettable via GetVariable (though
+		// it's possible I just haven't tried the right thing)...
+		// So, for puppet toons, we need to try to track whether it seems to be playing...
+		callback(this.guessisplaying.state);
+	}
+	else
+	{
+		playercomm.isPlaying(flashmovie, callback);
+	}
+};
 Utils.prototype.framesLoaded = function framesLoaded(flashmovie)
 {
 	if (!flashmovie)
@@ -322,9 +394,29 @@ Utils.prototype.framesLoaded = function framesLoaded(flashmovie)
 	else
 		return -1;
 };
+Utils.prototype.framesLoaded_cb = function framesLoaded_cb(callback, flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+	{
+		if (callback)
+			callback(false);
+		return;
+	}
+
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+		playercomm.targetFramesLoaded(flashmovie, '/videoplayer', callback)
+	else
+		playercomm.targetFramesLoaded(flashmovie, '/', callback)
+};
 Utils.prototype.isLoaded = function isLoaded(flashmovie)
 {
 	return this.currentFrame(flashmovie) >= 0;
+};
+Utils.prototype.isLoaded_cb = function isLoaded_cb(callback, flashmovie)
+{
+	this.currentFrame_cb((frame) => {callback(frame >= 0)}, flashmovie);
 };
 Utils.prototype.whenLoaded = function whenLoaded(callback, flashmovie)
 {
@@ -333,10 +425,12 @@ Utils.prototype.whenLoaded = function whenLoaded(callback, flashmovie)
 	if (!flashmovie)
 		return;
 
-	if (this.currentFrame(flashmovie) >= 0)
-		callback();
-	else
-		setTimeout(this.whenLoaded.bind(this, callback, flashmovie), 100);
+	this.currentFrame_cb((frame) => {
+		if (frame >= 0)
+			callback();
+		else
+			setTimeout(this.whenLoaded.bind(this, callback, flashmovie), 100);
+	}, flashmovie);
 };
 Utils.prototype.stop = function stop(flashmovie)
 {
@@ -359,6 +453,35 @@ Utils.prototype.stop = function stop(flashmovie)
 		if (!flashmovie.StopPlay)
 			return;
 		flashmovie.StopPlay();
+	}
+};
+Utils.prototype.stop_cb = function stop_cb(callback, flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+	{
+		if (callback)
+			callback();
+		return;
+	}
+
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+	{
+		playercomm.targetStop(flashmovie, "/videoplayer", () => {
+			// make sure this.guessisplaying.lastframe is updated so that it doesn't
+			// go back to state=true
+			this.currentFrame_cb((frame) => {
+				this.guessisplaying.state = false;
+			}, flashmovie);
+
+			if (callback)
+				callback();
+		});
+	}
+	else
+	{
+		playercomm.stop(flashmovie, callback);
 	}
 };
 Utils.prototype.play = function play(flashmovie)
@@ -385,6 +508,28 @@ Utils.prototype.play = function play(flashmovie)
 		flashmovie.Play();
 	}
 };
+Utils.prototype.play_cb = function play_cb(callback, flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+	{
+		if (callback)
+			callback();
+		return;
+	}
+
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+	{
+		playercomm.targetPlay(flashmovie, "/videoplayer", callback);
+		this.guessisplaying.state = true;
+		this.guessisplaying.lastframeat = new Date();
+	}
+	else
+	{
+		playercomm.play(flashmovie, callback);
+	}
+};
 Utils.prototype.goto = function goto(frame, flashmovie)
 {
 	if (!flashmovie)
@@ -408,6 +553,35 @@ Utils.prototype.goto = function goto(frame, flashmovie)
 		flashmovie.GotoFrame(frame);
 	}
 };
+Utils.prototype.goto_cb = function goto_cb(frame, callback, flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+	{
+		if (callback)
+			callback();
+		return;
+	}
+
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+	{
+		playercomm.targetGoto(flashmovie, "/videoplayer", frame, () => {
+			// make sure this.guessisplaying.lastframe is updated so that it doesn't
+			// go back to state=true
+			this.currentFrame_cb((frame) => {
+				this.guessisplaying.state = false;
+			}, flashmovie);
+
+			if (callback)
+				callback();
+		});
+	}
+	else
+	{
+		playercomm.goto(flashmovie, frame, callback);
+	}
+};
 Utils.prototype.zoomOut = function zoomOut(factor, flashmovie)
 {
 	if (!flashmovie)
@@ -419,13 +593,52 @@ Utils.prototype.zoomOut = function zoomOut(factor, flashmovie)
 		return;
 	flashmovie.Zoom(100 * factor);
 };
+Utils.prototype.zoomOut_cb = function zoomOut_cb(factor, callback, flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+	{
+		if (callback)
+			callback();
+		return;
+	}
+
+	playercomm.zoom(flashmovie, 100 * factor, callback);
+};
 Utils.prototype.zoomIn = function zoomIn(factor, flashmovie)
 {
 	this.zoomOut(1 / factor, flashmovie);
 };
+Utils.prototype.zoomIn_cb = function zoomIn_cb(factor, callback, flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+	{
+		if (callback)
+			callback();
+		return;
+	}
+
+	playercomm.zoom(flashmovie, 100 / factor, callback);
+};
 Utils.prototype.zoomReset = function zoomReset(flashmovie)
 {
 	this.zoomOut(0, flashmovie);
+};
+Utils.prototype.zoomReset_cb = function zoomReset_cb(callback, flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+	{
+		if (callback)
+			callback();
+		return;
+	}
+
+	playercomm.zoom(flashmovie, 0, callback);
 };
 
 Utils.prototype.insertAfter = function insertAfter(newElement, referenceElement)

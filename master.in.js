@@ -8,6 +8,8 @@
 
 	#include "globals.in.js"
 
+	#include "playercomm.in.js"
+
 	#include "settingspane.in.js"
 
 	#ifdef DEBUG

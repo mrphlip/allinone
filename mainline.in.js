@@ -4,4 +4,6 @@ if (document.title == "The page cannot be found" || document.title == "Homestar 
 
 var utils = new Utils();
 var globals = new Globals();
+var playercomm = new PlayerComm();
+playercomm.init();
 globals.initModules();
