@@ -458,30 +458,31 @@ Subtitles.prototype.update = function update()
 	if (!this.enabled || !this.charsready || !this.subsready || !this.subtitleholder)
 		return;
 
-	var frame = utils.currentFrame();
-	if (frame < 0)
-		return;
-	frame++; // Make 1-based
-	// binary search to find the right transcript line
-	var first = 0;
-	var last = this.transcript.length;
-	while(first < (last - 1))
-	{
-		var mid = (first + last) >> 1;
-		if (frame >= this.transcript[mid].start)
+	utils.currentFrame_cb((frame) => {
+		if (frame < 0)
+			return;
+		frame++; // Make 1-based
+		// binary search to find the right transcript line
+		var first = 0;
+		var last = this.transcript.length;
+		while(first < (last - 1))
 		{
-			first = mid;
-			if (frame <= this.transcript[mid].end)
-				break;
+			var mid = (first + last) >> 1;
+			if (frame >= this.transcript[mid].start)
+			{
+				first = mid;
+				if (frame <= this.transcript[mid].end)
+					break;
+			}
+			else
+				last = mid;
 		}
+		// should we actually show the line?
+		if(this.transcript[first] && this.transcript[first].start <= frame && this.transcript[first].end >= frame)
+			this.setSubtitles(this.transcript[first].text);
 		else
-			last = mid;
-	}
-	// should we actually show the line?
-	if(this.transcript[first] && this.transcript[first].start <= frame && this.transcript[first].end >= frame)
-		this.setSubtitles(this.transcript[first].text);
-	else
-		this.setSubtitles(false);
+			this.setSubtitles(false);
+	});
 };
 
 Subtitles.prototype.setSubtitles = function setSubtitles(node)
