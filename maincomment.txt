@@ -33,7 +33,7 @@
 // @namespace     http://www.hrwiki.org/
 // @description   Combination of many Homestar Runner scripts. Version MAJOR.MINOR.
 // @version       MAJOR.MINOR.REVISION
-// @downloadURL   http://www.hrwiki.org/w/index.php?title=User:Phlip/Greasemonkey&action=raw&ctype=text/javascript&fakeextension=.user.js
+// @downloadURL   http://www.hrwiki.org/w/index.php?title=User:Phlip/Greasemonkey&action=raw&ctype=text/javascript&cachedodge=MAJOR.MINOR.REVISION&fakeextension=.user.js
 // @icon          http://www.hrwiki.org/w/images/thumb/1/1b/logo.png/32px-logo.png
 // @match         http://homestarrunner.com/*
 // @match         http://www.homestarrunner.com/*
