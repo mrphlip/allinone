@@ -102,7 +102,7 @@ NextPrev.prototype.showPrevNext = function showPrevNext()
 		if (this.prevlink)
 			this.prevlink.style.display = "block";
 		if (this.docheck && !this.checkedNext && this.nextlink)
-			utils.downloadPage(this.nextlink.href + "?cachedodge=" + GM_getValue('cachedodge', 0), this.onCheckLoad.bind(this), this.onCheckError.bind(this), "HEAD");
+			utils.downloadPage(this.nextlink.href + "?cachedodge=" + utils.getPref('cachedodge', 0), this.onCheckLoad.bind(this), this.onCheckError.bind(this), "HEAD");
 		else if (this.nextlink)
 			this.nextlink.style.display = "block";
 	}

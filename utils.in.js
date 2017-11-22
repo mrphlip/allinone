@@ -25,6 +25,11 @@ Utils.prototype.useGMFunctions = function useGMFunctions()
 	// We can't just test if GM_getValue exists, because in Chrome they do exist
 	// but they don't actually do anything, just report failure to console.log
 
+	// Note that on Firefox Quantum, with Greasemonkey 4, this will not use the
+	// GM get/setValue, but use localStorage instead, as getValue returns
+	// a Promise now, which would require rewriting a lot of things (which maybe
+	// I'll get to eventually).
+
 	// We don't want it to actually write anything to console.log, though, so
 	// let's stop that
 	var log = console.log;
@@ -89,7 +94,18 @@ Utils.prototype.downloadPage = function downloadPage(url, loadcb, errorcb, metho
 {
 	if (!method)
 		method = 'GET';
-	if (typeof GM_xmlhttpRequest == 'function')
+	if (typeof(GM) == "object" && GM.xmlHttpRequest)
+	{
+		var opts = {
+			method: method,
+			url: url,
+			onload: function onload(res) {loadcb(res.responseText, res.status, res.statusText, res.responseHeaders);}
+		};
+		if (errorcb)
+			opts.onerror = function onerror(res) {errorcb(res.status, res.statusText, res.responseHeaders);};
+		GM.xmlHttpRequest(opts);
+	}
+	else if (typeof(GM_xmlhttpRequest) == "function")
 	{
 		var opts = {
 			method: method,
