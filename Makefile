@@ -45,7 +45,6 @@ debug.user.js.d:
 
 .PHONY: all clean debug build dist default lint debuglint
 debug: debug.user.js debug.crx
-	cp debug.user.js /home/phlip/.mozilla/firefox/ynorfbh1.default/gm_scripts/homestar_all-in-one/homestar_all-in-one.user.js
 all: built.user.js built.crx built.zip debug.user.js debug.crx
 clean:
 	rm -f built.user.js built.user.js.d debug.user.js debug.user.js.d images.built.js chrome/AllInOne/manifest.json chrome/AllInOne/*.user.js built.crx built.zip debug.crx
