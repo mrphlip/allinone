@@ -21,7 +21,7 @@ Updates.prototype.init = function init()
 
 	this.setting_enabled = globals.modules.settingspane.addCheckbox('updates', "Check for updates", "Regularly check for updates to the All-in-one script", this.enabled);
 
-	this.doCheck(); // intentionally no "await" here
+	/*no await*/ this.doCheck();
 };
 Updates.prototype.updateSettings = function updateSettings()
 {
@@ -86,5 +86,5 @@ Updates.prototype.doCheck = async function doCheck()
 Updates.prototype.cacheDodge = function cacheDodge()
 {
 	utils.setPref("lastchecktime", 0);
-	this.doCheck(); // intentionally no "await" here
+	/*no await*/ this.doCheck();
 }

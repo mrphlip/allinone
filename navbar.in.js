@@ -57,7 +57,7 @@ Navbar.prototype.showNavbar = function showNavbar()
 		this.newnavbar.style.display = "";
 		this.newnavbar.style.marginTop = (globals.modules.seekbar.enabled ? "0" : "10px");
 		globals.navbar = this.newnavbar;
-		this.loadRandoXML(); // intentionally no "await" here
+		/*no await*/ this.loadRandoXML();
 	}
 	else
 	{

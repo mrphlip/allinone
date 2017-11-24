@@ -34,7 +34,7 @@ Subtitles.prototype.init = function init()
 	settingrow.appendChild(this.setting_language);
 
 	this.language_populated = false;
-	this.populateLanguage(); // intentionally no "await" here
+	/*no await*/ this.populateLanguage();s
 
 	this.setting_captions = globals.modules.settingspane.addCheckbox('captions', "Show captions", "Include sound effects in the subtitles", this.captions, this.setting_enabled);
 	this.setting_colours = globals.modules.settingspane.addCheckbox('colours', "Use colours", "Distinguish characters by colour effects (turn off if colourblind)", this.colours, this.setting_enabled);
@@ -75,7 +75,7 @@ Subtitles.prototype.init = function init()
 	this.charsready = false;
 	this.subsready = false;
 
-	this.setupSubtitles(); // intentionally no "await" here
+	/*no await*/ this.setupSubtitles();
 
 	window.setInterval(this.update.bind(this), 50);
 };
@@ -99,7 +99,7 @@ Subtitles.prototype.updateSettings = function updateSettings()
 	this.testsubsdata = this.setting_testsubsdata.value;
 	utils.setPref('testsubsdata', escape(this.testsubsdata));
 
-	this.setupSubtitles(); // intentionally no "await" here
+	/*no await*/ this.setupSubtitles();
 };
 
 Subtitles.prototype.populateLanguage = async function populateLanguage()

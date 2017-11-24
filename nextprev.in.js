@@ -104,7 +104,7 @@ NextPrev.prototype.showPrevNext = function showPrevNext()
 		if (this.prevlink)
 			this.prevlink.style.display = "block";
 		if (this.docheck && !this.checkedNext && this.nextlink)
-			this.doCheckNext(); // intentionally no "await" here
+			/*no await*/ this.doCheckNext();
 		else if (this.nextlink)
 			this.nextlink.style.display = "block";
 	}
