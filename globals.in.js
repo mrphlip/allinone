@@ -143,11 +143,15 @@ Globals.prototype.initModules = async function initModules()
 #ifdef DEBUG
 	this.modules.debug = new DebugModule();
 #endif
+	// Can load the preferences in each module in parallel
 	var start = new Date();
+	var loadpromises = []
 	for (var i in this.modules)
-		await this.modules[i].load();
+		loadpromises.push(this.modules[i].load());
+	await Promise.all(loadpromises)
 	var end = new Date();
 	console.log(`Loaded prefs in ${end - start}ms`);
+	// Initialise each module in sequence
 	for (var i in this.modules)
 		await this.modules[i].init();
 	this.modules.settingspane.initComplete();
