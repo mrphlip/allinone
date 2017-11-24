@@ -34,7 +34,7 @@ Subtitles.prototype.init = function init()
 	settingrow.appendChild(this.setting_language);
 
 	this.language_populated = false;
-	this.populateLanguage();
+	this.populateLanguage(); // intentionally no "await" here
 
 	this.setting_captions = globals.modules.settingspane.addCheckbox('captions', "Show captions", "Include sound effects in the subtitles", this.captions, this.setting_enabled);
 	this.setting_colours = globals.modules.settingspane.addCheckbox('colours', "Use colours", "Distinguish characters by colour effects (turn off if colourblind)", this.colours, this.setting_enabled);
@@ -75,7 +75,7 @@ Subtitles.prototype.init = function init()
 	this.charsready = false;
 	this.subsready = false;
 
-	this.setupSubtitles();
+	this.setupSubtitles(); // intentionally no "await" here
 
 	window.setInterval(this.update.bind(this), 50);
 };
@@ -99,19 +99,29 @@ Subtitles.prototype.updateSettings = function updateSettings()
 	this.testsubsdata = this.setting_testsubsdata.value;
 	utils.setPref('testsubsdata', escape(this.testsubsdata));
 
-	this.setupSubtitles();
+	this.setupSubtitles(); // intentionally no "await" here
 };
 
-Subtitles.prototype.populateLanguage = function populateLanguage()
+Subtitles.prototype.populateLanguage = async function populateLanguage()
 {
 	var option = document.createElement('option');
 	option.appendChild(document.createTextNode("Loading..."));
 	option.selected = true;
 	this.setting_language.appendChild(option);
-	utils.downloadWikiXML("Subtitles:Languages", this.languageListDownloaded.bind(this), this.languageListError.bind(this));
-};
-Subtitles.prototype.languageListDownloaded = function languageListDownloaded(xml)
-{
+
+	try {
+		var xml = await utils.downloadWiki_coro("Subtitles:Languages");
+		xml = utils.parseWikiXML(xml);
+	} catch (e) {
+		while (this.setting_language.firstChild)
+			this.setting_language.removeChild(this.setting_language.firstChild);
+		var option = document.createElement('option');
+		option.appendChild(document.createTextNode("Error loading languages"));
+		option.selected = true;
+		this.setting_language.appendChild(option);
+		return;
+	}
+
 	while (this.setting_language.firstChild)
 		this.setting_language.removeChild(this.setting_language.firstChild);
 
@@ -136,15 +146,6 @@ Subtitles.prototype.languageListDownloaded = function languageListDownloaded(xml
 	
 	this.setting_language.disabled = false;
 	this.language_populated = true;
-};
-Subtitles.prototype.languageListError = function languageListError()
-{
-	while (this.setting_language.firstChild)
-		this.setting_language.removeChild(this.setting_language.firstChild);
-	var option = document.createElement('option');
-	option.appendChild(document.createTextNode("Error loading languages"));
-	option.selected = true;
-	this.setting_language.appendChild(option);
 };
 
 Subtitles.prototype.removeSubtitles = function removeSubtitles()
@@ -194,14 +195,14 @@ Subtitles.prototype.transcriptError = function transcriptError(message)
 {
 	if (!this.errorsholder)
 		this.createErrorsHolder();
-	var div = document.createElement("div");
-	div.appendChild(document.createTextNode(message));
-	this.errorsholder.appendChild(div);
+	var pre = document.createElement("pre");
+	pre.appendChild(document.createTextNode(message));
+	this.errorsholder.appendChild(pre);
 
 	globals.modules.fullscreen.doResize();
 };
 
-Subtitles.prototype.setupSubtitles = function setupSubtitles()
+Subtitles.prototype.setupSubtitles = async function setupSubtitles()
 {
 	this.removeSubtitles();
 
@@ -211,14 +212,22 @@ Subtitles.prototype.setupSubtitles = function setupSubtitles()
 	this.createSubtitleHolder();
 	this.setSubtitles(document.createTextNode("Loading subtitles..."));
 	
-	if (!this.charsready)
-		utils.downloadWikiXML('Subtitles:Characters', this.charactersLoaded.bind(this), this.downloadSubsError.bind(this));
-	else
-		this.reloadSubs();
+	try {
+		await this.loadCharacters();
+		await this.reloadSubs();
+	} catch (e) {
+		this.removeSubtitles();
+		if (this.testsubs)
+			this.transcriptError(e.toString());
+	}
 };
-Subtitles.prototype.charactersLoaded = function charactersLoaded(xml)
-{
-	var speakers = xml.getElementsByTagName("speaker");
+Subtitles.prototype.loadCharacters = async function loadCharacters() {
+	if (this.charsready)
+		return;
+
+	var xml = await utils.downloadWiki_coro('Subtitles:Characters');
+	xml = utils.parseWikiXML(xml);
+
 	this.characters = {
 		sfx: {
 			color: "#FFF",
@@ -226,6 +235,7 @@ Subtitles.prototype.charactersLoaded = function charactersLoaded(xml)
 			name: {en: ""}
 		}
 	};
+	var speakers = xml.getElementsByTagName("speaker");
 	for (var i = 0; i < speakers.length; i++)
 	{
 		var speakername = speakers[i].getAttribute("id");
@@ -239,15 +249,8 @@ Subtitles.prototype.charactersLoaded = function charactersLoaded(xml)
 		}
 	}
 	this.charsready = true;
-	this.reloadSubs();
-};
-Subtitles.prototype.downloadSubsError = function downloadSubsError(status, statusText)
-{
-	this.removeSubtitles();
-	if (this.testsubs)
-		this.transcriptError(statusText);
-};
-Subtitles.prototype.reloadSubs = function reloadSubs()
+}
+Subtitles.prototype.reloadSubs = async function reloadSubs()
 {
 	if (!this.charsready)
 		return;
@@ -257,13 +260,18 @@ Subtitles.prototype.reloadSubs = function reloadSubs()
 	this.createSubtitleHolder();
 	this.setSubtitles(document.createTextNode("Loading subtitles..."));
 
+	var xml;
 	if (!this.testsubs)
-		utils.downloadWikiXML('Subtitles:' + globals.filename + '/' + this.language, this.transcriptLoaded.bind(this), this.downloadSubsError.bind(this));
+		xml = await utils.downloadWiki_coro('Subtitles:' + globals.filename + '/' + this.language);
 	else
-		utils.wikiXMLDownloaded(this.transcriptLoaded.bind(this), this.downloadSubsError.bind(this), this.testsubsdata, 200, "OK");
+		xml = this.testsubsdata;
+	xml = utils.parseWikiXML(xml);
+	this.parseTranscript(xml);
+
+	this.subsready = true;
 };
 
-Subtitles.prototype.transcriptLoaded = function transcriptLoaded(xml)
+Subtitles.prototype.parseTranscript = function parseTranscript(xml)
 {
 	// set some defaults
 	if (!xml.documentElement.getAttribute("xml:lang")) xml.documentElement.setAttribute("xml:lang", this.language);
@@ -298,7 +306,6 @@ Subtitles.prototype.transcriptLoaded = function transcriptLoaded(xml)
 		line.text = this.importNodes(lines[i]);
 		this.transcript.push(line);
 	}
-	this.subsready = true;
 };
 Subtitles.prototype.inheritLanguages = function inheritLanguages(node)
 {
