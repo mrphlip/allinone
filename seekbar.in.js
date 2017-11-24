@@ -4,7 +4,7 @@ function Seekbar()
 	this.framecounter = utils.getPref('frames', false);
 	this.zoom = utils.getPref('zoom', false);
 }
-Seekbar.prototype.init = function init() {
+Seekbar.prototype.init = async function init() {
 	this.setting_enabled = globals.modules.settingspane.addCheckbox('seekbar', "Show seek bar", "Lets you fast forward and rewind", this.enabled);
 	this.setting_framecounter = globals.modules.settingspane.addCheckbox('framecounter', "Show frame counter on seek bar", "Shows you exactly where you are", this.framecounter, this.setting_enabled);
 	this.setting_zoom = globals.modules.settingspane.addCheckbox('zoom', "Show zooming controls", "Allows zooming in on the toon", this.zoom, this.setting_enabled);
@@ -13,10 +13,10 @@ Seekbar.prototype.init = function init() {
 		return;
 
 	if (this.enabled)
-		this.addSeekbar();
+		await this.addSeekbar();
 
 	this.dragging = false;
-	utils.isPlaying((playing) => {this.paused = !playing;});
+	this.paused = !await utils.isPlaying_coro();
 	document.addEventListener("mousemove", this.dragMousemove.bind(this), false);
 	document.addEventListener("mouseup", this.release.bind(this), false);
 
@@ -35,10 +35,10 @@ Seekbar.prototype.updateSettings = function updateSettings()
 	if (this.enabled && globals.flashmovie)
 		this.addSeekbar();
 };
-Seekbar.prototype.addSeekbar = function addSeekbar()
+Seekbar.prototype.addSeekbar = async function addSeekbar()
 {
 	this.dragging = false;
-	utils.isPlaying((playing) => {this.paused = !playing;});
+	this.paused = !await utils.isPlaying_coro();
 
 	this.seekbar = document.createElement("div");
 	var where = globals.flashmovie;
@@ -172,96 +172,85 @@ Seekbar.prototype.removeSeekbar = function removeSeekbar()
 	globals.modules.fullscreen.doResize();
 };
 
-Seekbar.prototype.update = function update()
+Seekbar.prototype.update = async function update()
 {
 	if (!this.seekbar)
 		return;
 
 	var fullSliderWidth = parseInt(document.defaultView.getComputedStyle(this.slider, null).width, 10);
 	var sliderWidth = fullSliderWidth - parseInt(document.defaultView.getComputedStyle(this.thumb, null).width, 10);
-		utils.totalFrames((tot) => {
-		if (tot > 0)
+	var tot = await utils.totalFrames_coro();
+	if (tot > 0)
+	{
+		var frame = await utils.currentFrame_coro();
+		if (frame < 0)
+			frame = 0;
+		if (this.framecountertext)
 		{
-			utils.currentFrame((frame) => {
-				if (frame < 0)
-					frame = 0;
-				if (this.framecountertext)
-				{
-					var a = tot.toString();
-					var b = (frame+1).toString();
-					while (b.length < a.length)
-						b = "\u2007" + b; // U+2007 FIGURE SPACE
-					this.framecountertext.nodeValue = b+"/"+a;
-				}
-				if(!this.dragging)
-				{
-					if (tot > 1)
-						this.thumb.style.left = (frame/(tot - 1)*sliderWidth)+"px";
-					else
-						this.thumb.style.left = "0";
-					utils.isPlaying((playing) => {
-						this.paused = !playing;
-						this.pauseButtonImg.src = this.paused ? globals.images.play : globals.images.pause;
-					});
-				}
-				utils.framesLoaded((frame) => {
-					this.loadmeter.style.width = (frame/tot*fullSliderWidth)+"px";
-				});
-			});
+			var a = tot.toString();
+			var b = (frame+1).toString();
+			while (b.length < a.length)
+				b = "\u2007" + b; // U+2007 FIGURE SPACE
+			this.framecountertext.nodeValue = b+"/"+a;
 		}
-		else if (this.framecountertext)
+		if(!this.dragging)
 		{
-			this.framecountertext.nodeValue = "Loading...";
+			if (tot > 1)
+				this.thumb.style.left = (frame/(tot - 1)*sliderWidth)+"px";
+			else
+				this.thumb.style.left = "0";
+			this.paused = !await utils.isPlaying_coro();
+			this.pauseButtonImg.src = this.paused ? globals.images.play : globals.images.pause;
 		}
-	});
+		var loaded = await utils.framesLoaded_coro();
+		this.loadmeter.style.width = (loaded/tot*fullSliderWidth)+"px";
+	}
+	else if (this.framecountertext)
+	{
+		this.framecountertext.nodeValue = "Loading...";
+	}
 };
 
-Seekbar.prototype.pauseUnpause = function pauseUnpause()
+Seekbar.prototype.pauseUnpause = async function pauseUnpause()
 {
-	utils.isPlaying((playing) => {
-		this.paused = playing;
-		this.pauseButtonImg.src = this.paused ? globals.images.play : globals.images.pause;
-		if (this.paused)
-			utils.stop();
-		else
-			utils.play();
-	});
+	this.paused = await utils.isPlaying_coro();
+	this.pauseButtonImg.src = this.paused ? globals.images.play : globals.images.pause;
+	if (this.paused)
+		await utils.stop_coro();
+	else
+		await utils.play_coro();
 };
-Seekbar.prototype.rewind = function rewind()
+Seekbar.prototype.rewind = async function rewind()
 {
-	utils.goto(0, () => {
-		utils.play();
-	});
+	await utils.goto_coro(0);
+	await utils.play_coro();
 };
-Seekbar.prototype.fastforward = function fastforward()
+Seekbar.prototype.fastforward = async function fastforward()
 {
-	utils.totalFrames((tot) => {
-		utils.goto(tot - 1);
-	})
+	var tot = await utils.totalFrames_coro();
+	await utils.goto_coro(tot - 1);
 };
-Seekbar.prototype.prevFrame = function prevFrame()
+Seekbar.prototype.prevFrame = async function prevFrame()
 {
-	utils.currentFrame((frame) => {
-		utils.goto(frame - 1);
-	})
+	var frame = await utils.currentFrame_coro();
+	await utils.goto_coro(frame - 1);
 };
-Seekbar.prototype.nextFrame = function nextFrame()
+Seekbar.prototype.nextFrame = async function nextFrame()
 {
-	utils.currentFrame((frame) => {
-		utils.goto(frame + 1);
-	})
+	var frame = await utils.currentFrame_coro();
+	await utils.goto_coro(frame + 1);
 };
-Seekbar.prototype.zoomIn = function zoomIn()
+Seekbar.prototype.zoomIn = async function zoomIn()
 {
-	utils.zoomIn(1.5);
+	await utils.zoomIn(1.5);
 };
-Seekbar.prototype.zoomOut = function zoomOut()
+Seekbar.prototype.zoomOut = async function zoomOut()
 {
-	utils.zoomOut(1.5);
+	await utils.zoomOut(1.5);
 };
-Seekbar.prototype.zoomNormal = function zoomNormal()
+Seekbar.prototype.zoomNormal = async function zoomNormal()
 {
-	utils.zoomReset();
+	await utils.zoomReset();
 };
 
 Seekbar.prototype.drag = function drag(e)
@@ -271,7 +260,7 @@ Seekbar.prototype.drag = function drag(e)
 	e.preventDefault();
 	return false;
 };
-Seekbar.prototype.dragMousemove = function dragMousemove(e)
+Seekbar.prototype.dragMousemove = async function dragMousemove(e)
 {
 	if (!this.dragging) return;
 	var pageX = e.clientX + document.body.scrollLeft;
@@ -283,19 +272,18 @@ Seekbar.prototype.dragMousemove = function dragMousemove(e)
 		pos = 0;
 	if (pos > 1)
 		pos = 1;
-	utils.totalFrames((t) => {
-		if (t > 1)
-		{
-			var frame = Math.round(t * pos);
-			utils.goto(frame);
-		}
-	});
+	var t = await utils.totalFrames_coro();
+	if (t > 1)
+	{
+		var frame = Math.round(t * pos);
+		await utils.goto_coro(frame);
+	}
 	this.thumb.style.left = (pos * width) + "px";
 };
 Seekbar.prototype.release = function release()
 {
 	if (!this.dragging) return;
 	if (!this.paused)
-		utils.play();
+		utils.play_coro();
 	this.dragging = false;
 };

@@ -249,6 +249,38 @@ Utils.prototype.currentFrame = function currentFrame(callback, flashmovie)
 		playercomm.currentFrame(flashmovie, callback)
 	}
 };
+Utils.prototype.currentFrame_coro = async function currentFrame_coro(flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return;
+
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+	{
+		var a = await playercomm.targetCurrentFrame_coro(flashmovie, "/videoplayer");
+
+		// Keep track of whether the current frame is changing, for isPlaying()
+		// If we stay on the same frame for more than, say, a second, guess
+		// that we're paused.
+		if (a != this.guessisplaying.lastframe)
+		{
+			this.guessisplaying.lastframe = a;
+			this.guessisplaying.lastframeat = new Date();
+			this.guessisplaying.state = true;
+		}
+		else if (new Date() - this.guessisplaying.lastframeat > 1000)
+		{
+			this.guessisplaying.state = false;
+		}
+
+		return a;
+	}
+	else
+	{
+		return await playercomm.currentFrame_coro(flashmovie)
+	}
+};
 Utils.prototype.totalFrames = function totalFrames(callback, flashmovie)
 {
 	if (!flashmovie)
@@ -265,6 +297,19 @@ Utils.prototype.totalFrames = function totalFrames(callback, flashmovie)
 		playercomm.targetTotalFrames(flashmovie, "/videoplayer", callback)
 	else
 		playercomm.totalFrames(flashmovie, callback)
+};
+Utils.prototype.totalFrames_coro = async function totalFrames_coro(flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return;
+
+	var a;
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+		return await playercomm.targetTotalFrames_coro(flashmovie, "/videoplayer")
+	else
+		return await playercomm.totalFrames_coro(flashmovie)
 };
 Utils.prototype.isPlaying = function isPlaying(callback, flashmovie)
 {
@@ -290,6 +335,26 @@ Utils.prototype.isPlaying = function isPlaying(callback, flashmovie)
 		playercomm.isPlaying(flashmovie, callback);
 	}
 };
+Utils.prototype.isPlaying_coro = async function isPlaying_coro(flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return;
+
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+	{
+		// There isn't a telltarget version of IsPlaying, there's no flag for it in
+		// TGetProperty, and it doesn't seem to be gettable via GetVariable (though
+		// it's possible I just haven't tried the right thing)...
+		// So, for puppet toons, we need to try to track whether it seems to be playing...
+		return this.guessisplaying.state;
+	}
+	else
+	{
+		return await playercomm.isPlaying_coro(flashmovie);
+	}
+};
 Utils.prototype.framesLoaded = function framesLoaded(callback, flashmovie)
 {
 	if (!flashmovie)
@@ -306,10 +371,51 @@ Utils.prototype.framesLoaded = function framesLoaded(callback, flashmovie)
 	else
 		playercomm.targetFramesLoaded(flashmovie, '/', callback)
 };
+Utils.prototype.framesLoaded_coro = async function framesLoaded_coro(flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return;
+
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+		return await playercomm.targetFramesLoaded_coro(flashmovie, '/videoplayer')
+	else
+		return await playercomm.targetFramesLoaded_coro(flashmovie, '/')
+};
 Utils.prototype.isLoaded = function isLoaded(callback, flashmovie)
 {
 	this.currentFrame((frame) => {callback(frame >= 0)}, flashmovie);
 };
+Utils.prototype.isLoaded_coro = async function isLoaded_coro(flashmovie)
+{
+	var frame = await this.currentFrame_coro(flashmovie);
+	return frame >= 0;
+};
+Utils.prototype.waitLoaded = function waitLoaded(flashmovie)
+{
+	var useglobal = false;
+	if (!flashmovie) {
+		useglobal = true;
+		flashmovie = globals.flashmovie;
+	}
+	if (!flashmovie)
+		return new Promise((resolve, reject) => reject());
+
+	if (useglobal && this.loadedPromise)
+		return this.loadedPromise;
+
+	async function poll(resolve) {
+		if (await this.isLoaded_coro(flashmovie))
+			resolve();
+		else
+			setTimeout(poll.bind(this, resolve), 100)
+	}
+	var promise = new Promise(poll.bind(this));
+	if (useglobal)
+		this.loadedPromise = promise;
+	return promise;
+}
 Utils.prototype.whenLoaded = function whenLoaded(callback, flashmovie)
 {
 	if (!flashmovie)
@@ -353,6 +459,28 @@ Utils.prototype.stop = function stop(callback, flashmovie)
 		playercomm.stop(flashmovie, callback);
 	}
 };
+Utils.prototype.stop_coro = async function stop_coro(flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return;
+
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+	{
+		await playercomm.targetStop_coro(flashmovie, "/videoplayer");
+
+		// make sure this.guessisplaying.lastframe is updated so that it doesn't
+		// go back to state=true
+		this.currentFrame((frame) => {
+			this.guessisplaying.state = false;
+		}, flashmovie);
+	}
+	else
+	{
+		await playercomm.stop_coro(flashmovie);
+	}
+};
 Utils.prototype.play = function play(callback, flashmovie)
 {
 	if (!flashmovie)
@@ -373,6 +501,24 @@ Utils.prototype.play = function play(callback, flashmovie)
 	else
 	{
 		playercomm.play(flashmovie, callback);
+	}
+};
+Utils.prototype.play_coro = async function play_coro(flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return;
+
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+	{
+		await playercomm.targetPlay_coro(flashmovie, "/videoplayer");
+		this.guessisplaying.state = true;
+		this.guessisplaying.lastframeat = new Date();
+	}
+	else
+	{
+		await playercomm.play_coro(flashmovie);
 	}
 };
 Utils.prototype.goto = function goto(frame, callback, flashmovie)
@@ -402,6 +548,28 @@ Utils.prototype.goto = function goto(frame, callback, flashmovie)
 	else
 	{
 		playercomm.goto(flashmovie, frame, callback);
+	}
+};
+Utils.prototype.goto_coro = async function goto_coro(frame, flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return;
+
+	if (flashmovie === globals.flashmovie && globals.is_puppets)
+	{
+		await playercomm.targetGoto_coro(flashmovie, "/videoplayer", frame);
+
+		// make sure this.guessisplaying.lastframe is updated so that it doesn't
+		// go back to state=true
+		this.currentFrame((frame) => {
+			this.guessisplaying.state = false;
+		}, flashmovie);
+	}
+	else
+	{
+		await playercomm.goto_coro(flashmovie, frame);
 	}
 };
 Utils.prototype.zoomOut = function zoomOut(factor, callback, flashmovie)
@@ -442,6 +610,33 @@ Utils.prototype.zoomReset = function zoomReset(callback, flashmovie)
 	}
 
 	playercomm.zoom(flashmovie, 0, callback);
+};
+Utils.prototype.zoomOut_coro = async function zoomOut_coro(factor, flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return;
+
+	await playercomm.zoom_coro(flashmovie, 100 * factor);
+};
+Utils.prototype.zoomIn_coro = async function zoomIn_coro(factor, flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return;
+
+	await playercomm.zoom_coro(flashmovie, 100 / factor);
+};
+Utils.prototype.zoomReset_coro = async function zoomReset_coro(factor, flashmovie)
+{
+	if (!flashmovie)
+		flashmovie = globals.flashmovie;
+	if (!flashmovie)
+		return;
+
+	await playercomm.zoom_coro(flashmovie, 0);
 };
 
 Utils.prototype.insertAfter = function insertAfter(newElement, referenceElement)

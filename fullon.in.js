@@ -99,11 +99,10 @@ Fullscreen.prototype.doResize = function doResize()
 	if (globals.modules.seekbar.seekbar)
 		globals.modules.seekbar.seekbar.style.width = Math.max(dw, 450) + "px";
 };
-Fullscreen.prototype.setScaleMode = function setScaleMode(scaleMode)
+Fullscreen.prototype.setScaleMode = async function setScaleMode(scaleMode)
 {
-	utils.whenLoaded(() => {
-		playercomm.setScaleMode(globals.flashmovie, scaleMode);
-	});
+	await utils.waitLoaded();
+	await playercomm.setScaleMode_coro(globals.flashmovie, scaleMode);
 };
 Fullscreen.prototype.updateSettings = function updateSettings()
 {

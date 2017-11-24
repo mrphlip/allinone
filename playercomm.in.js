@@ -386,6 +386,142 @@ PlayerComm.prototype.setScaleMode = function setScaleMode(elem, scaleMode, callb
 	}, this.origin)
 }
 
+PlayerComm.prototype.currentFrame_coro = function currentFrame_coro(elem)
+{
+	return new Promise(resolve => window.postMessage({
+		message: "aio_req_currentFrame",
+		callback: this.storeCallback(resolve),
+		id: this.getId(elem)
+	}, this.origin));
+}
+
+PlayerComm.prototype.targetCurrentFrame_coro = function currentFrame_coro(elem, target)
+{
+	return new Promise(resolve => window.postMessage({
+		message: "aio_req_targetCurrentFrame",
+		callback: this.storeCallback(resolve),
+		id: this.getId(elem),
+		target: target
+	}, this.origin));
+}
+
+PlayerComm.prototype.totalFrames_coro = function totalFrames_coro(elem)
+{
+	return new Promise(resolve => window.postMessage({
+		message: "aio_req_totalFrames",
+		callback: this.storeCallback(resolve),
+		id: this.getId(elem)
+	}, this.origin));
+}
+
+PlayerComm.prototype.targetTotalFrames_coro = function targetTotalFrames_coro(elem, target)
+{
+	return new Promise(resolve => window.postMessage({
+		message: "aio_req_targetTotalFrames",
+		callback: this.storeCallback(resolve),
+		id: this.getId(elem),
+		target: target
+	}, this.origin));
+}
+
+PlayerComm.prototype.isPlaying_coro = function isPlaying_coro(elem)
+{
+	return new Promise(resolve => window.postMessage({
+		message: "aio_req_isPlaying",
+		callback: this.storeCallback(resolve),
+		id: this.getId(elem)
+	}, this.origin));
+}
+
+PlayerComm.prototype.targetFramesLoaded_coro = function targetFramesLoaded_coro(elem, target)
+{
+	return new Promise(resolve => window.postMessage({
+		message: "aio_req_targetFramesLoaded",
+		callback: this.storeCallback(resolve),
+		id: this.getId(elem),
+		target: target
+	}, this.origin));
+}
+
+PlayerComm.prototype.stop_coro = function stop_coro(elem)
+{
+	return new Promise(resolve => window.postMessage({
+		message: "aio_req_stop",
+		callback: this.storeCallback(resolve),
+		id: this.getId(elem)
+	}, this.origin));
+}
+
+PlayerComm.prototype.targetStop_coro = function targetStop_coro(elem, target)
+{
+	return new Promise(resolve => window.postMessage({
+		message: "aio_req_targetStop",
+		callback: this.storeCallback(resolve),
+		id: this.getId(elem),
+		target: target
+	}, this.origin));
+}
+
+PlayerComm.prototype.play_coro = function play_coro(elem)
+{
+	return new Promise(resolve => window.postMessage({
+		message: "aio_req_play",
+		callback: this.storeCallback(resolve),
+		id: this.getId(elem)
+	}, this.origin));
+}
+
+PlayerComm.prototype.targetPlay_coro = function targetPlay_coro(elem, target)
+{
+	return new Promise(resolve => window.postMessage({
+		message: "aio_req_targetPlay",
+		callback: this.storeCallback(resolve),
+		id: this.getId(elem),
+		target: target
+	}, this.origin));
+}
+
+PlayerComm.prototype.goto_coro = function goto_coro(elem, frame)
+{
+	return new Promise(resolve => window.postMessage({
+		message: "aio_req_goto",
+		callback: this.storeCallback(resolve),
+		id: this.getId(elem),
+		frame: frame
+	}, this.origin));
+}
+
+PlayerComm.prototype.targetGoto_coro = function targetGoto_coro(elem, target, frame)
+{
+	return new Promise(resolve => window.postMessage({
+		message: "aio_req_targetGoto",
+		callback: this.storeCallback(resolve),
+		id: this.getId(elem),
+		target: target,
+		frame: frame
+	}, this.origin));
+}
+
+PlayerComm.prototype.zoom_coro = function zoom_coro(elem, zoom)
+{
+	return new Promise(resolve => window.postMessage({
+		message: "aio_req_zoom",
+		callback: this.storeCallback(resolve),
+		id: this.getId(elem),
+		zoom: zoom
+	}, this.origin));
+}
+
+PlayerComm.prototype.setScaleMode_coro = function setScaleMode_coro(elem, scaleMode)
+{
+	return new Promise(resolve => window.postMessage({
+		message: "aio_req_setScaleMode",
+		callback: this.storeCallback(resolve),
+		id: this.getId(elem),
+		scaleMode: scaleMode
+	}, this.origin));
+}
+
 PlayerComm.prototype.receiveMessage = function receiveMessage(event)
 {
 	if (event.origin !== this.origin)

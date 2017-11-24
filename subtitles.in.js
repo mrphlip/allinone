@@ -453,36 +453,35 @@ Subtitles.prototype.importNodes = function importNodes(node)
 	return document.createComment(""); // fallthrough
 };
 
-Subtitles.prototype.update = function update()
+Subtitles.prototype.update = async function update()
 {
 	if (!this.enabled || !this.charsready || !this.subsready || !this.subtitleholder)
 		return;
 
-	utils.currentFrame((frame) => {
-		if (frame < 0)
-			return;
-		frame++; // Make 1-based
-		// binary search to find the right transcript line
-		var first = 0;
-		var last = this.transcript.length;
-		while(first < (last - 1))
+	var frame = await utils.currentFrame_coro();
+	if (frame < 0)
+		return;
+	frame++; // Make 1-based
+	// binary search to find the right transcript line
+	var first = 0;
+	var last = this.transcript.length;
+	while(first < (last - 1))
+	{
+		var mid = (first + last) >> 1;
+		if (frame >= this.transcript[mid].start)
 		{
-			var mid = (first + last) >> 1;
-			if (frame >= this.transcript[mid].start)
-			{
-				first = mid;
-				if (frame <= this.transcript[mid].end)
-					break;
-			}
-			else
-				last = mid;
+			first = mid;
+			if (frame <= this.transcript[mid].end)
+				break;
 		}
-		// should we actually show the line?
-		if(this.transcript[first] && this.transcript[first].start <= frame && this.transcript[first].end >= frame)
-			this.setSubtitles(this.transcript[first].text);
 		else
-			this.setSubtitles(false);
-	});
+			last = mid;
+	}
+	// should we actually show the line?
+	if(this.transcript[first] && this.transcript[first].start <= frame && this.transcript[first].end >= frame)
+		this.setSubtitles(this.transcript[first].text);
+	else
+		this.setSubtitles(false);
 };
 
 Subtitles.prototype.setSubtitles = function setSubtitles(node)
