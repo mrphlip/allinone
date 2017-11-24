@@ -110,7 +110,7 @@ Subtitles.prototype.populateLanguage = async function populateLanguage()
 	this.setting_language.appendChild(option);
 
 	try {
-		var xml = await utils.downloadWiki_coro("Subtitles:Languages");
+		var xml = await utils.downloadWiki("Subtitles:Languages");
 		xml = utils.parseWikiXML(xml);
 	} catch (e) {
 		while (this.setting_language.firstChild)
@@ -225,7 +225,7 @@ Subtitles.prototype.loadCharacters = async function loadCharacters() {
 	if (this.charsready)
 		return;
 
-	var xml = await utils.downloadWiki_coro('Subtitles:Characters');
+	var xml = await utils.downloadWiki('Subtitles:Characters');
 	xml = utils.parseWikiXML(xml);
 
 	this.characters = {
@@ -262,7 +262,7 @@ Subtitles.prototype.reloadSubs = async function reloadSubs()
 
 	var xml;
 	if (!this.testsubs)
-		xml = await utils.downloadWiki_coro('Subtitles:' + globals.filename + '/' + this.language);
+		xml = await utils.downloadWiki('Subtitles:' + globals.filename + '/' + this.language);
 	else
 		xml = this.testsubsdata;
 	xml = utils.parseWikiXML(xml);

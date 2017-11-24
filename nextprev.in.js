@@ -119,7 +119,7 @@ NextPrev.prototype.showPrevNext = function showPrevNext()
 NextPrev.prototype.doCheckNext = async function doCheckNext()
 {
 	try {
-		var res = await utils.downloadPage_coro(this.nextlink.href + "?cachedodge=" + (await utils.getPref('cachedodge', 0)), "HEAD");
+		var res = await utils.downloadPage(this.nextlink.href + "?cachedodge=" + (await utils.getPref('cachedodge', 0)), "HEAD");
 	} catch (e) {
 		this.nextlink.parentNode.removeChild(this.nextlink);
 		this.nextlink = undefined;

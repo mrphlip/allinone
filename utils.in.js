@@ -89,7 +89,7 @@ Utils.prototype.setPref = function setPref(key, value)
 	}
 };
 
-Utils.prototype.downloadPage_coro = function downloadPage_coro(url, method)
+Utils.prototype.downloadPage = function downloadPage(url, method)
 {
 	if (!method)
 		method = 'GET';
@@ -122,10 +122,10 @@ Utils.prototype.buildWikiUrl = function buildWikiUrl(page)
 	var url = escape(page.replace(/ /g, '_'));
 	return "http://www.hrwiki.org/w/index.php?title=" + url + "&action=raw&source=allinone&cachedodge=" + this.getPref('cachedodge', 0);
 };
-Utils.prototype.downloadWiki_coro = async function downloadWiki(page)
+Utils.prototype.downloadWiki = async function downloadWiki(page)
 {
 	for (var timesredirected = 0; timesredirected < 3; timesredirected++) {
-		var res = await this.downloadPage_coro(this.buildWikiUrl(page));
+		var res = await this.downloadPage(this.buildWikiUrl(page));
 
 		// check for redirects
 		var matches = res.text.match(/^\s*#\s*REDIRECT\s*\[\[(.*)\]\]/i);

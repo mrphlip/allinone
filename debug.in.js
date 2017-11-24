@@ -21,11 +21,11 @@ DebugModule.prototype.doDebug = async function doDebug(e)
 {
 	e.preventDefault();
 
-	var res = await utils.downloadPage_coro("http://localhost/tmp.php");
+	var res = await utils.downloadPage("http://localhost/tmp.php");
 	console.log(res);
 	
 	/*
-	var res = await utils.downloadWiki_coro("Subtitles:Languages");
+	var res = await utils.downloadWiki("Subtitles:Languages");
 	console.log(res);
 	res = utils.parseWikiXML(res);
 	console.log(res);

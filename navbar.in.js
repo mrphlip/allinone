@@ -144,7 +144,7 @@ Navbar.prototype.loadRandoXML = async function loadRandoXML()
 	this.haveLoadedXML = true;
 
 	try {
-		var res = await utils.downloadPage_coro(
+		var res = await utils.downloadPage(
 			"http://www.homestarrunner.com/rando.xml?cachedodge=" + (await utils.getPref('cachedodge', 0))
 		);
 

@@ -43,7 +43,7 @@ Updates.prototype.doCheck = async function doCheck()
 	var str;
 	if (Date.now() - (await utils.getPref("lastchecktime", 0)) > Updates.CHECK_INTERVAL)
 	{
-		str = await utils.downloadPage_coro("http://www.hrwiki.org/wiki/Special:Getversion/User:Phlip/Greasemonkey?cachedodge=" + Math.random());
+		str = await utils.downloadPage("http://www.hrwiki.org/wiki/Special:Getversion/User:Phlip/Greasemonkey?cachedodge=" + Math.random());
 		str = str.text;
 		utils.setPref("lastchecktime", Date.now());
 		utils.setPref("lastcheckstring", str);
