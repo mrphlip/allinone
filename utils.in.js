@@ -89,42 +89,6 @@ Utils.prototype.setPref = function setPref(key, value)
 	}
 };
 
-Utils.prototype.downloadPage = function downloadPage(url, loadcb, errorcb, method)
-{
-	if (!method)
-		method = 'GET';
-	if (typeof(GM) == "object" && GM.xmlHttpRequest)
-	{
-		var opts = {
-			method: method,
-			url: url,
-			onload: function onload(res) {loadcb(res.responseText, res.status, res.statusText, res.responseHeaders);}
-		};
-		if (errorcb)
-			opts.onerror = function onerror(res) {errorcb(res.status, res.statusText, res.responseHeaders);};
-		GM.xmlHttpRequest(opts);
-	}
-	else if (typeof(GM_xmlhttpRequest) == "function")
-	{
-		var opts = {
-			method: method,
-			url: url,
-			onload: function onload(res) {loadcb(res.responseText, res.status, res.statusText, res.responseHeaders);}
-		};
-		if (errorcb)
-			opts.onerror = function onerror(res) {errorcb(res.status, res.statusText, res.responseHeaders);};
-		GM_xmlhttpRequest(opts);
-	}
-	else
-	{
-		var xhr = new XMLHttpRequest();
-		xhr.onload = function onload() {loadcb(xhr.responseText, xhr.status, xhr.statusText, xhr.getAllResponseHeaders());};
-		if (errorcb)
-			xhr.onerror = function onerror() {errorcb(xhr.status, xhr.statusText, xhr.getAllResponseHeaders());};
-		xhr.open(method, url);
-		xhr.send();
-	}
-};
 Utils.prototype.downloadPage_coro = function downloadPage_coro(url, method)
 {
 	if (!method)
@@ -158,33 +122,6 @@ Utils.prototype.buildWikiUrl = function buildWikiUrl(page)
 	var url = escape(page.replace(/ /g, '_'));
 	return "http://www.hrwiki.org/w/index.php?title=" + url + "&action=raw&source=allinone&cachedodge=" + this.getPref('cachedodge', 0);
 };
-Utils.prototype.downloadWiki = function downloadWiki(page, loadcb, errorcb)
-{
-	this.downloadPage(this.buildWikiUrl(page), this.wikiPageDownloaded.bind(this, loadcb, errorcb, 0), errorcb);
-};
-Utils.prototype.wikiPageDownloaded = function wikiPageDownloaded(loadcb, errorcb, timesredirected, text, status, statusText)
-{
-	// check for redirects
-	var matches = text.match(/^\s*#\s*REDIRECT\s*\[\[(.*)\]\]/i);
-	if (matches)
-	{
-		if (timesredirected >= 3) // follow 3 redirects, but no more
-		{
-			errorcb(500, "Too many redirects");
-			return;
-		}
-		// Get the page name out of the redirect text
-		text = matches[1];
-		if ((matches = text.match(/^(.*)\|/)))
-			text = matches[1];
-		if ((matches = text.match(/^(.*)\#/)))
-			text = matches[1];
-		text = text.replace(/^\s+|\s+$/g, '');
-		this.downloadPage(this.buildWikiUrl(text), this.wikiPageDownloaded.bind(this, loadcb, errorcb, timesredirected + 1), errorcb);
-		return;
-	}
-	loadcb(text, status, statusText);
-};
 Utils.prototype.downloadWiki_coro = async function downloadWiki(page)
 {
 	for (var timesredirected = 0; timesredirected < 3; timesredirected++) {
@@ -206,64 +143,6 @@ Utils.prototype.downloadWiki_coro = async function downloadWiki(page)
 			return res.text;
 	}
 	throw "Too many redirects";
-};
-Utils.prototype.downloadWikiXML = function downloadWikiXML(page, loadcb, errorcb)
-{
-	this.downloadWiki(page, this.wikiXMLDownloaded.bind(this, loadcb, errorcb), errorcb);
-};
-Utils.prototype.wikiXMLDownloaded = function wikiXMLDownloaded(loadcb, errorcb, text, status, statusText)
-{
-	// strip various things - templates and <pre> tags for wiki formatting, and <noinclude> sections...
-	// <includeonly> tags are stripped (but their contents kept) for consistency.
-	text = text.replace(/{{.*?}}/g, "");
-	text = text.replace(/<\/?pre[^>]*>/g, "");
-	text = text.replace(/<noinclude[^>]*>.*?<\/noinclude[^>]*>/g, "");
-	text = text.replace(/<includeonly[^>]*>(.*?)<\/includeonly[^>]*>/g, "$1");
-	text = text.replace(/^\s+/g, "");
-
-	var parser = new DOMParser();
-	try
-	{
-		var doc = parser.parseFromString(text, "application/xml");
-	}
-	catch (e)
-	{
-		errorcb(500, "Error in XML:\n" + e.toString());
-		return;
-	}
-	// check if returned document is an error message
-	if (doc.getElementsByTagName('parsererror').length > 0)
-	{
-		var error = doc.getElementsByTagName('parsererror')[0];
-		if (error.firstChild.nodeType == doc.TEXT_NODE && error.lastChild.nodeType == doc.ELEMENT_NODE && error.lastChild.nodeName == "sourcetext")
-		{
-			// Firefox's errors look like this:
-			// <parsererror>Error details<sourcetext>Source text</sourcetext></parsererror>
-			errorcb(500,
-				error.firstChild.nodeValue.replace(/Location: .*\n/, "") + "\n" +
-				doc.documentElement.lastChild.textContent
-			);
-		}
-		else if (error.getElementsByTagName('div').length > 0)
-		{
-			// Chrome's errors look like this:
-			// <someRoot><parsererror style="..."><h3>Generic error message</h3><div style="...">Error details</div><h3>Generic footer</h3><attempted parsing of page/></someRoot>
-			errorcb(500,
-				"Error in XML:\n" +
-				error.getElementsByTagName('div')[0].textContent
-			);
-		}
-		else
-		{
-			// Try to at least return something
-			errorcb(500,
-				"Error in XML:\n" +
-				error.textContent
-			);
-		}
-		return;
-	}
-	loadcb(doc, status, statusText);
 };
 Utils.prototype.parseWikiXML = function parseWikiXML(text)
 {
