@@ -244,15 +244,15 @@ Seekbar.prototype.nextFrame = async function nextFrame()
 };
 Seekbar.prototype.zoomIn = async function zoomIn()
 {
-	await utils.zoomIn(1.5);
+	await utils.zoomIn_coro(1.5);
 };
 Seekbar.prototype.zoomOut = async function zoomOut()
 {
-	await utils.zoomOut(1.5);
+	await utils.zoomOut_coro(1.5);
 };
 Seekbar.prototype.zoomNormal = async function zoomNormal()
 {
-	await utils.zoomReset();
+	await utils.zoomReset_coro();
 };
 
 Seekbar.prototype.drag = function drag(e)
