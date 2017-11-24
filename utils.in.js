@@ -216,7 +216,7 @@ Utils.prototype.wikiXMLDownloaded = function wikiXMLDownloaded(loadcb, errorcb, 
 	loadcb(doc, status, statusText);
 };
 
-Utils.prototype.currentFrame_coro = async function currentFrame_coro(flashmovie)
+Utils.prototype.currentFrame = async function currentFrame(flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
@@ -225,7 +225,7 @@ Utils.prototype.currentFrame_coro = async function currentFrame_coro(flashmovie)
 
 	if (flashmovie === globals.flashmovie && globals.is_puppets)
 	{
-		var a = await playercomm.targetCurrentFrame_coro(flashmovie, "/videoplayer");
+		var a = await playercomm.targetCurrentFrame(flashmovie, "/videoplayer");
 
 		// Keep track of whether the current frame is changing, for isPlaying()
 		// If we stay on the same frame for more than, say, a second, guess
@@ -245,10 +245,10 @@ Utils.prototype.currentFrame_coro = async function currentFrame_coro(flashmovie)
 	}
 	else
 	{
-		return await playercomm.currentFrame_coro(flashmovie)
+		return await playercomm.currentFrame(flashmovie)
 	}
 };
-Utils.prototype.totalFrames_coro = async function totalFrames_coro(flashmovie)
+Utils.prototype.totalFrames = async function totalFrames(flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
@@ -257,11 +257,11 @@ Utils.prototype.totalFrames_coro = async function totalFrames_coro(flashmovie)
 
 	var a;
 	if (flashmovie === globals.flashmovie && globals.is_puppets)
-		return await playercomm.targetTotalFrames_coro(flashmovie, "/videoplayer")
+		return await playercomm.targetTotalFrames(flashmovie, "/videoplayer")
 	else
-		return await playercomm.totalFrames_coro(flashmovie)
+		return await playercomm.totalFrames(flashmovie)
 };
-Utils.prototype.isPlaying_coro = async function isPlaying_coro(flashmovie)
+Utils.prototype.isPlaying = async function isPlaying(flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
@@ -278,10 +278,10 @@ Utils.prototype.isPlaying_coro = async function isPlaying_coro(flashmovie)
 	}
 	else
 	{
-		return await playercomm.isPlaying_coro(flashmovie);
+		return await playercomm.isPlaying(flashmovie);
 	}
 };
-Utils.prototype.framesLoaded_coro = async function framesLoaded_coro(flashmovie)
+Utils.prototype.framesLoaded = async function framesLoaded(flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
@@ -289,13 +289,13 @@ Utils.prototype.framesLoaded_coro = async function framesLoaded_coro(flashmovie)
 		return;
 
 	if (flashmovie === globals.flashmovie && globals.is_puppets)
-		return await playercomm.targetFramesLoaded_coro(flashmovie, '/videoplayer')
+		return await playercomm.targetFramesLoaded(flashmovie, '/videoplayer')
 	else
-		return await playercomm.targetFramesLoaded_coro(flashmovie, '/')
+		return await playercomm.targetFramesLoaded(flashmovie, '/')
 };
-Utils.prototype.isLoaded_coro = async function isLoaded_coro(flashmovie)
+Utils.prototype.isLoaded = async function isLoaded(flashmovie)
 {
-	var frame = await this.currentFrame_coro(flashmovie);
+	var frame = await this.currentFrame(flashmovie);
 	return frame >= 0;
 };
 Utils.prototype.waitLoaded = function waitLoaded(flashmovie)
@@ -312,7 +312,7 @@ Utils.prototype.waitLoaded = function waitLoaded(flashmovie)
 		return this.loadedPromise;
 
 	async function poll(resolve) {
-		if (await this.isLoaded_coro(flashmovie))
+		if (await this.isLoaded(flashmovie))
 			resolve();
 		else
 			setTimeout(poll.bind(this, resolve), 100)
@@ -322,7 +322,7 @@ Utils.prototype.waitLoaded = function waitLoaded(flashmovie)
 		this.loadedPromise = promise;
 	return promise;
 }
-Utils.prototype.stop_coro = async function stop_coro(flashmovie)
+Utils.prototype.stop = async function stop(flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
@@ -331,7 +331,7 @@ Utils.prototype.stop_coro = async function stop_coro(flashmovie)
 
 	if (flashmovie === globals.flashmovie && globals.is_puppets)
 	{
-		await playercomm.targetStop_coro(flashmovie, "/videoplayer");
+		await playercomm.targetStop(flashmovie, "/videoplayer");
 
 		// make sure this.guessisplaying.lastframe is updated so that it doesn't
 		// go back to state=true
@@ -341,10 +341,10 @@ Utils.prototype.stop_coro = async function stop_coro(flashmovie)
 	}
 	else
 	{
-		await playercomm.stop_coro(flashmovie);
+		await playercomm.stop(flashmovie);
 	}
 };
-Utils.prototype.play_coro = async function play_coro(flashmovie)
+Utils.prototype.play = async function play(flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
@@ -353,16 +353,16 @@ Utils.prototype.play_coro = async function play_coro(flashmovie)
 
 	if (flashmovie === globals.flashmovie && globals.is_puppets)
 	{
-		await playercomm.targetPlay_coro(flashmovie, "/videoplayer");
+		await playercomm.targetPlay(flashmovie, "/videoplayer");
 		this.guessisplaying.state = true;
 		this.guessisplaying.lastframeat = new Date();
 	}
 	else
 	{
-		await playercomm.play_coro(flashmovie);
+		await playercomm.play(flashmovie);
 	}
 };
-Utils.prototype.goto_coro = async function goto_coro(frame, flashmovie)
+Utils.prototype.goto = async function goto(frame, flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
@@ -371,7 +371,7 @@ Utils.prototype.goto_coro = async function goto_coro(frame, flashmovie)
 
 	if (flashmovie === globals.flashmovie && globals.is_puppets)
 	{
-		await playercomm.targetGoto_coro(flashmovie, "/videoplayer", frame);
+		await playercomm.targetGoto(flashmovie, "/videoplayer", frame);
 
 		// make sure this.guessisplaying.lastframe is updated so that it doesn't
 		// go back to state=true
@@ -381,35 +381,35 @@ Utils.prototype.goto_coro = async function goto_coro(frame, flashmovie)
 	}
 	else
 	{
-		await playercomm.goto_coro(flashmovie, frame);
+		await playercomm.goto(flashmovie, frame);
 	}
 };
-Utils.prototype.zoomOut_coro = async function zoomOut_coro(factor, flashmovie)
+Utils.prototype.zoomOut = async function zoomOut(factor, flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
 	if (!flashmovie)
 		return;
 
-	await playercomm.zoom_coro(flashmovie, 100 * factor);
+	await playercomm.zoom(flashmovie, 100 * factor);
 };
-Utils.prototype.zoomIn_coro = async function zoomIn_coro(factor, flashmovie)
+Utils.prototype.zoomIn = async function zoomIn(factor, flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
 	if (!flashmovie)
 		return;
 
-	await playercomm.zoom_coro(flashmovie, 100 / factor);
+	await playercomm.zoom(flashmovie, 100 / factor);
 };
-Utils.prototype.zoomReset_coro = async function zoomReset_coro(factor, flashmovie)
+Utils.prototype.zoomReset = async function zoomReset(factor, flashmovie)
 {
 	if (!flashmovie)
 		flashmovie = globals.flashmovie;
 	if (!flashmovie)
 		return;
 
-	await playercomm.zoom_coro(flashmovie, 0);
+	await playercomm.zoom(flashmovie, 0);
 };
 
 Utils.prototype.insertAfter = function insertAfter(newElement, referenceElement)

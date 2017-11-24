@@ -460,7 +460,7 @@ Subtitles.prototype.update = async function update()
 	if (!this.enabled || !this.charsready || !this.subsready || !this.subtitleholder)
 		return;
 
-	var frame = await utils.currentFrame_coro();
+	var frame = await utils.currentFrame();
 	if (frame < 0)
 		return;
 	frame++; // Make 1-based

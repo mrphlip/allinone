@@ -18,7 +18,7 @@ Seekbar.prototype.init = async function init() {
 		await this.addSeekbar();
 
 	this.dragging = false;
-	this.paused = !await utils.isPlaying_coro();
+	this.paused = !await utils.isPlaying();
 	document.addEventListener("mousemove", this.dragMousemove.bind(this), false);
 	document.addEventListener("mouseup", this.release.bind(this), false);
 
@@ -40,7 +40,7 @@ Seekbar.prototype.updateSettings = function updateSettings()
 Seekbar.prototype.addSeekbar = async function addSeekbar()
 {
 	this.dragging = false;
-	this.paused = !await utils.isPlaying_coro();
+	this.paused = !await utils.isPlaying();
 
 	this.seekbar = document.createElement("div");
 	var where = globals.flashmovie;
@@ -181,10 +181,10 @@ Seekbar.prototype.update = async function update()
 
 	var fullSliderWidth = parseInt(document.defaultView.getComputedStyle(this.slider, null).width, 10);
 	var sliderWidth = fullSliderWidth - parseInt(document.defaultView.getComputedStyle(this.thumb, null).width, 10);
-	var tot = await utils.totalFrames_coro();
+	var tot = await utils.totalFrames();
 	if (tot > 0)
 	{
-		var frame = await utils.currentFrame_coro();
+		var frame = await utils.currentFrame();
 		if (frame < 0)
 			frame = 0;
 		if (this.framecountertext)
@@ -201,10 +201,10 @@ Seekbar.prototype.update = async function update()
 				this.thumb.style.left = (frame/(tot - 1)*sliderWidth)+"px";
 			else
 				this.thumb.style.left = "0";
-			this.paused = !await utils.isPlaying_coro();
+			this.paused = !await utils.isPlaying();
 			this.pauseButtonImg.src = this.paused ? globals.images.play : globals.images.pause;
 		}
-		var loaded = await utils.framesLoaded_coro();
+		var loaded = await utils.framesLoaded();
 		this.loadmeter.style.width = (loaded/tot*fullSliderWidth)+"px";
 	}
 	else if (this.framecountertext)
@@ -215,44 +215,44 @@ Seekbar.prototype.update = async function update()
 
 Seekbar.prototype.pauseUnpause = async function pauseUnpause()
 {
-	this.paused = await utils.isPlaying_coro();
+	this.paused = await utils.isPlaying();
 	this.pauseButtonImg.src = this.paused ? globals.images.play : globals.images.pause;
 	if (this.paused)
-		await utils.stop_coro();
+		await utils.stop();
 	else
-		await utils.play_coro();
+		await utils.play();
 };
 Seekbar.prototype.rewind = async function rewind()
 {
-	await utils.goto_coro(0);
-	await utils.play_coro();
+	await utils.goto(0);
+	await utils.play();
 };
 Seekbar.prototype.fastforward = async function fastforward()
 {
-	var tot = await utils.totalFrames_coro();
-	await utils.goto_coro(tot - 1);
+	var tot = await utils.totalFrames();
+	await utils.goto(tot - 1);
 };
 Seekbar.prototype.prevFrame = async function prevFrame()
 {
-	var frame = await utils.currentFrame_coro();
-	await utils.goto_coro(frame - 1);
+	var frame = await utils.currentFrame();
+	await utils.goto(frame - 1);
 };
 Seekbar.prototype.nextFrame = async function nextFrame()
 {
-	var frame = await utils.currentFrame_coro();
-	await utils.goto_coro(frame + 1);
+	var frame = await utils.currentFrame();
+	await utils.goto(frame + 1);
 };
 Seekbar.prototype.zoomIn = async function zoomIn()
 {
-	await utils.zoomIn_coro(1.5);
+	await utils.zoomIn(1.5);
 };
 Seekbar.prototype.zoomOut = async function zoomOut()
 {
-	await utils.zoomOut_coro(1.5);
+	await utils.zoomOut(1.5);
 };
 Seekbar.prototype.zoomNormal = async function zoomNormal()
 {
-	await utils.zoomReset_coro();
+	await utils.zoomReset();
 };
 
 Seekbar.prototype.drag = function drag(e)
@@ -274,11 +274,11 @@ Seekbar.prototype.dragMousemove = async function dragMousemove(e)
 		pos = 0;
 	if (pos > 1)
 		pos = 1;
-	var t = await utils.totalFrames_coro();
+	var t = await utils.totalFrames();
 	if (t > 1)
 	{
 		var frame = Math.round(t * pos);
-		await utils.goto_coro(frame);
+		await utils.goto(frame);
 	}
 	this.thumb.style.left = (pos * width) + "px";
 };
@@ -286,6 +286,6 @@ Seekbar.prototype.release = function release()
 {
 	if (!this.dragging) return;
 	if (!this.paused)
-		utils.play_coro();
+		utils.play();
 	this.dragging = false;
 };

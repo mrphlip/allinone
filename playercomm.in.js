@@ -251,7 +251,7 @@ PlayerComm.prototype.inPageContext = function inPageContext()
 }
 
 
-PlayerComm.prototype.currentFrame_coro = function currentFrame_coro(elem)
+PlayerComm.prototype.currentFrame = function currentFrame(elem)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_currentFrame",
@@ -260,7 +260,7 @@ PlayerComm.prototype.currentFrame_coro = function currentFrame_coro(elem)
 	}, this.origin));
 }
 
-PlayerComm.prototype.targetCurrentFrame_coro = function currentFrame_coro(elem, target)
+PlayerComm.prototype.targetCurrentFrame = function currentFrame(elem, target)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_targetCurrentFrame",
@@ -270,7 +270,7 @@ PlayerComm.prototype.targetCurrentFrame_coro = function currentFrame_coro(elem, 
 	}, this.origin));
 }
 
-PlayerComm.prototype.totalFrames_coro = function totalFrames_coro(elem)
+PlayerComm.prototype.totalFrames = function totalFrames(elem)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_totalFrames",
@@ -279,7 +279,7 @@ PlayerComm.prototype.totalFrames_coro = function totalFrames_coro(elem)
 	}, this.origin));
 }
 
-PlayerComm.prototype.targetTotalFrames_coro = function targetTotalFrames_coro(elem, target)
+PlayerComm.prototype.targetTotalFrames = function targetTotalFrames(elem, target)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_targetTotalFrames",
@@ -289,7 +289,7 @@ PlayerComm.prototype.targetTotalFrames_coro = function targetTotalFrames_coro(el
 	}, this.origin));
 }
 
-PlayerComm.prototype.isPlaying_coro = function isPlaying_coro(elem)
+PlayerComm.prototype.isPlaying = function isPlaying(elem)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_isPlaying",
@@ -298,7 +298,7 @@ PlayerComm.prototype.isPlaying_coro = function isPlaying_coro(elem)
 	}, this.origin));
 }
 
-PlayerComm.prototype.targetFramesLoaded_coro = function targetFramesLoaded_coro(elem, target)
+PlayerComm.prototype.targetFramesLoaded = function targetFramesLoaded(elem, target)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_targetFramesLoaded",
@@ -308,7 +308,7 @@ PlayerComm.prototype.targetFramesLoaded_coro = function targetFramesLoaded_coro(
 	}, this.origin));
 }
 
-PlayerComm.prototype.stop_coro = function stop_coro(elem)
+PlayerComm.prototype.stop = function stop(elem)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_stop",
@@ -317,7 +317,7 @@ PlayerComm.prototype.stop_coro = function stop_coro(elem)
 	}, this.origin));
 }
 
-PlayerComm.prototype.targetStop_coro = function targetStop_coro(elem, target)
+PlayerComm.prototype.targetStop = function targetStop(elem, target)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_targetStop",
@@ -327,7 +327,7 @@ PlayerComm.prototype.targetStop_coro = function targetStop_coro(elem, target)
 	}, this.origin));
 }
 
-PlayerComm.prototype.play_coro = function play_coro(elem)
+PlayerComm.prototype.play = function play(elem)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_play",
@@ -336,7 +336,7 @@ PlayerComm.prototype.play_coro = function play_coro(elem)
 	}, this.origin));
 }
 
-PlayerComm.prototype.targetPlay_coro = function targetPlay_coro(elem, target)
+PlayerComm.prototype.targetPlay = function targetPlay(elem, target)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_targetPlay",
@@ -346,7 +346,7 @@ PlayerComm.prototype.targetPlay_coro = function targetPlay_coro(elem, target)
 	}, this.origin));
 }
 
-PlayerComm.prototype.goto_coro = function goto_coro(elem, frame)
+PlayerComm.prototype.goto = function goto(elem, frame)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_goto",
@@ -356,7 +356,7 @@ PlayerComm.prototype.goto_coro = function goto_coro(elem, frame)
 	}, this.origin));
 }
 
-PlayerComm.prototype.targetGoto_coro = function targetGoto_coro(elem, target, frame)
+PlayerComm.prototype.targetGoto = function targetGoto(elem, target, frame)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_targetGoto",
@@ -367,7 +367,7 @@ PlayerComm.prototype.targetGoto_coro = function targetGoto_coro(elem, target, fr
 	}, this.origin));
 }
 
-PlayerComm.prototype.zoom_coro = function zoom_coro(elem, zoom)
+PlayerComm.prototype.zoom = function zoom(elem, zoom)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_zoom",
@@ -377,7 +377,7 @@ PlayerComm.prototype.zoom_coro = function zoom_coro(elem, zoom)
 	}, this.origin));
 }
 
-PlayerComm.prototype.setScaleMode_coro = function setScaleMode_coro(elem, scaleMode)
+PlayerComm.prototype.setScaleMode = function setScaleMode(elem, scaleMode)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_setScaleMode",

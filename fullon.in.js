@@ -105,7 +105,7 @@ Fullscreen.prototype.doResize = function doResize()
 Fullscreen.prototype.setScaleMode = async function setScaleMode(scaleMode)
 {
 	await utils.waitLoaded();
-	await playercomm.setScaleMode_coro(globals.flashmovie, scaleMode);
+	await playercomm.setScaleMode(globals.flashmovie, scaleMode);
 };
 Fullscreen.prototype.updateSettings = function updateSettings()
 {
