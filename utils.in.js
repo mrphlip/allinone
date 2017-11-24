@@ -125,6 +125,34 @@ Utils.prototype.downloadPage = function downloadPage(url, loadcb, errorcb, metho
 		xhr.send();
 	}
 };
+Utils.prototype.downloadPage_coro = function downloadPage_coro(url, method)
+{
+	if (!method)
+		method = 'GET';
+	return new Promise((resolve, reject) => {
+		if (typeof(GM) == "object" && GM.xmlHttpRequest) {
+			GM.xmlHttpRequest({
+				method: method,
+				url: url,
+				onload: res => resolve({text: res.responseText, status: res.status, statusText: res.statusText, headers: res.responseHeaders}),
+				onerror: res => reject(`${res.status} ${res.statusText}`)
+			});
+		} else if (typeof(GM_xmlhttpRequest) == "function") {
+			GM_xmlhttpRequest({
+				method: method,
+				url: url,
+				onload: res => resolve({text: res.responseText, status: res.status, statusText: res.statusText, headers: res.responseHeaders}),
+				onerror: res => reject(`${res.status} ${res.statusText}`)
+			});
+		} else {
+			var xhr = new XMLHttpRequest();
+			xhr.onload = () => resolve({text: xhr.responseText, status: xhr.status, statusText: xhr.statusText, headers: xhr.getAllResponseHeaders()});
+			xhr.onerror = () => reject(`${xhr.status} ${xhr.statusText}`);
+			xhr.open(method, url);
+			xhr.send();
+		}
+	});
+};
 Utils.prototype.buildWikiUrl = function buildWikiUrl(page)
 {
 	var url = escape(page.replace(/ /g, '_'));
@@ -156,6 +184,28 @@ Utils.prototype.wikiPageDownloaded = function wikiPageDownloaded(loadcb, errorcb
 		return;
 	}
 	loadcb(text, status, statusText);
+};
+Utils.prototype.downloadWiki_coro = async function downloadWiki(page)
+{
+	for (var timesredirected = 0; timesredirected < 3; timesredirected++) {
+		var res = await this.downloadPage_coro(this.buildWikiUrl(page));
+
+		// check for redirects
+		var matches = res.text.match(/^\s*#\s*REDIRECT\s*\[\[(.*)\]\]/i);
+		if (matches)
+		{
+			// Get the page name out of the redirect text
+			var text = matches[1];
+			if ((matches = text.match(/^(.*)\|/)))
+				text = matches[1];
+			if ((matches = text.match(/^(.*)\#/)))
+				text = matches[1];
+			page = text.replace(/^\s+|\s+$/g, '');
+		}
+		else
+			return res.text;
+	}
+	throw "Too many redirects";
 };
 Utils.prototype.downloadWikiXML = function downloadWikiXML(page, loadcb, errorcb)
 {
@@ -214,6 +264,58 @@ Utils.prototype.wikiXMLDownloaded = function wikiXMLDownloaded(loadcb, errorcb, 
 		return;
 	}
 	loadcb(doc, status, statusText);
+};
+Utils.prototype.parseWikiXML = function parseWikiXML(text)
+{
+	// strip various things - templates and <pre> tags for wiki formatting, and <noinclude> sections...
+	// <includeonly> tags are stripped (but their contents kept) for consistency.
+	text = text.replace(/{{.*?}}/g, "");
+	text = text.replace(/<\/?pre[^>]*>/g, "");
+	text = text.replace(/<noinclude[^>]*>.*?<\/noinclude[^>]*>/g, "");
+	text = text.replace(/<includeonly[^>]*>(.*?)<\/includeonly[^>]*>/g, "$1");
+	text = text.replace(/^\s+/g, "");
+
+	var parser = new DOMParser();
+	try
+	{
+		var doc = parser.parseFromString(text, "application/xml");
+	}
+	catch (e)
+	{
+		throw "Error in XML:\n" + e.toString();
+	}
+	// check if returned document is an error message
+	if (doc.getElementsByTagName('parsererror').length > 0)
+	{
+		var error = doc.getElementsByTagName('parsererror')[0];
+		if (error.firstChild.nodeType == doc.TEXT_NODE && error.lastChild.nodeType == doc.ELEMENT_NODE && error.lastChild.nodeName == "sourcetext")
+		{
+			// Firefox's errors look like this:
+			// <parsererror>Error details<sourcetext>Source text</sourcetext></parsererror>
+			throw (
+				error.firstChild.nodeValue.replace(/Location: .*\n/, "") + "\n" +
+				doc.documentElement.lastChild.textContent
+			);
+		}
+		else if (error.getElementsByTagName('div').length > 0)
+		{
+			// Chrome's errors look like this:
+			// <someRoot><parsererror style="..."><h3>Generic error message</h3><div style="...">Error details</div><h3>Generic footer</h3><attempted parsing of page/></someRoot>
+			throw (
+				"Error in XML:\n" +
+				error.getElementsByTagName('div')[0].textContent
+			);
+		}
+		else
+		{
+			// Try to at least return something
+			throw (
+				"Error in XML:\n" +
+				error.textContent
+			);
+		}
+	}
+	return doc;
 };
 
 Utils.prototype.currentFrame = async function currentFrame(flashmovie)
