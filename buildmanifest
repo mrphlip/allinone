@@ -44,7 +44,7 @@ manifest = {
 	'short_name': 'All-In-One',
 	'permissions': [
 		"http://www.hrwiki.org/*",
-		"http://www.homestarrunner.com/rando.xml",
+		"http://homestarrunner.com/rando.xml",
 	],
 }
 import json

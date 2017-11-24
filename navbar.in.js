@@ -82,20 +82,20 @@ Navbar.prototype.buildNavbar = function buildNavbar(where)
 	else
 		document.body.appendChild(newnavbar);
 
-	this.mainlink = this.addnavbarlink(newnavbar, "http://www.homestarrunner.com/main" + Math.floor(Math.random() * this.MAIN_COUNT + 1) + ".html", "Main");
+	this.mainlink = this.addnavbarlink(newnavbar, "http://homestarrunner.com/main" + Math.floor(Math.random() * this.MAIN_COUNT + 1) + ".html", "Main");
 	// just for fun, re-randomise on each mouse-over (for the status bar)
 	this.mainlink.addEventListener("mouseout", this.newMainLink.bind(this), false);
-	this.addnavbarlink(newnavbar, "http://www.homestarrunner.com/toons.html", "Toons");
-	this.addnavbarlink(newnavbar, "http://www.homestarrunner.com/games.html", "Games");
-	this.addnavbarlink(newnavbar, "http://www.homestarrunner.com/characters2.html", "Characters");
-	this.addnavbarlink(newnavbar, "http://www.homestarrunner.com/homester.html", "Downloads");
-	this.addnavbarlink(newnavbar, "http://www.homestarrunner.com/store.html", "Store", "storelink");
-	this.addnavbarlink(newnavbar, "http://www.homestarrunner.com/sbemail.html", "SB Emails");
+	this.addnavbarlink(newnavbar, "http://homestarrunner.com/toons.html", "Toons");
+	this.addnavbarlink(newnavbar, "http://homestarrunner.com/games.html", "Games");
+	this.addnavbarlink(newnavbar, "http://homestarrunner.com/characters2.html", "Characters");
+	this.addnavbarlink(newnavbar, "http://homestarrunner.com/homester.html", "Downloads");
+	this.addnavbarlink(newnavbar, "http://homestarrunner.com/store.html", "Store", "storelink");
+	this.addnavbarlink(newnavbar, "http://homestarrunner.com/sbemail.html", "SB Emails");
 	//this.addnavbarlink(newnavbar, "http://feeds.feedburner.com/HomestarRunner", "Subscribe");
 	this.addnavbarlink(newnavbar, "https://www.youtube.com/user/homestarrunnerdotcom", "YouTube");
-	this.addnavbarlink(newnavbar, "http://www.homestarrunner.com/email.html", "Contact");
+	this.addnavbarlink(newnavbar, "http://homestarrunner.com/email.html", "Contact");
 	//this.addnavbarlink(newnavbar, "http://podstar.homestarrunner.com/", "Podcast");
-	this.addnavbarlink(newnavbar, "http://www.homestarrunner.com/legal.html", "Legal");
+	this.addnavbarlink(newnavbar, "http://homestarrunner.com/legal.html", "Legal");
 	this.randolink = this.addnavbarlink(newnavbar, "javascript:void(alert('rando.xml not loaded yet... be patient'))", "Rando");
 	this.randolink.addEventListener("mouseout", this.newRandoLink.bind(this), false);
 
@@ -116,7 +116,7 @@ Navbar.prototype.addnavbarlink = function addnavbarlink(ul, href, title, extracl
 
 Navbar.prototype.newMainLink = function newMainLink()
 {
-	this.mainlink.href="http://www.homestarrunner.com/main" + Math.floor(Math.random() * this.MAIN_COUNT + 1) + ".html";
+	this.mainlink.href="http://homestarrunner.com/main" + Math.floor(Math.random() * this.MAIN_COUNT + 1) + ".html";
 };
 Navbar.prototype.newRandoLink = function newRandoLink()
 {
@@ -145,7 +145,7 @@ Navbar.prototype.loadRandoXML = async function loadRandoXML()
 
 	try {
 		var res = await utils.downloadPage(
-			"http://www.homestarrunner.com/rando.xml?cachedodge=" + (await utils.getPref('cachedodge', 0))
+			"http://homestarrunner.com/rando.xml?cachedodge=" + (await utils.getPref('cachedodge', 0))
 		);
 
 		var parser = new DOMParser();
@@ -173,9 +173,9 @@ Navbar.prototype.loadRandoXML = async function loadRandoXML()
 					n = "SBEmail: " + n;
 				}
 				if (u)
-					this.allrandourls.push({u: "http://www.homestarrunner.com/" + u, n: n, type: type});
+					this.allrandourls.push({u: "http://homestarrunner.com/" + u, n: n, type: type});
 				else
-					this.allrandourls.push({u: "http://www.homestarrunner.com/sbemail" + sbemailcounter + ".html", n: n, type: type});
+					this.allrandourls.push({u: "http://homestarrunner.com/sbemail" + sbemailcounter + ".html", n: n, type: type});
 			}
 		}
 		this.filterRando();
