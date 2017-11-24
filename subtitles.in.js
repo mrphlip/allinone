@@ -1,16 +1,18 @@
 function Subtitles()
 {
-	this.enabled = utils.getPref('subtitles', false);
-	this.captions = utils.getPref('captions', true);
-	this.colours = utils.getPref('colours', true);
-	this.testsubs = utils.getPref('testsubs', false);
-	this.language = utils.getPref('language', "en");
-	this.testsubsdata = unescape(utils.getPref('testsubsdata', this.DEFAULTXML));
-	this.names = utils.getPref('names', 0);
 }
 Subtitles.prototype.DEFAULTXML = escape('<?xml version="1.0" encoding="utf-8"?>\n<transcript xml:lang="en-us">\n<line start="" end="" speaker=""></line>\n</transcript>');
 Subtitles.prototype.NAMES_OPTS = ["Never", "Voiceovers", "Always"];
 Subtitles.prototype.NO_SUBTITLES = document.createComment("");
+Subtitles.prototype.load = async function load() {
+	this.enabled = await utils.getPref('subtitles', false);
+	this.captions = await utils.getPref('captions', true);
+	this.colours = await utils.getPref('colours', true);
+	this.testsubs = await utils.getPref('testsubs', false);
+	this.language = await utils.getPref('language', "en");
+	this.testsubsdata = unescape(await utils.getPref('testsubsdata', this.DEFAULTXML));
+	this.names = await utils.getPref('names', 0);
+}
 Subtitles.prototype.init = function init()
 {
 	utils.addGlobalStyle(

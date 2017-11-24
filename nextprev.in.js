@@ -1,7 +1,9 @@
 function NextPrev()
 {
-	this.enabled = utils.getPref('prevnext', true);
-	this.docheck = utils.getPref('checknext', true);
+}
+NextPrev.prototype.load = async function load() {
+	this.enabled = await utils.getPref('prevnext', true);
+	this.docheck = await utils.getPref('checknext', true);
 }
 NextPrev.prototype.init = function init()
 {
@@ -102,7 +104,7 @@ NextPrev.prototype.showPrevNext = function showPrevNext()
 		if (this.prevlink)
 			this.prevlink.style.display = "block";
 		if (this.docheck && !this.checkedNext && this.nextlink)
-			utils.downloadPage(this.nextlink.href + "?cachedodge=" + utils.getPref('cachedodge', 0), this.onCheckLoad.bind(this), this.onCheckError.bind(this), "HEAD");
+			this.doCheckNext(); // intentionally no "await" here
 		else if (this.nextlink)
 			this.nextlink.style.display = "block";
 	}
@@ -114,6 +116,10 @@ NextPrev.prototype.showPrevNext = function showPrevNext()
 			this.nextlink.style.display = "none";
 	}
 };
+NextPrev.prototype.doCheckNext = async function doCheckNext()
+{
+	utils.downloadPage(this.nextlink.href + "?cachedodge=" + (await utils.getPref('cachedodge', 0)), this.onCheckLoad.bind(this), this.onCheckError.bind(this), "HEAD");
+}
 NextPrev.prototype.onCheckLoad = function onCheckLoad(text, status, statustext, headers)
 {
 	if (status == 200 && headers.indexOf("404error.html") < 0)

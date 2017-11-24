@@ -1,9 +1,5 @@
 function Navbar()
 {
-	this.enabled = utils.getPref('navbar', false);
-	this.rando = {};
-	for (var i in this.SECTIONS)
-		this.rando[i] = utils.getPref('rando' + i, true);
 }
 Navbar.prototype.SECTIONS = {
 	t: "Big Toons",
@@ -16,6 +12,12 @@ Navbar.prototype.SECTIONS = {
 	tgs: "Teen Girl Squad"
 };
 Navbar.prototype.MAIN_COUNT = 26;
+Navbar.prototype.load = async function load() {
+	this.enabled = await utils.getPref('navbar', false);
+	this.rando = {};
+	for (var i in this.SECTIONS)
+		this.rando[i] = await utils.getPref('rando' + i, true);
+}
 Navbar.prototype.init = function init() {
 	utils.addGlobalStyle(
 		#include_string "navbar.css"
@@ -55,7 +57,7 @@ Navbar.prototype.showNavbar = function showNavbar()
 		this.newnavbar.style.display = "";
 		this.newnavbar.style.marginTop = (globals.modules.seekbar.enabled ? "0" : "10px");
 		globals.navbar = this.newnavbar;
-		this.loadRandoXML();
+		this.loadRandoXML(); // intentionally no "await" here
 	}
 	else
 	{
@@ -134,7 +136,7 @@ Navbar.prototype.newRandoLink = function newRandoLink()
 	}
 };
 
-Navbar.prototype.loadRandoXML = function loadRandoXML()
+Navbar.prototype.loadRandoXML = async function loadRandoXML()
 {
 	// Only run this once
 	if (this.haveLoadedXML)
@@ -142,7 +144,7 @@ Navbar.prototype.loadRandoXML = function loadRandoXML()
 	this.haveLoadedXML = true;
 
 	utils.downloadPage(
-		"http://www.homestarrunner.com/rando.xml?cachedodge=" + utils.getPref('cachedodge', 0),
+		"http://www.homestarrunner.com/rando.xml?cachedodge=" + (await utils.getPref('cachedodge', 0)),
 		this.randoXMLLoaded.bind(this),
 		this.randoXMLError.bind(this)
 	);

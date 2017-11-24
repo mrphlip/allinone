@@ -1,6 +1,8 @@
 function WikiLink()
 {
-	this.enabled = utils.getPref('hrwiki', true);
+}
+WikiLink.prototype.load = async function load() {
+	this.enabled = await utils.getPref('hrwiki', true);
 }
 WikiLink.prototype.init = function init()
 {

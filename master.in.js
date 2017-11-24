@@ -3,7 +3,7 @@
 
 #include "maincomment.txt"
 
-(function(){
+(async function(){
 	#include "utils.in.js"
 
 	#include "globals.in.js"

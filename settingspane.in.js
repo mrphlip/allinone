@@ -1,6 +1,9 @@
 function SettingsPane()
 {
 }
+SettingsPane.prototype.load = function load()
+{
+}
 SettingsPane.prototype.init = function init()
 {
 	utils.addGlobalStyle(

@@ -6,4 +6,4 @@ var utils = new Utils();
 var globals = new Globals();
 var playercomm = new PlayerComm();
 playercomm.init();
-globals.initModules();
+await globals.initModules();

@@ -1,6 +1,8 @@
 function DebugModule()
 {
 }
+DebugModule.prototype.load = async function load() {
+}
 DebugModule.prototype.init = function init()
 {
 	if (!globals.flashmovie)

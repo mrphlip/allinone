@@ -20,28 +20,30 @@ Utils.prototype.addGlobalStyle = function addGlobalStyle(css)
 };
 
 // Based on http://userscripts.org/topics/41177
-Utils.prototype.useGMFunctions = function useGMFunctions()
+Utils.prototype.useGMFunctions = async function useGMFunctions()
 {
 	// We can't just test if GM_getValue exists, because in Chrome they do exist
 	// but they don't actually do anything, just report failure to console.log
 
-	// Note that on Firefox Quantum, with Greasemonkey 4, this will not use the
-	// GM get/setValue, but use localStorage instead, as getValue returns
-	// a Promise now, which would require rewriting a lot of things (which maybe
-	// I'll get to eventually).
-
-	var gmstorage = typeof(GM_getValue) == "function" && GM_getValue("this-value-doesn't-exist-I-promise", true);
+	// Have to do it like this instead of like "if(window.GM_getValue)"
+	// because apparently this function isn't actually on "window", and I don't
+	// know where it actually lives...
+	if (typeof(GM) == "object" && GM.getValue && await GM.getValue("this-value-doesn't-exist-I-promise", true))
+		return 2; // Use GM4 methods
+	else if (typeof(GM_getValue) == "function" && GM_getValue("this-value-doesn't-exist-I-promise", true))
+		return 1; // Use GM3 methods
+	else
+		return 0; // Use native methods
 
 	return gmstorage;
 };
 // Only really need to do this once...
-Utils.prototype.useGMFunctions = Utils.prototype.useGMFunctions();
-Utils.prototype.getPref = function getPref(key, def)
+Utils.prototype.useGMFunctions = await Utils.prototype.useGMFunctions();
+Utils.prototype.getPref = async function getPref(key, def)
 {
-	// Have to do it like this instead of like "if(window.GM_getValue)"
-	// because apparently this function isn't actually on "window", and I don't
-	// know where it actually lives...
-	if (this.useGMFunctions)
+	if (this.useGMFunctions == 2)
+		return await GM.getValue(key, def);
+	else if (this.useGMFunctions == 1)
 		return GM_getValue(key, def);
 	else if (window.localStorage)
 	{
@@ -65,7 +67,9 @@ Utils.prototype.getPref = function getPref(key, def)
 };
 Utils.prototype.setPref = function setPref(key, value)
 {
-	if (this.useGMFunctions)
+	if (this.useGMFunctions == 2)
+		GM.setValue(key, value);
+	else if (this.useGMFunctions == 1)
 		GM_setValue(key, value);
 	else if (window.localStorage)
 	{

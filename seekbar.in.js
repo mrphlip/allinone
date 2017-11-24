@@ -1,8 +1,10 @@
 function Seekbar()
 {
-	this.enabled = utils.getPref('seekbar', true);
-	this.framecounter = utils.getPref('frames', false);
-	this.zoom = utils.getPref('zoom', false);
+}
+Seekbar.prototype.load = async function load() {
+	this.enabled = await utils.getPref('seekbar', true);
+	this.framecounter = await utils.getPref('frames', false);
+	this.zoom = await utils.getPref('zoom', false);
 }
 Seekbar.prototype.init = async function init() {
 	this.setting_enabled = globals.modules.settingspane.addCheckbox('seekbar', "Show seek bar", "Lets you fast forward and rewind", this.enabled);

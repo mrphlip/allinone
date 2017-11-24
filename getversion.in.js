@@ -3,9 +3,11 @@
 
 function Updates()
 {
-	this.enabled = utils.getPref('updates', true);
 }
 Updates.CURRENT_VERSION = [MAJOR, MINOR, REVISION];
+Updates.prototype.load = async function load() {
+	this.enabled = await utils.getPref('updates', true);
+}
 Updates.prototype.init = function init()
 {
 	// We don't need to do this update checking on Chrome - the Chrome Web Store
@@ -19,7 +21,7 @@ Updates.prototype.init = function init()
 	this.setting_enabled = globals.modules.settingspane.addCheckbox('updates', "Check for updates", "Regularly check for updates to the All-in-one script", this.enabled);
 
 	this.havechecked = false;
-	this.doCheck();
+	this.doCheck(); // intentionally no "await" here
 };
 Updates.prototype.updateSettings = function updateSettings()
 {
@@ -28,18 +30,18 @@ Updates.prototype.updateSettings = function updateSettings()
 	this.doCheck();
 };
 
-Updates.prototype.doCheck = function doCheck()
+Updates.prototype.doCheck = async function doCheck()
 {
 	if (this.havechecked || !this.enabled)
 		return;
 	this.havechecked = true;
 
-	if (Date.now() - utils.getPref("lastchecktime", 0) > 86400000)
+	if (Date.now() - (await utils.getPref("lastchecktime", 0)) > 86400000)
 	{
 		utils.downloadPage("http://www.hrwiki.org/wiki/Special:Getversion/User:Phlip/Greasemonkey?cachedodge=" + Math.random(), this.onLoad.bind(this));
 	}
 	else
-		this.handleUpdateString(utils.getPref("lastcheckstring", ""));
+		this.handleUpdateString(await utils.getPref("lastcheckstring", ""));
 };
 Updates.prototype.onLoad = function onLoad(textcontent)
 {

@@ -129,7 +129,7 @@ function Globals()
 	if (i >= 0)
 		this.filename = this.filename.substr(0,i);
 }
-Globals.prototype.initModules = function initModules()
+Globals.prototype.initModules = async function initModules()
 {
 	this.modules = {};
 	this.modules.settingspane = new SettingsPane();
@@ -143,7 +143,12 @@ Globals.prototype.initModules = function initModules()
 #ifdef DEBUG
 	this.modules.debug = new DebugModule();
 #endif
+	var start = new Date();
 	for (var i in this.modules)
-		this.modules[i].init();
+		await this.modules[i].load();
+	var end = new Date();
+	console.log(`Loaded prefs in ${end - start}ms`);
+	for (var i in this.modules)
+		await this.modules[i].init();
 	this.modules.settingspane.initComplete();
 };

@@ -1,9 +1,12 @@
 function Fullscreen()
 {
-	this.shouldresize = utils.getPref('resize', true);
-	this.noscale = utils.getPref('noscale', false);
 }
-Fullscreen.prototype.init = function init()
+Fullscreen.prototype.load = async function load()
+{
+	this.shouldresize = await utils.getPref('resize', true);
+	this.noscale = await utils.getPref('noscale', false);
+}
+Fullscreen.prototype.init = async function init()
 {
 	this.setting_main = globals.modules.settingspane.addCheckbox('resize', "Resize flash to full-screen", "Resizes the toon so it fills the entire window", this.shouldresize);
 	this.setting_noscale = globals.modules.settingspane.addCheckbox('noscale', "Show behind the black", "Lets you see what's happening beyond the frames", this.noscale, this.setting_main);
@@ -26,7 +29,7 @@ Fullscreen.prototype.init = function init()
 	window.addEventListener('resize', this.doResize.bind(this), true);
 	this.doResize();
 	if (this.noscale)
-		this.setScaleMode("noScale");
+		await this.setScaleMode("noScale");
 };
 Fullscreen.prototype.doResize = function doResize()
 {
