@@ -316,9 +316,8 @@ Utils.prototype.stop = async function stop(flashmovie)
 
 		// make sure this.guessisplaying.lastframe is updated so that it doesn't
 		// go back to state=true
-		this.currentFrame((frame) => {
-			this.guessisplaying.state = false;
-		}, flashmovie);
+		await this.currentFrame(flashmovie);
+		this.guessisplaying.state = false;
 	}
 	else
 	{
@@ -356,9 +355,8 @@ Utils.prototype.goto = async function goto(frame, flashmovie)
 
 		// make sure this.guessisplaying.lastframe is updated so that it doesn't
 		// go back to state=true
-		this.currentFrame((frame) => {
-			this.guessisplaying.state = false;
-		}, flashmovie);
+		await this.currentFrame(flashmovie);
+		this.guessisplaying.state = false;
 	}
 	else
 	{
