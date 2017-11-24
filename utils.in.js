@@ -30,12 +30,7 @@ Utils.prototype.useGMFunctions = function useGMFunctions()
 	// a Promise now, which would require rewriting a lot of things (which maybe
 	// I'll get to eventually).
 
-	// We don't want it to actually write anything to console.log, though, so
-	// let's stop that
-	var log = console.log;
-	console.log = function log(){};
 	var gmstorage = typeof(GM_getValue) == "function" && GM_getValue("this-value-doesn't-exist-I-promise", true);
-	console.log = log;
 
 	return gmstorage;
 };
