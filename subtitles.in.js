@@ -34,7 +34,7 @@ Subtitles.prototype.init = function init()
 	settingrow.appendChild(this.setting_language);
 
 	this.language_populated = false;
-	/*no await*/ this.populateLanguage();s
+	/*no await*/ this.populateLanguage();
 
 	this.setting_captions = globals.modules.settingspane.addCheckbox('captions', "Show captions", "Include sound effects in the subtitles", this.captions, this.setting_enabled);
 	this.setting_colours = globals.modules.settingspane.addCheckbox('colours', "Use colours", "Distinguish characters by colour effects (turn off if colourblind)", this.colours, this.setting_enabled);
