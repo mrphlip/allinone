@@ -13,7 +13,7 @@ Subtitles.prototype.load = async function load() {
 	this.testsubsdata = unescape(await utils.getPref('testsubsdata', this.DEFAULTXML));
 	this.names = await utils.getPref('names', 0);
 }
-Subtitles.prototype.init = function init()
+Subtitles.prototype.init = function()
 {
 	utils.addGlobalStyle(
 		#include_string "subtitles.css"
@@ -79,7 +79,7 @@ Subtitles.prototype.init = function init()
 
 	window.setInterval(this.update.bind(this), 50);
 };
-Subtitles.prototype.updateSettings = function updateSettings()
+Subtitles.prototype.updateSettings = function()
 {
 	this.enabled = this.setting_enabled.checked;
 	utils.setPref('subtitles', this.enabled);
@@ -148,7 +148,7 @@ Subtitles.prototype.populateLanguage = async function populateLanguage()
 	this.language_populated = true;
 };
 
-Subtitles.prototype.removeSubtitles = function removeSubtitles()
+Subtitles.prototype.removeSubtitles = function()
 {
 	if (this.subtitleholder)
 	{
@@ -163,7 +163,7 @@ Subtitles.prototype.removeSubtitles = function removeSubtitles()
 
 	globals.modules.fullscreen.doResize();
 };
-Subtitles.prototype.createSubtitleHolder = function createSubtitleHolder()
+Subtitles.prototype.createSubtitleHolder = function()
 {
 	this.subtitleholder = document.createElement('div');
 	this.subtitleholder.className = "subtitles";
@@ -178,7 +178,7 @@ Subtitles.prototype.createSubtitleHolder = function createSubtitleHolder()
 
 	globals.modules.fullscreen.doResize();
 };
-Subtitles.prototype.createErrorsHolder = function createErrorsHolder()
+Subtitles.prototype.createErrorsHolder = function()
 {
 	this.errorsholder = document.createElement('div');
 	this.errorsholder.className = "subtitle_errors";
@@ -191,7 +191,7 @@ Subtitles.prototype.createErrorsHolder = function createErrorsHolder()
 
 	globals.modules.fullscreen.doResize();
 };
-Subtitles.prototype.transcriptError = function transcriptError(message)
+Subtitles.prototype.transcriptError = function(message)
 {
 	if (!this.errorsholder)
 		this.createErrorsHolder();
@@ -271,7 +271,7 @@ Subtitles.prototype.reloadSubs = async function reloadSubs()
 	this.subsready = true;
 };
 
-Subtitles.prototype.parseTranscript = function parseTranscript(xml)
+Subtitles.prototype.parseTranscript = function(xml)
 {
 	// set some defaults
 	if (!xml.documentElement.getAttribute("xml:lang")) xml.documentElement.setAttribute("xml:lang", this.language);
@@ -307,7 +307,7 @@ Subtitles.prototype.parseTranscript = function parseTranscript(xml)
 		this.transcript.push(line);
 	}
 };
-Subtitles.prototype.inheritLanguages = function inheritLanguages(node)
+Subtitles.prototype.inheritLanguages = function(node)
 {
 	for (var i = node.firstChild; i; i = i.nextSibling)
 	{
@@ -319,7 +319,7 @@ Subtitles.prototype.inheritLanguages = function inheritLanguages(node)
 		}
 	}
 };
-Subtitles.prototype.importNodes = function importNodes(node)
+Subtitles.prototype.importNodes = function(node)
 {
 	var name = node.nodeName.toLowerCase();
 	if (this.characters[name])
@@ -493,7 +493,7 @@ Subtitles.prototype.update = async function update()
 		this.setSubtitles(false);
 };
 
-Subtitles.prototype.setSubtitles = function setSubtitles(node)
+Subtitles.prototype.setSubtitles = function(node)
 {
 	if (!this.subtitleholder)
 		return;

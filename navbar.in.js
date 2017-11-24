@@ -18,7 +18,7 @@ Navbar.prototype.load = async function load() {
 	for (var i in this.SECTIONS)
 		this.rando[i] = await utils.getPref('rando' + i, true);
 }
-Navbar.prototype.init = function init() {
+Navbar.prototype.init = function() {
 	utils.addGlobalStyle(
 		#include_string "navbar.css"
 	);
@@ -35,7 +35,7 @@ Navbar.prototype.init = function init() {
 	this.newnavbar = this.buildNavbar(this.originalnavbar);
 	this.showNavbar();
 };
-Navbar.prototype.updateSettings = function updateSettings()
+Navbar.prototype.updateSettings = function()
 {
 	this.enabled = this.setting_enabled.checked;
 	utils.setPref("navbar", this.enabled);
@@ -48,7 +48,7 @@ Navbar.prototype.updateSettings = function updateSettings()
 	this.showNavbar();
 };
 
-Navbar.prototype.showNavbar = function showNavbar()
+Navbar.prototype.showNavbar = function()
 {
 	if (this.enabled)
 	{
@@ -69,7 +69,7 @@ Navbar.prototype.showNavbar = function showNavbar()
 	globals.modules.fullscreen.doResize();
 };
 
-Navbar.prototype.buildNavbar = function buildNavbar(where)
+Navbar.prototype.buildNavbar = function(where)
 {
 	var newnavbar = document.createElement("ul");
 	newnavbar.id = "newnavbar";
@@ -101,7 +101,7 @@ Navbar.prototype.buildNavbar = function buildNavbar(where)
 
 	return newnavbar;
 };
-Navbar.prototype.addnavbarlink = function addnavbarlink(ul, href, title, extraclass)
+Navbar.prototype.addnavbarlink = function(ul, href, title, extraclass)
 {
 	var li = document.createElement("li");
 	var link = document.createElement("a");
@@ -114,11 +114,11 @@ Navbar.prototype.addnavbarlink = function addnavbarlink(ul, href, title, extracl
 	return link;
 };
 
-Navbar.prototype.newMainLink = function newMainLink()
+Navbar.prototype.newMainLink = function()
 {
 	this.mainlink.href="http://homestarrunner.com/main" + Math.floor(Math.random() * this.MAIN_COUNT + 1) + ".html";
 };
-Navbar.prototype.newRandoLink = function newRandoLink()
+Navbar.prototype.newRandoLink = function()
 {
 	if (!this.randourls)
 		return;
@@ -183,7 +183,7 @@ Navbar.prototype.loadRandoXML = async function loadRandoXML()
 		this.randolink.href = "javascript:void(alert('Error loading rando.xml... try refreshing'))";
 	}
 };
-Navbar.prototype.filterRando = function filterRando()
+Navbar.prototype.filterRando = function()
 {
 	if (!this.allrandourls)
 		return;

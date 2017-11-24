@@ -24,7 +24,7 @@ Seekbar.prototype.init = async function init() {
 
 	window.setInterval(this.update.bind(this), 50);
 };
-Seekbar.prototype.updateSettings = function updateSettings()
+Seekbar.prototype.updateSettings = function()
 {
 	if (this.enabled)
 		this.removeSeekbar();
@@ -165,7 +165,7 @@ Seekbar.prototype.addSeekbar = async function addSeekbar()
 
 	globals.modules.fullscreen.doResize();
 };
-Seekbar.prototype.removeSeekbar = function removeSeekbar()
+Seekbar.prototype.removeSeekbar = function()
 {
 	if (!this.seekbar)
 		return;
@@ -255,7 +255,7 @@ Seekbar.prototype.zoomNormal = async function zoomNormal()
 	await utils.zoomReset();
 };
 
-Seekbar.prototype.drag = function drag(e)
+Seekbar.prototype.drag = function(e)
 {
 	this.dragging=true;
 	this.dragMousemove(e);
@@ -282,7 +282,7 @@ Seekbar.prototype.dragMousemove = async function dragMousemove(e)
 	}
 	this.thumb.style.left = (pos * width) + "px";
 };
-Seekbar.prototype.release = function release()
+Seekbar.prototype.release = function()
 {
 	if (!this.dragging) return;
 	if (!this.paused)

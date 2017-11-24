@@ -1,10 +1,10 @@
 function SettingsPane()
 {
 }
-SettingsPane.prototype.load = function load()
+SettingsPane.prototype.load = function()
 {
 }
-SettingsPane.prototype.init = function init()
+SettingsPane.prototype.init = function()
 {
 	utils.addGlobalStyle(
 		#include_string "settingspane.css"
@@ -68,7 +68,7 @@ SettingsPane.prototype.init = function init()
 	
 	this.hidePanels = [];
 };
-SettingsPane.prototype.saveSettings = function saveSettings(e)
+SettingsPane.prototype.saveSettings = function(e)
 {
 	// stop the form from actually being submitted
 	if (e && e.preventDefault)
@@ -79,24 +79,24 @@ SettingsPane.prototype.saveSettings = function saveSettings(e)
 	
 	return false;
 };
-SettingsPane.prototype.updateSettings = function updateSettings(){};
-SettingsPane.prototype.showPane = function showPane()
+SettingsPane.prototype.updateSettings = function(){};
+SettingsPane.prototype.showPane = function()
 {
 	this.settingsbox.style.display = "block";
 	this.settingslink.style.display = "none";
 };
-SettingsPane.prototype.hidePane = function hidePane()
+SettingsPane.prototype.hidePane = function()
 {
 	this.settingsbox.style.display = "none";
 	this.settingslink.style.display = "block";
 };
-SettingsPane.prototype.resizeWindow = function resizeWindow()
+SettingsPane.prototype.resizeWindow = function()
 {
 	var a = window.innerHeight - 75;
 	if (a < 40) a = 40;
 	this.settingslist.style.maxHeight = a + 'px';
 };
-SettingsPane.prototype.cacheDodge = function cacheDodge(e)
+SettingsPane.prototype.cacheDodge = function(e)
 {
 	if (e && e.preventDefault)
 		e.preventDefault();
@@ -104,7 +104,7 @@ SettingsPane.prototype.cacheDodge = function cacheDodge(e)
 	globals.modules.updates.cacheDodge();
 };
 
-SettingsPane.prototype.addSettingRow = function addSettingRow(parent)
+SettingsPane.prototype.addSettingRow = function(parent)
 {
 	if (!parent)
 		parent = this.settingslist;
@@ -136,7 +136,7 @@ SettingsPane.prototype.addSettingRow = function addSettingRow(parent)
 	parent.appendChild(settingrow);
 	return settingrow;
 };
-SettingsPane.prototype.addCheckbox = function addCheckbox(id, label, title, checked, parent)
+SettingsPane.prototype.addCheckbox = function(id, label, title, checked, parent)
 {
 	var settingrow = this.addSettingRow(parent);
 	var settingcheckbox = document.createElement('input');
@@ -153,11 +153,11 @@ SettingsPane.prototype.addCheckbox = function addCheckbox(id, label, title, chec
 	return settingcheckbox;
 };
 
-SettingsPane.prototype.showHidePanel = function showHidePanel(checkbox, panel)
+SettingsPane.prototype.showHidePanel = function(checkbox, panel)
 {
 	panel.style.display = checkbox.checked ? "" : "none";
 };
-SettingsPane.prototype.initComplete = function initComplete()
+SettingsPane.prototype.initComplete = function()
 {
 	for (var i = 0; i < this.hidePanels.length; i++)
 		this.showHidePanel(this.hidePanels[i].checkbox, this.hidePanels[i].panel);

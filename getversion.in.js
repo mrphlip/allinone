@@ -9,7 +9,7 @@ Updates.CHECK_INTERVAL = 24*60*60*1000; // once per day
 Updates.prototype.load = async function load() {
 	this.enabled = await utils.getPref('updates', true);
 }
-Updates.prototype.init = function init()
+Updates.prototype.init = function()
 {
 	// We don't need to do this update checking on Chrome - the Chrome Web Store
 	// will handle that for us
@@ -23,7 +23,7 @@ Updates.prototype.init = function init()
 
 	/*no await*/ this.doCheck();
 };
-Updates.prototype.updateSettings = function updateSettings()
+Updates.prototype.updateSettings = function()
 {
 	this.enabled = this.setting_enabled.checked;
 	utils.setPref("updates", this.enabled);
@@ -83,7 +83,7 @@ Updates.prototype.doCheck = async function doCheck()
 	}
 };
 
-Updates.prototype.cacheDodge = function cacheDodge()
+Updates.prototype.cacheDodge = function()
 {
 	utils.setPref("lastchecktime", 0);
 	/*no await*/ this.doCheck();

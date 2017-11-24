@@ -5,7 +5,7 @@ NextPrev.prototype.load = async function load() {
 	this.enabled = await utils.getPref('prevnext', true);
 	this.docheck = await utils.getPref('checknext', true);
 }
-NextPrev.prototype.init = function init()
+NextPrev.prototype.init = function()
 {
 	this.setting_enabled = globals.modules.settingspane.addCheckbox('prevnext', "Show previous/next buttons", "Lets you easily move through SBEmails, TGS, etc", this.enabled);
 	this.setting_docheck = globals.modules.settingspane.addCheckbox('checknext', "Check if next exists", 'Doesn\'t add a "next" link on the latest SBEmail, etc', this.docheck, this.setting_enabled);
@@ -13,7 +13,7 @@ NextPrev.prototype.init = function init()
 	this.createPrevNext();
 	this.showPrevNext();
 };
-NextPrev.prototype.updateSettings = function updateSettings()
+NextPrev.prototype.updateSettings = function()
 {
 	this.enabled = this.setting_enabled.checked;
 	utils.setPref("prevnext", this.enabled);
@@ -22,7 +22,7 @@ NextPrev.prototype.updateSettings = function updateSettings()
 	this.showPrevNext();
 };
 
-NextPrev.prototype.createPrevNext = function createPrevNext()
+NextPrev.prototype.createPrevNext = function()
 {
 	// this is coded like this instead of just looking for /(\d+)/ so that it
 	// doesn't find pages like commandos3 or xmas04
@@ -44,7 +44,7 @@ NextPrev.prototype.createPrevNext = function createPrevNext()
 	else if (globals.filename == "dween_tgs")
 		this.addPrevNextlinks("tgs", 6);
 };
-NextPrev.prototype.addPrevNextlinks = function addPrevNextlinks(series, num)
+NextPrev.prototype.addPrevNextlinks = function(series, num)
 {
 	if (num > 1)
 	{
@@ -83,7 +83,7 @@ NextPrev.prototype.addPrevNextlinks = function addPrevNextlinks(series, num)
 
 	this.checkedNext = false;
 };
-NextPrev.prototype.makeLink = function makeLink(series, num)
+NextPrev.prototype.makeLink = function(series, num)
 {
 	if (series == "sbemail" && num == 100)
 		return "sbemailahundred.html";
@@ -97,7 +97,7 @@ NextPrev.prototype.makeLink = function makeLink(series, num)
 		return series + num + ".html";
 };
 
-NextPrev.prototype.showPrevNext = function showPrevNext()
+NextPrev.prototype.showPrevNext = function()
 {
 	if (this.enabled)
 	{
@@ -137,6 +137,6 @@ NextPrev.prototype.doCheckNext = async function doCheckNext()
 		this.nextlink = undefined;
 	}
 };
-NextPrev.prototype.onCheckError = function onCheckError()
+NextPrev.prototype.onCheckError = function()
 {
 };

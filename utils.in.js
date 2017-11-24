@@ -8,7 +8,7 @@ function Utils()
 }
 
 // Taken from http://diveintogreasemonkey.org/patterns/add-css.html
-Utils.prototype.addGlobalStyle = function addGlobalStyle(css)
+Utils.prototype.addGlobalStyle = function(css)
 {
 	var head, style;
 	head = document.getElementsByTagName('head')[0];
@@ -65,7 +65,7 @@ Utils.prototype.getPref = async function getPref(key, def)
 		throw "Couldn't find a local storage provider";
 	}
 };
-Utils.prototype.setPref = function setPref(key, value)
+Utils.prototype.setPref = function(key, value)
 {
 	if (this.useGMFunctions == 2)
 		GM.setValue(key, value);
@@ -89,7 +89,7 @@ Utils.prototype.setPref = function setPref(key, value)
 	}
 };
 
-Utils.prototype.downloadPage = function downloadPage(url, method)
+Utils.prototype.downloadPage = function(url, method)
 {
 	if (!method)
 		method = 'GET';
@@ -117,7 +117,7 @@ Utils.prototype.downloadPage = function downloadPage(url, method)
 		}
 	});
 };
-Utils.prototype.buildWikiUrl = function buildWikiUrl(page)
+Utils.prototype.buildWikiUrl = function(page)
 {
 	var url = escape(page.replace(/ /g, '_'));
 	return "http://www.hrwiki.org/w/index.php?title=" + url + "&action=raw&source=allinone&cachedodge=" + this.getPref('cachedodge', 0);
@@ -144,7 +144,7 @@ Utils.prototype.downloadWiki = async function downloadWiki(page)
 	}
 	throw "Too many redirects";
 };
-Utils.prototype.parseWikiXML = function parseWikiXML(text)
+Utils.prototype.parseWikiXML = function(text)
 {
 	// strip various things - templates and <pre> tags for wiki formatting, and <noinclude> sections...
 	// <includeonly> tags are stripped (but their contents kept) for consistency.
@@ -279,7 +279,7 @@ Utils.prototype.isLoaded = async function isLoaded(flashmovie)
 	var frame = await this.currentFrame(flashmovie);
 	return frame >= 0;
 };
-Utils.prototype.waitLoaded = function waitLoaded(flashmovie)
+Utils.prototype.waitLoaded = function(flashmovie)
 {
 	var useglobal = false;
 	if (!flashmovie) {
@@ -391,7 +391,7 @@ Utils.prototype.zoomReset = async function zoomReset(factor, flashmovie)
 	await playercomm.zoom(flashmovie, 0);
 };
 
-Utils.prototype.insertAfter = function insertAfter(newElement, referenceElement)
+Utils.prototype.insertAfter = function(newElement, referenceElement)
 {
 	if(referenceElement.nextSibling)
 		referenceElement.parentNode.insertBefore(newElement, referenceElement.nextSibling);

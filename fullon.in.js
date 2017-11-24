@@ -31,7 +31,7 @@ Fullscreen.prototype.init = async function init()
 	if (this.noscale)
 		await this.setScaleMode("noScale");
 };
-Fullscreen.prototype.doResize = function doResize()
+Fullscreen.prototype.doResize = function()
 {
 	if (!globals.flashmovie)
 		return;
@@ -107,7 +107,7 @@ Fullscreen.prototype.setScaleMode = async function setScaleMode(scaleMode)
 	await utils.waitLoaded();
 	await playercomm.setScaleMode(globals.flashmovie, scaleMode);
 };
-Fullscreen.prototype.updateSettings = function updateSettings()
+Fullscreen.prototype.updateSettings = function()
 {
 	this.shouldresize = this.setting_main.checked;
 	utils.setPref("resize", this.shouldresize);

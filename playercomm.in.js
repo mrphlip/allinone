@@ -2,7 +2,7 @@ function PlayerComm()
 {
 }
 PlayerComm.handlers = {};
-PlayerComm.prototype.init = function init()
+PlayerComm.prototype.init = function()
 {
 	var script = document.createElement("script");
 	script.appendChild(document.createTextNode("(" + this.inPageContext + ")();"));
@@ -22,7 +22,7 @@ PlayerComm.prototype.init = function init()
 
 	window.addEventListener("message", this.receiveMessage.bind(this), false);
 }
-PlayerComm.prototype.inPageContext = function inPageContext()
+PlayerComm.prototype.inPageContext = function()
 {
 	// This code is run in the page context (which in Chrome is the only one
 	// allowed to communicate with the Flash object) to communicate with the script
@@ -58,7 +58,7 @@ PlayerComm.prototype.inPageContext = function inPageContext()
 	// http://web.archive.org/web/20100710000820/http://www.adobe.com/support/flash/publishexport/scriptingwithflash/scriptingwithflash_03.html
 	// http://web.archive.org/web/20090210205955/http://www.adobe.com/support/flash/publishexport/scriptingwithflash/scriptingwithflash_04.html
 
-	handlers.currentFrame = function currentFrame(data)
+	handlers.currentFrame = function(data)
 	{
 		var elem = document.getElementById(data.id);
 		var a = elem.CurrentFrame;
@@ -74,7 +74,7 @@ PlayerComm.prototype.inPageContext = function inPageContext()
 		}, origin);
 	}
 
-	handlers.targetCurrentFrame = function targetCurrentFrame(data)
+	handlers.targetCurrentFrame = function(data)
 	{
 		var elem = document.getElementById(data.id);
 		if (typeof(elem.TCurrentFrame) == 'function')
@@ -89,7 +89,7 @@ PlayerComm.prototype.inPageContext = function inPageContext()
 		}, origin);
 	}
 
-	handlers.totalFrames = function totalFrames(data)
+	handlers.totalFrames = function(data)
 	{
 		var elem = document.getElementById(data.id);
 		var a = elem.TotalFrames;
@@ -105,7 +105,7 @@ PlayerComm.prototype.inPageContext = function inPageContext()
 		}, origin);
 	}
 
-	handlers.targetTotalFrames = function targetTotalFrames(data)
+	handlers.targetTotalFrames = function(data)
 	{
 		var elem = document.getElementById(data.id);
 		if (typeof(elem.TGetPropertyAsNumber) == 'function')
@@ -120,7 +120,7 @@ PlayerComm.prototype.inPageContext = function inPageContext()
 		}, origin);
 	}
 
-	handlers.isPlaying = function isPlaying(data)
+	handlers.isPlaying = function(data)
 	{
 		var elem = document.getElementById(data.id);
 		var a = elem.IsPlaying;
@@ -138,7 +138,7 @@ PlayerComm.prototype.inPageContext = function inPageContext()
 		}, origin);
 	}
 
-	handlers.targetFramesLoaded = function targetFramesLoaded(data)
+	handlers.targetFramesLoaded = function(data)
 	{
 		var elem = document.getElementById(data.id);
 		if (typeof(elem.TGetPropertyAsNumber) == 'function')
@@ -153,7 +153,7 @@ PlayerComm.prototype.inPageContext = function inPageContext()
 		}, origin);
 	}
 
-	handlers.stop = function stop(data)
+	handlers.stop = function(data)
 	{
 		var elem = document.getElementById(data.id);
 		if (typeof(elem.StopPlay) == 'function')
@@ -165,7 +165,7 @@ PlayerComm.prototype.inPageContext = function inPageContext()
 		}, origin);
 	}
 
-	handlers.targetStop = function targetStop(data)
+	handlers.targetStop = function(data)
 	{
 		var elem = document.getElementById(data.id);
 		if (typeof(elem.TStopPlay) == 'function')
@@ -177,7 +177,7 @@ PlayerComm.prototype.inPageContext = function inPageContext()
 		}, origin);
 	}
 
-	handlers.play = function play(data)
+	handlers.play = function(data)
 	{
 		var elem = document.getElementById(data.id);
 		if (typeof(elem.Play) == 'function')
@@ -189,7 +189,7 @@ PlayerComm.prototype.inPageContext = function inPageContext()
 		}, origin);
 	}
 
-	handlers.targetPlay = function targetPlay(data)
+	handlers.targetPlay = function(data)
 	{
 		var elem = document.getElementById(data.id);
 		if (typeof(elem.TPlay) == 'function')
@@ -201,7 +201,7 @@ PlayerComm.prototype.inPageContext = function inPageContext()
 		}, origin);
 	}
 
-	handlers.goto = function goto(data)
+	handlers.goto = function(data)
 	{
 		var elem = document.getElementById(data.id);
 		if (typeof(elem.GotoFrame) == 'function')
@@ -213,7 +213,7 @@ PlayerComm.prototype.inPageContext = function inPageContext()
 		}, origin);
 	}
 
-	handlers.targetGoto = function targetGoto(data)
+	handlers.targetGoto = function(data)
 	{
 		var elem = document.getElementById(data.id);
 		if (typeof(elem.TGotoFrame) == 'function')
@@ -225,7 +225,7 @@ PlayerComm.prototype.inPageContext = function inPageContext()
 		}, origin);
 	}
 
-	handlers.zoom = function zoom(data)
+	handlers.zoom = function(data)
 	{
 		var elem = document.getElementById(data.id);
 		if (typeof(elem.Zoom) == 'function')
@@ -237,7 +237,7 @@ PlayerComm.prototype.inPageContext = function inPageContext()
 		}, origin);
 	}
 
-	handlers.setScaleMode = function setScaleMode(data)
+	handlers.setScaleMode = function(data)
 	{
 		var elem = document.getElementById(data.id);
 		if (typeof(elem.SetVariable) == 'function')
@@ -251,7 +251,7 @@ PlayerComm.prototype.inPageContext = function inPageContext()
 }
 
 
-PlayerComm.prototype.currentFrame = function currentFrame(elem)
+PlayerComm.prototype.currentFrame = function(elem)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_currentFrame",
@@ -260,7 +260,7 @@ PlayerComm.prototype.currentFrame = function currentFrame(elem)
 	}, this.origin));
 }
 
-PlayerComm.prototype.targetCurrentFrame = function currentFrame(elem, target)
+PlayerComm.prototype.targetCurrentFrame = function(elem, target)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_targetCurrentFrame",
@@ -270,7 +270,7 @@ PlayerComm.prototype.targetCurrentFrame = function currentFrame(elem, target)
 	}, this.origin));
 }
 
-PlayerComm.prototype.totalFrames = function totalFrames(elem)
+PlayerComm.prototype.totalFrames = function(elem)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_totalFrames",
@@ -279,7 +279,7 @@ PlayerComm.prototype.totalFrames = function totalFrames(elem)
 	}, this.origin));
 }
 
-PlayerComm.prototype.targetTotalFrames = function targetTotalFrames(elem, target)
+PlayerComm.prototype.targetTotalFrames = function(elem, target)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_targetTotalFrames",
@@ -289,7 +289,7 @@ PlayerComm.prototype.targetTotalFrames = function targetTotalFrames(elem, target
 	}, this.origin));
 }
 
-PlayerComm.prototype.isPlaying = function isPlaying(elem)
+PlayerComm.prototype.isPlaying = function(elem)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_isPlaying",
@@ -298,7 +298,7 @@ PlayerComm.prototype.isPlaying = function isPlaying(elem)
 	}, this.origin));
 }
 
-PlayerComm.prototype.targetFramesLoaded = function targetFramesLoaded(elem, target)
+PlayerComm.prototype.targetFramesLoaded = function(elem, target)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_targetFramesLoaded",
@@ -308,7 +308,7 @@ PlayerComm.prototype.targetFramesLoaded = function targetFramesLoaded(elem, targ
 	}, this.origin));
 }
 
-PlayerComm.prototype.stop = function stop(elem)
+PlayerComm.prototype.stop = function(elem)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_stop",
@@ -317,7 +317,7 @@ PlayerComm.prototype.stop = function stop(elem)
 	}, this.origin));
 }
 
-PlayerComm.prototype.targetStop = function targetStop(elem, target)
+PlayerComm.prototype.targetStop = function(elem, target)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_targetStop",
@@ -327,7 +327,7 @@ PlayerComm.prototype.targetStop = function targetStop(elem, target)
 	}, this.origin));
 }
 
-PlayerComm.prototype.play = function play(elem)
+PlayerComm.prototype.play = function(elem)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_play",
@@ -336,7 +336,7 @@ PlayerComm.prototype.play = function play(elem)
 	}, this.origin));
 }
 
-PlayerComm.prototype.targetPlay = function targetPlay(elem, target)
+PlayerComm.prototype.targetPlay = function(elem, target)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_targetPlay",
@@ -346,7 +346,7 @@ PlayerComm.prototype.targetPlay = function targetPlay(elem, target)
 	}, this.origin));
 }
 
-PlayerComm.prototype.goto = function goto(elem, frame)
+PlayerComm.prototype.goto = function(elem, frame)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_goto",
@@ -356,7 +356,7 @@ PlayerComm.prototype.goto = function goto(elem, frame)
 	}, this.origin));
 }
 
-PlayerComm.prototype.targetGoto = function targetGoto(elem, target, frame)
+PlayerComm.prototype.targetGoto = function(elem, target, frame)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_targetGoto",
@@ -367,7 +367,7 @@ PlayerComm.prototype.targetGoto = function targetGoto(elem, target, frame)
 	}, this.origin));
 }
 
-PlayerComm.prototype.zoom = function zoom(elem, zoom)
+PlayerComm.prototype.zoom = function(elem, zoom)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_zoom",
@@ -377,7 +377,7 @@ PlayerComm.prototype.zoom = function zoom(elem, zoom)
 	}, this.origin));
 }
 
-PlayerComm.prototype.setScaleMode = function setScaleMode(elem, scaleMode)
+PlayerComm.prototype.setScaleMode = function(elem, scaleMode)
 {
 	return new Promise(resolve => window.postMessage({
 		message: "aio_req_setScaleMode",
@@ -387,7 +387,7 @@ PlayerComm.prototype.setScaleMode = function setScaleMode(elem, scaleMode)
 	}, this.origin));
 }
 
-PlayerComm.prototype.receiveMessage = function receiveMessage(event)
+PlayerComm.prototype.receiveMessage = function(event)
 {
 	if (event.origin !== this.origin)
 		return;
@@ -400,21 +400,21 @@ PlayerComm.prototype.receiveMessage = function receiveMessage(event)
 	PlayerComm.handlers[message].call(this, event.data);
 }
 
-PlayerComm.handlers.basicCallback = function basicCallback(data)
+PlayerComm.handlers.basicCallback = function(data)
 {
 	var callback = this.getCallback(data.callback);
 	if (callback)
 		callback();
 }
 
-PlayerComm.handlers.paramCallback = function paramCallback(data)
+PlayerComm.handlers.paramCallback = function(data)
 {
 	var callback = this.getCallback(data.callback);
 	if (callback)
 		callback(data.val);
 }
 
-PlayerComm.prototype.storeCallback = function storeCallback(callback)
+PlayerComm.prototype.storeCallback = function(callback)
 {
 	if (!callback)
 		return -1;
@@ -424,7 +424,7 @@ PlayerComm.prototype.storeCallback = function storeCallback(callback)
 	this.callbacks[ix] = callback;
 	return ix;
 }
-PlayerComm.prototype.getCallback = function getCallback(ix)
+PlayerComm.prototype.getCallback = function(ix)
 {
 	if (ix < 0)
 		return undefined;
@@ -432,7 +432,7 @@ PlayerComm.prototype.getCallback = function getCallback(ix)
 	this.callbacks[ix] = undefined;
 	return callback;
 }
-PlayerComm.prototype.getId = function getId(elem)
+PlayerComm.prototype.getId = function(elem)
 {
 	if (!elem.id)
 	{

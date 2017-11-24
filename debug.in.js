@@ -3,7 +3,7 @@ function DebugModule()
 }
 DebugModule.prototype.load = async function load() {
 }
-DebugModule.prototype.init = function init()
+DebugModule.prototype.init = function()
 {
 	if (!globals.flashmovie)
 		return;
@@ -31,6 +31,6 @@ DebugModule.prototype.doDebug = async function doDebug(e)
 	console.log(res);
 	*/
 };
-DebugModule.prototype.updateSettings = function updateSettings()
+DebugModule.prototype.updateSettings = function()
 {
 };

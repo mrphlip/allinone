@@ -4,14 +4,14 @@ function WikiLink()
 WikiLink.prototype.load = async function load() {
 	this.enabled = await utils.getPref('hrwiki', true);
 }
-WikiLink.prototype.init = function init()
+WikiLink.prototype.init = function()
 {
 	this.setting_enabled = globals.modules.settingspane.addCheckbox('hrwiki', "Add HRWiki link", "Adds a link to the appropriate page on the Homestar Runner Wiki", this.enabled);
 
 	this.buildWikiLink();
 	this.showWikiLink();
 };
-WikiLink.prototype.updateSettings = function updateSettings()
+WikiLink.prototype.updateSettings = function()
 {
 	this.enabled = this.setting_enabled.checked;
 	utils.setPref("hrwiki", this.enabled);
@@ -20,7 +20,7 @@ WikiLink.prototype.updateSettings = function updateSettings()
 	window.setTimeout(this.showWikiLink.bind(this), 0);
 };
 
-WikiLink.prototype.buildWikiLink = function buildWikiLink()
+WikiLink.prototype.buildWikiLink = function()
 {
 	// many pages on the mirror have an "info" link in the navbar (thanks Tom!)... use that
 	if (globals.whichsite === 3)
@@ -92,7 +92,7 @@ WikiLink.prototype.buildWikiLink = function buildWikiLink()
 		this.addHRWikiLink(globals.filename);
 };
 
-WikiLink.prototype.addHRWikiLink = function addHRWikiLink(pagename, isurl)
+WikiLink.prototype.addHRWikiLink = function(pagename, isurl)
 {
 	this.linkdiv = document.createElement("div");
 	this.linkdiv.style.borderLeft = this.linkdiv.style.borderBottom = '1px solid #666';
@@ -128,7 +128,7 @@ WikiLink.prototype.addHRWikiLink = function addHRWikiLink(pagename, isurl)
 	document.body.appendChild(this.linkdiv);
 };
 
-WikiLink.prototype.showWikiLink = function showWikiLink()
+WikiLink.prototype.showWikiLink = function()
 {
 	if (this.enabled)
 	{
