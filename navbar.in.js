@@ -143,49 +143,45 @@ Navbar.prototype.loadRandoXML = async function loadRandoXML()
 		return;
 	this.haveLoadedXML = true;
 
-	utils.downloadPage(
-		"http://www.homestarrunner.com/rando.xml?cachedodge=" + (await utils.getPref('cachedodge', 0)),
-		this.randoXMLLoaded.bind(this),
-		this.randoXMLError.bind(this)
-	);
-};
-Navbar.prototype.randoXMLLoaded = function randoXMLLoaded(responseText)
-{
-	var parser = new DOMParser();
-	// fix invalid XML...
-	// add missing root element
-	var doc = responseText.replace(/<\?xml.*?\?>/g, ""); // strip <?xml ?> tag
-	doc = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n<rando>" + doc + "</rando>";
-	// fix bad ampersands
-	doc = doc.replace(/&(?!\w*;)/g, "&amp;");
-	doc = parser.parseFromString(doc, "application/xml");
-	var sbemailcounter = 0;
-	this.allrandourls = [];
-	for (var i = 0; i < doc.documentElement.childNodes.length; i++)
-	{
-		var node = doc.documentElement.childNodes[i];
-		if (node.nodeType == 1)
+	try {
+		var res = await utils.downloadPage_coro(
+			"http://www.homestarrunner.com/rando.xml?cachedodge=" + (await utils.getPref('cachedodge', 0))
+		);
+
+		var parser = new DOMParser();
+		// fix invalid XML...
+		// add missing root element
+		var doc = res.text.replace(/<\?xml.*?\?>/g, ""); // strip <?xml ?> tag
+		doc = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n<rando>" + doc + "</rando>";
+		// fix bad ampersands
+		doc = doc.replace(/&(?!\w*;)/g, "&amp;");
+		doc = parser.parseFromString(doc, "application/xml");
+		var sbemailcounter = 0;
+		this.allrandourls = [];
+		for (var i = 0; i < doc.documentElement.childNodes.length; i++)
 		{
-			var type = node.nodeName.toLowerCase();
-			var u = node.getAttribute('u');
-			var n = node.getAttribute('n');
-			if (!n) n = "Untitled";
-			if (type == "sb")
+			var node = doc.documentElement.childNodes[i];
+			if (node.nodeType == 1)
 			{
-				sbemailcounter++;
-				n = "SBEmail: " + n;
+				var type = node.nodeName.toLowerCase();
+				var u = node.getAttribute('u');
+				var n = node.getAttribute('n');
+				if (!n) n = "Untitled";
+				if (type == "sb")
+				{
+					sbemailcounter++;
+					n = "SBEmail: " + n;
+				}
+				if (u)
+					this.allrandourls.push({u: "http://www.homestarrunner.com/" + u, n: n, type: type});
+				else
+					this.allrandourls.push({u: "http://www.homestarrunner.com/sbemail" + sbemailcounter + ".html", n: n, type: type});
 			}
-			if (u)
-				this.allrandourls.push({u: "http://www.homestarrunner.com/" + u, n: n, type: type});
-			else
-				this.allrandourls.push({u: "http://www.homestarrunner.com/sbemail" + sbemailcounter + ".html", n: n, type: type});
 		}
+		this.filterRando();
+	} catch (e) {
+		this.randolink.href = "javascript:void(alert('Error loading rando.xml... try refreshing'))";
 	}
-	this.filterRando();
-};
-Navbar.prototype.randoXMLError = function randoXMLError()
-{
-	this.randolink.href = "javascript:void(alert('Error loading rando.xml... try refreshing'))";
 };
 Navbar.prototype.filterRando = function filterRando()
 {
