@@ -96,9 +96,12 @@ SettingsPane.prototype.resizeWindow = function resizeWindow()
 	if (a < 40) a = 40;
 	this.settingslist.style.maxHeight = a + 'px';
 };
-SettingsPane.prototype.cacheDodge = function cacheDodge()
+SettingsPane.prototype.cacheDodge = function cacheDodge(e)
 {
-	utils.setPref("cachedodge", Math.random().toString());	
+	if (e && e.preventDefault)
+		e.preventDefault();
+	utils.setPref("cachedodge", Math.random().toString());
+	globals.modules.updates.cacheDodge();
 };
 
 SettingsPane.prototype.addSettingRow = function addSettingRow(parent)

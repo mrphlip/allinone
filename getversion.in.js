@@ -5,6 +5,7 @@ function Updates()
 {
 }
 Updates.CURRENT_VERSION = [MAJOR, MINOR, REVISION];
+Updates.CHECK_INTERVAL = 24*60*60*1000; // once per day
 Updates.prototype.load = async function load() {
 	this.enabled = await utils.getPref('updates', true);
 }
@@ -20,7 +21,6 @@ Updates.prototype.init = function init()
 
 	this.setting_enabled = globals.modules.settingspane.addCheckbox('updates', "Check for updates", "Regularly check for updates to the All-in-one script", this.enabled);
 
-	this.havechecked = false;
 	this.doCheck(); // intentionally no "await" here
 };
 Updates.prototype.updateSettings = function updateSettings()
@@ -32,25 +32,25 @@ Updates.prototype.updateSettings = function updateSettings()
 
 Updates.prototype.doCheck = async function doCheck()
 {
-	if (this.havechecked || !this.enabled)
-		return;
-	this.havechecked = true;
+	if (this.updatelink) {
+		this.updatelink.parentNode.removeChild(this.updatelink);
+		this.updatelink = null;
+	}
 
-	if (Date.now() - (await utils.getPref("lastchecktime", 0)) > 86400000)
+	if (!this.enabled)
+		return;
+
+	var str;
+	if (Date.now() - (await utils.getPref("lastchecktime", 0)) > Updates.CHECK_INTERVAL)
 	{
-		utils.downloadPage("http://www.hrwiki.org/wiki/Special:Getversion/User:Phlip/Greasemonkey?cachedodge=" + Math.random(), this.onLoad.bind(this));
+		str = await utils.downloadPage_coro("http://www.hrwiki.org/wiki/Special:Getversion/User:Phlip/Greasemonkey?cachedodge=" + Math.random());
+		str = str.text;
+		utils.setPref("lastchecktime", Date.now());
+		utils.setPref("lastcheckstring", str);
 	}
 	else
-		this.handleUpdateString(await utils.getPref("lastcheckstring", ""));
-};
-Updates.prototype.onLoad = function onLoad(textcontent)
-{
-	utils.setPref("lastchecktime", Date.now());
-	utils.setPref("lastcheckstring", textcontent);
-	this.handleUpdateString(textcontent);
-};
-Updates.prototype.handleUpdateString = function handleUpdateString(str)
-{
+		str = await utils.getPref("lastcheckstring", "");
+
 	var parts = str.split("@@");
 	for (var i = 0; i < parts.length; i++)
 	{
@@ -77,7 +77,14 @@ Updates.prototype.handleUpdateString = function handleUpdateString(str)
 			updatelinkimage.style.border = 'none';
 			updatelink.appendChild(updatelinkimage);
 			document.body.appendChild(updatelink);
+			this.updatelink = updatelink;
 			return;
 		}
 	}
 };
+
+Updates.prototype.cacheDodge = function cacheDodge()
+{
+	utils.setPref("lastchecktime", 0);
+	this.doCheck(); // intentionally no "await" here
+}
