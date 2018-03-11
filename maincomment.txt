@@ -36,12 +36,19 @@
 // @downloadURL   http://www.hrwiki.org/w/index.php?title=User:Phlip/Greasemonkey&action=raw&ctype=text/javascriptfakeextension=.user.js
 // @icon          http://www.hrwiki.org/w/images/thumb/1/1b/logo.png/32px-logo.png
 // @match         http://homestarrunner.com/*
+// @match         https://homestarrunner.com/*
 // @match         http://www.homestarrunner.com/*
+// @match         https://www.homestarrunner.com/*
 // @match         http://podstar.homestarrunner.com/*
+// @match         https://podstar.homestarrunner.com/*
 // @match         http://videlectrix.com/*
+// @match         https://videlectrix.com/*
 // @match         http://www.videlectrix.com/*
+// @match         https://www.videlectrix.com/*
 // @match         http://hrwiki.org/mirror/*
+// @match         https://hrwiki.org/mirror/*
 // @match         http://www.hrwiki.org/mirror/*
+// @match         https://www.hrwiki.org/mirror/*
 // @match         https://secure.homestarrunner.com/heythanks.html*
 #ifdef DEBUG
 // @match         http://localhost/hr/*
