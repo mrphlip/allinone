@@ -42,8 +42,6 @@ PlayerComm.prototype.inPageContext = function()
 	{
 		if (event.origin !== origin)
 			return;
-		if (event.source !== window)
-			return;
 		if (event.data.message.substring(0, 8) !== 'aio_req_')
 			return;
 
@@ -390,8 +388,6 @@ PlayerComm.prototype.setScaleMode = function(elem, scaleMode)
 PlayerComm.prototype.receiveMessage = function(event)
 {
 	if (event.origin !== this.origin)
-		return;
-	if (event.source !== window)
 		return;
 	if (event.data.message.substring(0, 9) !== 'aio_resp_')
 		return;
